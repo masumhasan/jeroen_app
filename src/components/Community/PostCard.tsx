@@ -1,0 +1,188 @@
+import { router } from "expo-router";
+import { Heart, MessageCircle } from "lucide-react-native";
+import React, { useState } from "react";
+import {
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+export default function PostCard({ post }: any) {
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(post.likes);
+  const [commentsCount, setCommentsCount] = useState(post.comments);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState<any[]>([]);
+
+  const handleLike = () => {
+    if (isLiked) {
+      setLikesCount(likesCount - 1);
+    } else {
+      setLikesCount(likesCount + 1);
+    }
+    setIsLiked(!isLiked);
+  };
+
+  const handleAddComment = () => {
+    if (!commentText.trim()) {
+      Alert.alert("Error", "Please write a comment");
+      return;
+    }
+
+    const newComment = {
+      id: Date.now().toString(),
+      text: commentText,
+      user: "You",
+      time: "Just now",
+    };
+
+    setComments([...comments, newComment]);
+    setCommentsCount(commentsCount + 1);
+    setCommentText("");
+  };
+
+  const CommentsModal = ({
+    isVisible,
+    onClose,
+    comments,
+    commentText,
+    setCommentText,
+    handleAddComment,
+  }: any) => {
+    return (
+      <Modal animationType="slide" transparent visible={isVisible}>
+        <View className="flex-1 bg-black/50">
+          <View className="flex-1 mt-20 bg-white rounded-t-3xl">
+            {/* Header */}
+            {/* Header */}
+            <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+              <Text className="text-lg font-semibold">Comments</Text>
+              <TouchableOpacity onPress={() => setIsCommentsVisible(false)}>
+                <Text className="text-blue-500">Close</Text>
+              </TouchableOpacity>
+            </View>
+            {/* Comments List */}
+            <FlatList
+              data={comments}
+              keyExtractor={(item) => item.id}
+              className="flex-1"
+              contentContainerStyle={{ padding: 16 }}
+              renderItem={({ item }) => (
+                <View className="flex-row mb-4">
+                  <Image
+                    source={{
+                      uri:
+                        "https://i.pravatar.cc/100?img=" +
+                        Math.floor(Math.random() * 70),
+                    }}
+                    className="w-8 h-8 rounded-full mr-3"
+                  />
+                  <View className="flex-1">
+                    <View className="flex-row items-center mb-1">
+                      <Text className="font-semibold text-sm mr-2">
+                        {item.user}
+                      </Text>
+                      <Text className="text-xs text-gray-500">{item.time}</Text>
+                    </View>
+                    <Text className="text-sm text-gray-700">{item.text}</Text>
+                  </View>
+                </View>
+              )}
+              ListEmptyComponent={
+                <Text className="text-center text-gray-500 py-8">
+                  No comments yet. Be the first!{" "}
+                </Text>
+              }
+            />
+            {/* Input */}
+            <View className="p-4 border-t border-gray-200 flex-row">
+              <TextInput
+                className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2"
+                placeholder="Write a comment..."
+                value={commentText}
+                onChangeText={setCommentText}
+              />
+
+              <TouchableOpacity
+                onPress={handleAddComment}
+                className="bg-[#8A957F] px-4 py-2 rounded-full"
+              >
+                <Text className="text-white font-semibold">Post</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  return (
+    <>
+      <TouchableOpacity
+        onPress={() => router.push("/detalspost")}
+        className="bg-white mx-4 mb-4 rounded-2xl border border-gray-200 overflow-hidden"
+        activeOpacity={0.7}
+      >
+        {/* user info */}
+        <View className="flex-row items-center p-3">
+          <Image
+            source={{ uri: "https://i.pravatar.cc/100" }}
+            className="w-9 h-9 rounded-full mr-2"
+          />
+
+          <View>
+            <Text className="font-semibold text-sm">{post.name}</Text>
+
+            <Text className="text-xs text-gray-500">
+              {post.role} • {post.time}
+            </Text>
+          </View>
+        </View>
+
+        {/* text */}
+        <Text className="px-3 pb-3 text-sm text-gray-700">{post.text}</Text>
+
+        {/* image */}
+        <Image source={{ uri: post.image }} className="w-full h-56" />
+
+        {/* actions */}
+        <View className="flex-row items-center p-3">
+          <TouchableOpacity
+            className="flex-row items-center mr-6"
+            onPress={handleLike}
+          >
+            <Heart
+              size={18}
+              color={isLiked ? "#ef4444" : "#777"}
+              fill={isLiked ? "#ef4444" : "transparent"}
+            />
+            <Text className="ml-1 text-gray-600 text-sm">{likesCount}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-row items-center"
+            onPress={() => setIsCommentsVisible(true)}
+          >
+            <MessageCircle size={18} color="#777" />
+            <Text className="ml-1 text-gray-600 text-sm">{commentsCount}</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+
+      <CommentsModal
+        isVisible={isCommentsVisible}
+        onClose={() => setIsCommentsVisible(false)}
+        comments={comments}
+        commentText={commentText}
+        setCommentText={setCommentText}
+        handleAddComment={handleAddComment}
+      />
+    </>
+  );
+}
