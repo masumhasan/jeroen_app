@@ -1,50 +1,40 @@
-# Welcome to your Expo app 👋
+# Jeroen Recipe App 📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The core mobile experience for the Jeroen platform. A beautiful, high-performance recipe application built with React Native and Expo.
 
-## Get started
+## 🌟 Features
 
-1. Install dependencies
+- **Recipe Discovery**: Browse hundreds of healthy, curated recipes.
+- **Nutritional Insights**: Detailed breakdown of KCAL, KHD, Fats, Proteins, and Fiber.
+- **Smart Search**: Find the perfect meal by name or category.
+- **Cookbook Integration**: Seamlessly pulls data from multiple professional cookbooks.
+- **Offline Ready**: Efficient data caching for quick access.
 
-   ```bash
-   npm install
-   ```
+## 🛠 Tech Stack
 
-2. Start the app
+- **Framework**: React Native (Expo)
+- **Navigation**: Expo Router (File-based)
+- **Styling**: NativeWind / Tailwind CSS
+- **Data Source**: Jeroen Backend (MongoDB)
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Getting Started
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+### 1. Install Dependencies
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Start the App
+```bash
+npx expo start
+```
 
-## Learn more
+### 3. Run on Emulator
+- Press `a` for Android Emulator
+- Press `i` for iOS Simulator
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🏗 Development Notes
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **App Structure**: Located in the `/app` directory using file-based routing.
+- **Global Components**: Found in `/src/components`.
+- **Hooks & Utilities**: Specialized logic in `/src/hooks`.
