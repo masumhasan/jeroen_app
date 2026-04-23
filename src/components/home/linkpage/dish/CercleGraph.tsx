@@ -4,23 +4,36 @@ import PieChart from "react-native-pie-chart";
 
 const widthAndHeight = 110;
 
-export default function NutritionCard() {
-  const totalCalories = 280;
+interface Props {
+  nutrition?: {
+    kcal: number;
+    khd: number;
+    vetten: number;
+    eiwitten: number;
+    vezels: number;
+  };
+}
 
-  // Fix: Update series to be an array of objects with color and value
+export default function NutritionCard({ nutrition }: Props) {
+  const totalCalories = nutrition?.kcal || 0;
+  const protein = nutrition?.eiwitten || 0;
+  const carbs = nutrition?.khd || 0;
+  const fat = nutrition?.vetten || 0;
+
+  const proteinPct = totalCalories > 0 ? Math.round((protein * 4 / totalCalories) * 100) : 0;
+  const carbsPct = totalCalories > 0 ? Math.round((carbs * 4 / totalCalories) * 100) : 0;
+  const fatPct = totalCalories > 0 ? Math.round((fat * 9 / totalCalories) * 100) : 0;
+
   const series = [
-    { value: 8, color: "#7A866B" },
-    { value: 24, color: "#BEBDB7" },
-    { value: 18, color: "#E9C5A8" },
+    { value: Math.max(protein, 0.1), color: "#7A866B" },
+    { value: Math.max(carbs, 0.1), color: "#BEBDB7" },
+    { value: Math.max(fat, 0.1), color: "#E9C5A8" },
   ];
 
-  // Remove sliceColor as it's now included in series
-  // const sliceColor = ["#7A866B", "#BEBDB7", "#E9C5A8"];
-
   const data = [
-    { label: "Protein", value: 8, percent: 11, color: "#7A866B" },
-    { label: "Carbs", value: 24, percent: 33, color: "#BEBDB7" },
-    { label: "Fat", value: 18, percent: 56, color: "#E9C5A8" },
+    { label: "Protein", value: protein, percent: proteinPct, color: "#7A866B" },
+    { label: "Carbs", value: carbs, percent: carbsPct, color: "#BEBDB7" },
+    { label: "Fat", value: fat, percent: fatPct, color: "#E9C5A8" },
   ];
 
   return (

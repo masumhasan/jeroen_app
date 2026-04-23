@@ -1,25 +1,9 @@
-import React from "react";
-import { Text, View } from "react-native";
+interface Props {
+  ingredients: string[];
+  instructions: string[];
+}
 
-const ingredients = [
-  "Almonds (20g)",
-  "Walnuts (15g)",
-  "Cashews (15g)",
-  "Blueberries (50g)",
-  "Strawberries (50g)",
-  "Dark chocolate chips (10g, optional)",
-];
-
-const instructions = [
-  "Combine all nuts in a small bowl.",
-  "Wash berries and pat dry.",
-  "Mix nuts and berries together.",
-  "Add dark chocolate chips if desired.",
-  "Portion into a snack container.",
-  "Store in refrigerator if not consuming immediately.",
-];
-
-const DeatilsFull = () => {
+const DeatilsFull = ({ ingredients, instructions }: Props) => {
   return (
     <View className="  pt-6">
       {/* Ingredients */}
@@ -28,7 +12,7 @@ const DeatilsFull = () => {
       </Text>
 
       <View className="flex-col  space-y-3">
-        {ingredients.map((item, index) => (
+        {ingredients?.map((item, index) => (
           <View
             key={index}
             className="flex-row items-center bg-[#E9E9E9] rounded-2xl mb-2 px-4 py-4"
@@ -48,7 +32,7 @@ const DeatilsFull = () => {
       </Text>
 
       <View className="flex-col gap-[2%]  space-y-4">
-        {instructions.map((step, index) => (
+        {instructions?.map((step, index) => (
           <View key={index} className="flex-row">
             <View className="w-8 h-8 rounded-full bg-[#7A866F] items-center justify-center mr-3">
               <Text className="text-white font-semibold">{index + 1}</Text>

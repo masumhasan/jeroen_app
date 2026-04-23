@@ -1,52 +1,65 @@
-import CategorySection from "@/src/components/home/linkpage/CategorySection";
-import ProgressHeader from "@/src/components/home/linkpage/ProgressHeader";
-import { useShoppingList } from "@/src/hooks/useShoppingList";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { authService } from "../../../services/authService";
 
 const ShoppingList = () => {
-  // Changed from shopping_list to ShoppingList
-  const categories = [
-    {
-      title: "Vegetables",
-      items: [
-        "Mixed salad greens (300g)",
-        "Cherry tomatoes (200g)",
-        "Cucumber (2)",
-        "Broccoli (200g)",
-        "Asparagus (200g)",
-        "Sweet potato (300g)",
-        "Red onion (1)",
-      ],
-    },
-    {
-      title: "Meat & Fish",
-      items: ["Chicken breast (400g)", "Salmon fillet (400g)", "Eggs (12)"],
-    },
-    {
-      title: "Dairy",
-      items: ["Feta cheese (60g)", "Milk (1L)"],
-    },
-    {
-      title: "Grains & Bread",
-      items: [
-        "Whole grain bread (1 loaf)",
-        "Brown rice (500g)",
-        "Quinoa (250g)",
-      ],
-    },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
 
-  const {
-    selectedCount,
-    totalItems,
-    progressPercentage,
-    toggleItem,
-    getItemsByCategory,
-    resetSelection,
-  } = useShoppingList(categories);
+  useEffect(() => {
+    const fetchShoppingList = async () => {
+      try {
+        const data = await authService.getMealPlan();
+        setCategories(data.shoppingList || []);
+      } catch (error) {
+        console.error("Error fetching shopping list:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShoppingList();
+  }, []);
+
+  const flatItems = useMemo(
+    () =>
+      categories.flatMap((category) =>
+        (category.items || []).map((item: any) => ({
+          key: `${category.category}::${item.name}`,
+          label: `${item.name} (${item.amount})`,
+          category: category.category,
+        })),
+      ),
+    [categories],
+  );
+
+  const totalItems = flatItems.length;
+  const selectedCount = Object.values(checkedItems).filter(Boolean).length;
+  const progressPercentage =
+    totalItems > 0 ? Math.round((selectedCount / totalItems) * 100) : 0;
+
+  const toggleItem = (itemKey: string) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [itemKey]: !prev[itemKey],
+    }));
+  };
+
+  const resetSelection = () => {
+    setCheckedItems({});
+  };
+
+  if (loading) {
+    return (
+      <View className="flex-1 bg-[#F7F7F7] items-center justify-center">
+        <ActivityIndicator size="large" color="#89957F" />
+        <Text className="mt-3 text-gray-500">Loading shopping list...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="flex-1 bg-[#F7F7F7] px-5 pt-14">
@@ -68,20 +81,68 @@ const ShoppingList = () => {
         )}
       </View>
 
-      <ProgressHeader
-        selectedCount={selectedCount}
-        totalItems={totalItems}
-        progressPercentage={progressPercentage}
-      />
+      <View>
+        <View className="flex-row justify-between mb-2">
+          <Text className="text-gray-600 text-[13px]">
+            {selectedCount} of {totalItems} items
+          </Text>
+          <Text className="text-[#89957F] text-[13px]">
+            {progressPercentage}%
+          </Text>
+        </View>
+        <View className="w-full h-2 bg-gray-200 rounded-full">
+          <View
+            className="h-2 bg-[#89957F] rounded-full"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </View>
+      </View>
 
-      {categories.map((category) => (
-        <CategorySection
-          key={category.title}
-          title={category.title}
-          items={getItemsByCategory(category.title)}
-          onItemToggle={toggleItem}
-        />
+      {categories.map((category: any) => (
+        <View key={category.category} className="mt-6">
+          <Text className="text-[15px] font-semibold text-gray-800 mb-3">
+            {category.category} ({(category.items || []).length})
+          </Text>
+
+          {(category.items || []).map((item: any, index: number) => {
+            const itemKey = `${category.category}::${item.name}`;
+            const selected = !!checkedItems[itemKey];
+            return (
+              <TouchableOpacity
+                key={`${itemKey}-${index}`}
+                onPress={() => toggleItem(itemKey)}
+                className="flex-row items-center bg-white border border-gray-200 rounded-xl px-4 py-4 mb-3 active:bg-gray-50"
+              >
+                <View
+                  className={`w-5 h-5 rounded-full border mr-3 ${
+                    selected ? "bg-[#89957F] border-[#89957F]" : "border-gray-400"
+                  }`}
+                >
+                  {selected && (
+                    <View className="w-full h-full items-center justify-center">
+                      <Text className="text-white text-xs">✓</Text>
+                    </View>
+                  )}
+                </View>
+                <Text
+                  className={`text-[14px] ${
+                    selected ? "text-gray-400 line-through" : "text-gray-800"
+                  }`}
+                >
+                  {item.name} ({item.amount})
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       ))}
+
+      {categories.length === 0 && (
+        <View className="items-center py-10">
+          <Text className="text-gray-500">No shopping list yet.</Text>
+          <Text className="text-gray-500">Generate your plan to create one.</Text>
+        </View>
+      )}
 
       {/* Completion Message */}
       {selectedCount === totalItems && totalItems > 0 && (

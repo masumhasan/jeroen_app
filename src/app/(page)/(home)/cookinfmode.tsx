@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   Award,
   Check,
@@ -9,52 +9,63 @@ import {
   Clock,
   X,
 } from "lucide-react-native";
-import React, { useRef, useState } from "react";
-import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Dimensions, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import { recipeService } from "../../../services/recipeService";
 
 const { width } = Dimensions.get("window");
 
-const steps = [
-  {
-    step: 1,
-    title: "Prepare the Bread",
-    time: "2 min",
-    desc: "Toast 2 slices of whole grain bread until golden brown and crispy.",
-  },
-  {
-    step: 2,
-    title: "Poach the Eggs",
-    time: "4 min",
-    desc: "Bring a pot of water to a gentle simmer. Create a whirlpool and gently drop in the eggs.",
-  },
-  {
-    step: 3,
-    title: "Mash the Avocado",
-    time: "2 min",
-    desc: "Halve and pit the avocado. Scoop into a bowl and mash with salt, pepper and lemon juice.",
-  },
-  {
-    step: 4,
-    title: "Assemble",
-    time: "1 min",
-    desc: "Spread mashed avocado on toast. Place poached eggs on top and season.",
-  },
-  {
-    step: 5,
-    title: "Garnish & Serve",
-    time: "1 min",
-    desc: "Drizzle olive oil and garnish with fresh herbs. Serve immediately.",
-  },
-];
-
 const CookingMode = () => {
+  const { recipeId } = useLocalSearchParams();
+  const [recipe, setRecipe] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const swiperRef = useRef<any>(null);
   const [index, setIndex] = useState(0);
 
+  useEffect(() => {
+    if (recipeId) {
+      fetchRecipe(recipeId as string);
+    }
+  }, [recipeId]);
+
+  const fetchRecipe = async (id: string) => {
+    setLoading(true);
+    try {
+      const data = await recipeService.getRecipe(id);
+      setRecipe(data);
+    } catch (error) {
+      console.error("Error fetching recipe:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center">
+        <ActivityIndicator size="large" color="#7C866F" />
+      </View>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center">
+        <Text>Recipe not found</Text>
+      </View>
+    );
+  }
+
+  const steps = recipe.recipeDetails.map((desc: string, i: number) => ({
+    step: i + 1,
+    title: `Step ${i + 1}`,
+    time: "5 min", // Default time
+    desc: desc
+  }));
+
   const progressWidth = `${((index + 1) / steps.length) * 100}%`;
-  const currentStep = steps[index];
 
   return (
     <>
@@ -98,7 +109,7 @@ const CookingMode = () => {
                 Progress
               </Text>
               <Text className="text-xs font-semibold text-[#7C866F]">
-                {Math.round(((index + 1) / steps.length) * 100)}%
+                {Math.round(((index + 1) / (steps.length || 1)) * 100)}%
               </Text>
             </View>
             <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -119,11 +130,11 @@ const CookingMode = () => {
             onIndexChanged={(i) => setIndex(i)}
             scrollEnabled={true}
           >
-            {steps.map((item, i) => (
+            {steps.map((item: any, i: number) => (
               <View key={i} className="flex-1 justify-center items-center">
                 <View className="items-center justify-center py-8 px-6">
                   <View className="w-12 h-12  flex-row justify-center items-center bg-[#8A957F] rounded-full ">
-                    <Text className="text-2xl font-Inter text-[#FFFFFF] font-bold">
+                    <Text className="text-2xl font-bold text-[#FFFFFF]">
                       {item.step}
                     </Text>
                   </View>
@@ -180,7 +191,7 @@ const CookingMode = () => {
             {/* Next / Complete Button */}
             {index === steps.length - 1 ? (
               <TouchableOpacity
-                onPress={() => router.replace("/dishdetails")}
+                onPress={() => router.back()}
                 activeOpacity={0.7}
                 className="flex-row items-center bg-[#7C866F] px-6 py-3 rounded-xl shadow-lg"
                 style={{ elevation: 4 }}

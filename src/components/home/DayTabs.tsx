@@ -16,7 +16,6 @@ interface DayItemType {
   isToday: boolean;
 }
 
-// Props for DayItem component
 interface DayItemProps {
   item: DayItemType;
   index: number;
@@ -68,53 +67,44 @@ const DayItem = memo<DayItemProps>(
   ),
 );
 
-// Set display name for debugging
 DayItem.displayName = "DayItem";
 
-export default function DayTabs() {
-  const [active, setActive] = useState<number>(0);
+interface DayTabsProps {
+  selectedDayIndex: number;
+  onDayChange: (index: number) => void;
+}
+
+export default function DayTabs({ selectedDayIndex, onDayChange }: DayTabsProps) {
   const flatListRef = useRef<FlatList<DayItemType>>(null);
-  const { width: screenWidth } = Dimensions.get("window");
+  
   const days = useMemo<DayItemType[]>(() => {
     const today = new Date();
+    // Get the Monday of the current week
+    const dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
+    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    const monday = new Date(today.setDate(diff));
+
     const daysArray: DayItemType[] = [];
-    for (let i = -180; i <= 180; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
 
       daysArray.push({
-        id: i + 180,
+        id: i,
         day: date.toLocaleDateString("en-US", { weekday: "short" }),
         date: date.toLocaleDateString("en-US", {
           day: "numeric",
           month: "short",
         }),
-        isToday: i === 0,
+        isToday: new Date().toDateString() === date.toDateString(),
       });
     }
 
     return daysArray;
   }, []);
 
-  // Find and set today's index instantly
-  useEffect(() => {
-    const todayIdx = days.findIndex((day: DayItemType) => day.isToday);
-    setActive(todayIdx);
-
-    // Scroll to today immediately
-    if (flatListRef.current) {
-      requestAnimationFrame(() => {
-        flatListRef.current?.scrollToIndex({
-          index: todayIdx,
-          viewPosition: 0.5,
-          animated: false,
-        });
-      });
-    }
-  }, [days]);
-
   const handlePress = (index: number): void => {
-    setActive(index);
+    onDayChange(index);
     flatListRef.current?.scrollToIndex({
       index,
       viewPosition: 0.5,
@@ -122,7 +112,6 @@ export default function DayTabs() {
     });
   };
 
-  // Fixed getItemLayout with proper typing
   const getItemLayout = (
     data: ArrayLike<DayItemType> | null | undefined,
     index: number,
@@ -136,14 +125,14 @@ export default function DayTabs() {
     <DayItem
       item={item}
       index={index}
-      active={active}
+      active={selectedDayIndex}
       onPress={handlePress}
       isToday={item.isToday}
     />
   );
 
   return (
-    <View className="w-full">
+    <View className="w-full mt-4">
       <FlatList<DayItemType>
         ref={flatListRef}
         horizontal
@@ -151,13 +140,8 @@ export default function DayTabs() {
         data={days}
         keyExtractor={(item: DayItemType) => item.id.toString()}
         renderItem={renderItem}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 0 }}
         getItemLayout={getItemLayout}
-        initialNumToRender={20}
-        maxToRenderPerBatch={10}
-        windowSize={3}
-        removeClippedSubviews={true}
-        decelerationRate="fast"
       />
     </View>
   );

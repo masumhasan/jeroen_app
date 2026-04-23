@@ -1,19 +1,56 @@
 import CircleGraph from "@/src/components/home/linkpage/dish/CercleGraph";
 import DeatilsFull from "@/src/components/home/linkpage/dish/DeatilsFull";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { recipeService } from "../../../services/recipeService";
 
 const DishDetails = () => {
+  const { recipeId } = useLocalSearchParams();
+  const [recipe, setRecipe] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (recipeId) {
+      fetchRecipe(recipeId as string);
+    }
+  }, [recipeId]);
+
+  const fetchRecipe = async (id: string) => {
+    setLoading(true);
+    try {
+      const data = await recipeService.getRecipe(id);
+      setRecipe(data);
+    } catch (error) {
+      console.error("Error fetching recipe:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center">
+        <ActivityIndicator size="large" color="#8F9B87" />
+      </View>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center">
+        <Text>Recipe not found</Text>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-[#F2F2F2]">
       {/* Top Image */}
       <View className="relative">
         <Image
-          source={{
-            uri: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea",
-          }}
+          source={{ uri: recipe.recipeImage }}
           className="w-full h-[320px]"
           resizeMode="cover"
         />
@@ -40,7 +77,7 @@ const DishDetails = () => {
         >
           {/* Title */}
           <Text className="text-[26px] font-bold text-[#222] mt-4">
-            Mixed Nuts & Berries
+            {recipe.name}
           </Text>
 
           {/* Info */}
@@ -52,13 +89,16 @@ const DishDetails = () => {
 
             <View className="flex-row items-center">
               <Feather name="users" size={16} color="#777" />
-              <Text className="ml-2 text-[#777]">1 serving</Text>
+              <Text className="ml-2 text-[#777]">{recipe.personsServing || 1} serving</Text>
             </View>
           </View>
 
           {/* Button */}
           <TouchableOpacity
-            onPress={() => router.push("/cookinfmode")}
+            onPress={() => router.push({
+              pathname: "/cookinfmode",
+              params: { recipeId: recipe._id }
+            })}
             className="mt-8 bg-[#8F9B87] py-4 rounded-full flex-row items-center justify-center"
           >
             <Feather name="play" size={18} color="white" />
@@ -72,9 +112,12 @@ const DishDetails = () => {
           </Text>
 
           {/* graph */}
-          <CircleGraph />
+          <CircleGraph nutrition={recipe.nutrition} />
 
-          <DeatilsFull />
+          <DeatilsFull 
+            ingredients={recipe.ingredients} 
+            instructions={recipe.recipeDetails} 
+          />
         </ScrollView>
       </View>
     </View>
