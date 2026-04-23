@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import { authService } from "../../../services/authService";
 
 const PRIMARY = "#89957F";
 const PRIMARY_LIGHT = "#F3F5F1";
@@ -22,6 +23,50 @@ const Edittheprofile = () => {
   const [age, setAge] = useState("25");
   const [height, setHeight] = useState("170");
   const [weight, setWeight] = useState("70");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      setIsLoading(true);
+      try {
+        const user = await authService.getMe();
+        if (user) {
+          setGender(user.gender || "Male");
+          setActivity(user.activityLevel || "Moderate");
+          setGoal(user.goal || "Weight Loss");
+          setAge(user.age?.toString() || "");
+          setHeight(user.height?.toString() || "");
+          setWeight(user.weight?.toString() || "");
+        }
+      } catch (error) {
+        Alert.alert("Error", "Failed to fetch user data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const handleUpdate = async () => {
+    setIsUpdating(true);
+    try {
+      await authService.updateProfile({
+        gender,
+        activityLevel: activity,
+        goal,
+        age: parseInt(age),
+        height: parseInt(height),
+        weight: parseInt(weight),
+      });
+      Alert.alert("Success", "Profile updated successfully");
+      router.back();
+    } catch (error: any) {
+      Alert.alert("Error", error.response?.data?.message || "Failed to update profile");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const goNext = () => {
     if (swiperRef.current && swiperIndex < 2) {
@@ -434,7 +479,40 @@ const Edittheprofile = () => {
       {swiperIndex < 2 ? (
         <BottomButton title="Continue" onPress={goNext} />
       ) : (
-        <BottomButton title="Update" />
+        <View className="px-5 pb-6">
+          <TouchableOpacity
+            onPress={handleUpdate}
+            disabled={isUpdating}
+            activeOpacity={0.85}
+            style={{
+              backgroundColor: PRIMARY,
+              height: 52,
+              borderRadius: 26,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              opacity: isUpdating ? 0.7 : 1,
+            }}
+          >
+            {isUpdating ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                    fontWeight: "600",
+                    marginRight: 6,
+                  }}
+                >
+                  Update
+                </Text>
+                <Ionicons name="checkmark" size={18} color="#fff" />
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
       )}
     </SafeAreaView>
   );

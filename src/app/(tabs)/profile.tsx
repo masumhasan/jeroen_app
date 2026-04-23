@@ -1,15 +1,39 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { authService } from "../../services/authService";
+import { useFocusEffect } from "@react-navigation/native";
+
+import { AppImages } from "../../../assets/appimage/appimages";
 
 const profile = () => {
+  const [userData, setUserData] = React.useState<any>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  const fetchUserData = async () => {
+    try {
+      const user = await authService.getMe();
+      setUserData(user);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
+
   const profileData = [
-    { label: "Gender", value: "Female" },
-    { label: "Height", value: "165 cm" },
-    { label: "Weight", value: "62 kg" },
-    { label: "Activity Level", value: "Moderately Active" },
-    { label: "Goal", value: "Muscle Gain" },
+    { label: "Gender", value: userData?.gender || "Not set" },
+    { label: "Height", value: userData?.height ? `${userData.height} cm` : "Not set" },
+    { label: "Weight", value: userData?.weight ? `${userData.weight} kg` : "Not set" },
+    { label: "Activity Level", value: userData?.activityLevel || "Not set" },
+    { label: "Goal", value: userData?.goal || "Not set" },
   ];
 
   return (
@@ -31,9 +55,7 @@ const profile = () => {
         <View className="items-center mb-4">
           <View className="relative">
             <Image
-              source={{
-                uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
-              }}
+              source={userData?.avatar ? { uri: userData.avatar } : AppImages.userAvatar}
               className="w-[96px] h-[96px] rounded-full"
               resizeMode="cover"
             />
@@ -45,12 +67,18 @@ const profile = () => {
             </TouchableOpacity>
           </View>
 
-          <Text className="mt-4 text-[20px] font-semibold text-[#111111]">
-            Sarah Johnson
-          </Text>
-          <Text className="mt-1 text-[14px] text-[#89957F]">
-            sarah.johnson@email.com
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator color="#89957F" className="mt-4" />
+          ) : (
+            <>
+              <Text className="mt-4 text-[20px] font-semibold text-[#111111]">
+                {userData?.firstName} {userData?.lastName}
+              </Text>
+              <Text className="mt-1 text-[14px] text-[#89957F]">
+                {userData?.email}
+              </Text>
+            </>
+          )}
         </View>
 
         {/* Section Header */}

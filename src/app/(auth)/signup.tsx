@@ -20,7 +20,14 @@ const Signup = () => {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
-  const [checkbox, setcheckbox] = useState(false);
+   const [checkbox, setcheckbox] = useState(false);
+   const [formData, setFormData] = useState({
+     firstName: "",
+     lastName: "",
+     phone: "",
+     email: "",
+     password: "",
+   });
 
   useEffect(() => {
     // Entrance animation
@@ -41,7 +48,20 @@ const Signup = () => {
   }, []);
 
   const handleRegisterPress = () => {
-    router.push("/signuponpoarding");
+    if (!formData.firstName || !formData.email || !formData.password) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    if (!checkbox) {
+      alert("Please agree to the Terms & Conditions");
+      return;
+    }
+
+    router.push({
+      pathname: "/signuponpoarding",
+      params: { ...formData },
+    });
+
     // Button press animation
     Animated.sequence([
       Animated.timing(buttonScale, {
@@ -70,7 +90,7 @@ const Signup = () => {
   };
 
   const renderInput = (
-    field: string,
+    field: keyof typeof formData,
     label: string,
     icon: keyof typeof Ionicons.glyphMap,
     placeholder: string,
@@ -91,6 +111,8 @@ const Signup = () => {
         <TextInput
           placeholder={placeholder}
           secureTextEntry={secureTextEntry}
+          value={formData[field]}
+          onChangeText={(text) => setFormData({ ...formData, [field]: text })}
           className="ml-3 flex-1 text-gray-700"
           placeholderTextColor="#9CA3AF"
           onFocus={() => setFocusedInput(field)}
@@ -125,8 +147,8 @@ const Signup = () => {
             Sign up to get started with our services
           </Text>
 
-          {renderInput("firstName", "First Name", "person-outline", "Sarah")}
-          {renderInput("lastName", "Last Name", "person-outline", "Jones")}
+          {renderInput("firstName", "First Name", "person-outline", "John")}
+          {renderInput("lastName", "Last Name", "person-outline", "Doe")}
           {renderInput("phone", "Phone Number", "call-outline", "+ 02-8312024")}
           {renderInput("email", "Email", "mail-outline", "name@example.com")}
           {renderInput(

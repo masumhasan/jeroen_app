@@ -78,7 +78,28 @@ const SettingRow = ({
   );
 };
 
+import { authService } from "../../../services/authService";
+import { Alert } from "react-native";
+
 const setting = () => {
+  const handleLogout = async () => {
+    Alert.alert("Logout", "Are you sure you want to log out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Log Out",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await authService.logout();
+            router.replace("/signin");
+          } catch (error) {
+            Alert.alert("Error", "Failed to log out");
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 px-4 pt-2">
@@ -93,7 +114,7 @@ const setting = () => {
             Setting
           </Text>
         </View>
-
+ 
         <View className="flex-1">
           {menuItems.map((item) => (
             <SettingRow
@@ -104,8 +125,11 @@ const setting = () => {
             />
           ))}
         </View>
-
-        <Pressable className="mb-5 h-[50px] rounded-xl bg-[#98A08C] flex-row items-center justify-between px-4">
+ 
+        <Pressable 
+          onPress={handleLogout}
+          className="mb-5 h-[50px] rounded-xl bg-[#98A08C] flex-row items-center justify-between px-4"
+        >
           <View className="flex-row items-center gap-2">
             <LogOut size={16} color="#FFFFFF" />
             <Text className="text-white text-[13px] font-medium">Log Out</Text>

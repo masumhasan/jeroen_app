@@ -1,8 +1,9 @@
 import DitaryProcess from "@/src/components/auth/DitaryProcess";
 import MeelPlan from "@/src/components/auth/MeelPlan";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import { authService } from "../../services/authService";
 import {
   Alert,
   Dimensions,
@@ -469,7 +470,7 @@ const Signuponpoarding = () => {
       allergies: "",
       targetWeight: "65",
     },
-    mealPlan: "",
+    mealPlan: [],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -504,25 +505,62 @@ const Signuponpoarding = () => {
     }
   };
 
+  const { firstName, lastName, phone, email, password } = useLocalSearchParams();
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Simulate API call
-      router.replace("/finalpage");
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      const signupData: any = {
+        firstName,
+        lastName,
+        phoneNumber: phone,
+        email,
+        password,
+      };
 
-      // Alert.alert(
-      //   "Welcome Aboard! 🎉",
-      //   "Your profile has been set up successfully. Let's start your fitness journey!",
-      //   [
-      //     {
-      //       text: "Get Started",
-      //       onPress: () => router.replace("/finalpage"),
-      //     },
-      //   ],
-      // );
-    } catch (error) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      if (userData.gender) signupData.gender = userData.gender;
+      
+      const ageNum = parseInt(userData.age);
+      if (!isNaN(ageNum)) signupData.age = ageNum;
+      
+      const heightNum = parseInt(userData.height);
+      if (!isNaN(heightNum)) signupData.height = heightNum;
+      
+      const weightNum = parseInt(userData.weight);
+      if (!isNaN(weightNum)) signupData.weight = weightNum;
+      
+      if (userData.activity) signupData.activityLevel = userData.activity;
+      if (userData.goal) signupData.goal = userData.goal;
+      
+      if (userData.dietarySelections.dietary.length > 0) {
+        signupData.dietaryRestrictions = userData.dietarySelections.dietary;
+      }
+      
+      if (userData.dietarySelections.ingredients.length > 0) {
+        signupData.unwantedIngredients = userData.dietarySelections.ingredients;
+      }
+      
+      if (userData.dietarySelections.allergies) {
+        signupData.allergies = [userData.dietarySelections.allergies];
+      }
+      
+      const targetWeightNum = parseInt(userData.dietarySelections.targetWeight);
+      if (!isNaN(targetWeightNum)) signupData.targetWeight = targetWeightNum;
+      
+      if (userData.mealPlan.length > 0) {
+        signupData.mealPlanPreferences = userData.mealPlan.map((id: string) => {
+          if (id === 'snack-1') return 'Snack-1';
+          if (id === 'snack-2') return 'Snack-2';
+          if (id === 'snack-3') return 'Snack-3';
+          return id;
+        });
+      }
+
+      await authService.signup(signupData);
+      
+      router.replace("/finalpage");
+    } catch (error: any) {
+      Alert.alert("Error", error.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

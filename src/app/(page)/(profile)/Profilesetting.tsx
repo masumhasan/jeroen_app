@@ -24,20 +24,21 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { authService } from "../../../services/authService";
+import { AppImages } from "../../../../assets/appimage/appimages";
 
 // Types
 interface ProfileData {
   firstName: string;
   lastName: string;
   mobileNumber: string;
-  avatar: string;
+  avatar: string | number;
   email?: string;
   dateOfBirth?: string;
 }
 
 // Constants
-const DEFAULT_AVATAR =
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop";
+const DEFAULT_AVATAR = AppImages.userAvatar;
 const COUNTRY_CODE = "+1";
 
 // Animated Components
@@ -137,6 +138,31 @@ const ProfileSetting: React.FC = () => {
   const saveButtonScale = useSharedValue(1);
   const avatarScale = useSharedValue(1);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setIsLoading(true);
+      try {
+        const user = await authService.getMe();
+        const formattedData = {
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          mobileNumber: user.phoneNumber || "",
+          avatar: user.avatar || DEFAULT_AVATAR,
+          email: user.email || "",
+          dateOfBirth: user.dateOfBirth || "",
+        };
+        setProfileData(formattedData);
+        setOriginalData(formattedData);
+      } catch (error) {
+        Alert.alert("Error", "Failed to fetch user data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   // Check for changes
   useEffect(() => {
     const hasUnsavedChanges =
@@ -189,13 +215,20 @@ const ProfileSetting: React.FC = () => {
     setIsSaving(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const updatePayload = {
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        phoneNumber: profileData.mobileNumber,
+        email: profileData.email,
+        // Add other fields if necessary
+      };
+
+      await authService.updateProfile(updatePayload);
 
       setOriginalData(profileData);
       Alert.alert("Success", "Profile updated successfully");
-    } catch (error) {
-      Alert.alert("Error", "Failed to update profile");
+    } catch (error: any) {
+      Alert.alert("Error", error.response?.data?.message || "Failed to update profile");
     } finally {
       setIsSaving(false);
     }
@@ -365,7 +398,7 @@ const ProfileSetting: React.FC = () => {
                 >
                   <View className="relative">
                     <Image
-                      source={{ uri: profileData.avatar }}
+                      source={typeof profileData.avatar === "string" ? { uri: profileData.avatar } : profileData.avatar}
                       className="w-[90px] h-[90px] rounded-full"
                     />
 

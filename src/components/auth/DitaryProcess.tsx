@@ -82,11 +82,17 @@ const SectionHeader = ({
   </View>
 );
 
-const DitaryProcess = () => {
-  const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
-  const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
-  const [allergies, setAllergies] = useState("");
-  const [targetWeight, setTargetWeight] = useState("65");
+interface Props {
+  value: {
+    dietary: string[];
+    ingredients: string[];
+    allergies: string;
+    targetWeight: string;
+  };
+  onChange: (value: any) => void;
+}
+
+const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const dietary = [
@@ -124,22 +130,26 @@ const DitaryProcess = () => {
   );
 
   const toggleDietary = (item: string) => {
-    setSelectedDietary((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
-    );
+    const newDietary = value.dietary.includes(item)
+      ? value.dietary.filter((i) => i !== item)
+      : [...value.dietary, item];
+    onChange({ ...value, dietary: newDietary });
   };
 
   const toggleIngredient = (item: string) => {
-    setSelectedIngredients((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
-    );
+    const newIngredients = value.ingredients.includes(item)
+      ? value.ingredients.filter((i) => i !== item)
+      : [...value.ingredients, item];
+    onChange({ ...value, ingredients: newIngredients });
   };
 
   const clearAll = () => {
-    setSelectedDietary([]);
-    setSelectedIngredients([]);
-    setAllergies("");
-    setTargetWeight("65");
+    onChange({
+      dietary: [],
+      ingredients: [],
+      allergies: "",
+      targetWeight: "65",
+    });
     setSearchQuery("");
   };
 
@@ -174,7 +184,7 @@ const DitaryProcess = () => {
               <Chip
                 key={index}
                 label={item}
-                selected={selectedDietary.includes(item)}
+                selected={value.dietary.includes(item)}
                 onPress={() => toggleDietary(item)}
               />
             ))}
@@ -208,7 +218,7 @@ const DitaryProcess = () => {
               <Chip
                 key={index}
                 label={item}
-                selected={selectedIngredients.includes(item)}
+                selected={value.ingredients.includes(item)}
                 onPress={() => toggleIngredient(item)}
               />
             ))}
@@ -229,8 +239,8 @@ const DitaryProcess = () => {
             <TextInput
               placeholder="e.g., Peanuts, Shellfish, Eggs"
               placeholderTextColor="#9CA3AF"
-              value={allergies}
-              onChangeText={setAllergies}
+              value={value.allergies}
+              onChangeText={(text) => onChange({ ...value, allergies: text })}
               className="px-4 py-3 text-gray-700"
               multiline
             />
@@ -245,8 +255,8 @@ const DitaryProcess = () => {
           <SectionHeader title="Target Weight" optional={false} />
           <View className="flex-row items-center bg-gray-50 rounded-xl border border-gray-100">
             <TextInput
-              value={targetWeight}
-              onChangeText={setTargetWeight}
+              value={value.targetWeight}
+              onChangeText={(text) => onChange({ ...value, targetWeight: text })}
               keyboardType="numeric"
               className="flex-1 px-4 py-3 text-gray-700"
               placeholder="Enter your target weight"

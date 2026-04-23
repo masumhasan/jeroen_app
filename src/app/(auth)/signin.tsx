@@ -2,6 +2,8 @@ import { AppImages } from "@/assets/appimage/appimages";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
+import { authService } from "../../services/authService";
+import { Alert } from "react-native";
 import {
   ActivityIndicator,
   Image,
@@ -116,7 +118,6 @@ const Signin = () => {
 
   const handleLogin = async () => {
     if (!validateForm()) return;
-    router.replace("/home");
 
     // Button press animation
     buttonScale.value = withSequence(
@@ -132,12 +133,14 @@ const Signin = () => {
   const performLogin = async () => {
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await authService.signin({ email, password });
+      router.replace("/home");
+    } catch (error: any) {
+      Alert.alert("Login Error", error.response?.data?.message || "Invalid email or password");
+    } finally {
       setIsLoading(false);
-      // Navigate to home or dashboard
-      // router.replace("/(tabs)");
-    }, 2000);
+    }
   };
 
   const handleEmailFocus = () => {
