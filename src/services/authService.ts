@@ -38,6 +38,14 @@ export const authService = {
     return response.data.data.user;
   },
 
+  async updateWeight(weight: number) {
+    const response = await api.patch('/auth/me/weight', { weight });
+    if (response.data.data.user) {
+      await SecureStore.setItemAsync('userData', JSON.stringify(response.data.data.user));
+    }
+    return response.data.data.user;
+  },
+
   async getMealPlan(): Promise<{ plan: any[]; targetCalories: number; shoppingList: any[] }> {
     const response = await api.get("/auth/meal-plan");
     return response.data.data;
