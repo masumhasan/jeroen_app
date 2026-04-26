@@ -55,4 +55,26 @@ export const authService = {
     const response = await api.post("/auth/meal-plan");
     return response.data.data;
   },
+
+  async getSwapAlternatives(params: {
+    day: string;
+    mealType: string;
+    recipeId: string;
+    search?: string;
+    sort?: "calories" | "protein" | "name";
+    calorieFilter?: "all" | "<400" | "400-550" | ">550";
+  }) {
+    const response = await api.get("/auth/meal-plan/swap-alternatives", { params });
+    return response.data.data as { currentMeal: any; alternatives: any[] };
+  },
+
+  async swapMeal(payload: {
+    day: string;
+    mealType: string;
+    currentRecipeId: string;
+    newRecipeId: string;
+  }): Promise<{ plan: any[]; shoppingList: any[] }> {
+    const response = await api.patch("/auth/meal-plan/swap", payload);
+    return response.data.data;
+  },
 };

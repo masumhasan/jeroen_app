@@ -120,16 +120,19 @@ export default function Home() {
               }
             >
               <MealCard
+                recipeId={String(meal.recipe._id)}
                 title={meal.recipe.name || "Unknown Recipe"}
                 calories={meal.recipe.nutrition?.kcal?.toString() || "0"}
                 protein={`${meal.recipe.nutrition?.eiwitten || 0}g`}
                 carbs={`${meal.recipe.nutrition?.khd || 0}g`}
                 fat={`${meal.recipe.nutrition?.vetten || 0}g`}
                 type={(meal.mealType || meal.type || "Meal").toUpperCase()}
+                day={currentDayData?.day || DAYS[selectedDayIndex]}
                 image={resolveRecipeImageUrl(
                   meal.recipe.recipeImage,
                   fallbackImg
                 )}
+                onMealSwapped={fetchMealPlan}
               />
             </TouchableOpacity>
           );

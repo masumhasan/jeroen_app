@@ -4,23 +4,29 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import Swap_Lunch from "../modals/Swap_Lunch";
 
 interface Props {
+  recipeId: string;
   title: string;
   calories: string;
   protein: string;
   carbs: string;
   fat: string;
   type: string;
+  day: string;
   image: string;
+  onMealSwapped?: () => void;
 }
 
 export default function MealCard({
+  recipeId,
   title,
   calories,
   protein,
   carbs,
   fat,
   type,
+  day,
   image,
+  onMealSwapped,
 }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -59,6 +65,18 @@ export default function MealCard({
       <Swap_Lunch
         modalVisible={modalVisible}
         setModalVisible={() => setModalVisible(false)}
+        currentMeal={{
+          recipeId,
+          name: title,
+          calories: Number(calories) || 0,
+          protein: Number((protein || "0").replace("g", "")) || 0,
+          carbs: Number((carbs || "0").replace("g", "")) || 0,
+          fat: Number((fat || "0").replace("g", "")) || 0,
+          image,
+        }}
+        mealType={type}
+        day={day}
+        onSwapSuccess={onMealSwapped}
       />
     </View>
   );
