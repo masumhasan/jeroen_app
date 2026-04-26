@@ -73,17 +73,9 @@ const Progress = () => {
     };
   });
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    void loadProgressData().finally(() => setRefreshing(false));
-  }, []);
-
   const loadProgressData = useCallback(async () => {
     try {
-      const [user, mealPlanData] = await Promise.all([
-        authService.getMe(),
-        authService.getMealPlan().catch(() => null),
-      ]);
+      const { user, mealsPlannedCount } = await authService.getProgress();
 
       const historyRaw = Array.isArray(user?.weightHistory) ? user.weightHistory : [];
       const history = historyRaw
@@ -148,13 +140,8 @@ const Progress = () => {
         item.recordedAt ? getWeekLabel(item.recordedAt) : "Now"
       );
 
-      // Fallback consistency from current meal-plan size when no check-ins yet
-      const mealsThisWeek = Array.isArray(mealPlanData?.plan)
-        ? mealPlanData.plan.reduce(
-            (sum: number, day: any) => sum + (Array.isArray(day?.meals) ? day.meals.length : 0),
-            0
-          )
-        : 0;
+      // Fallback consistency from planned meal slots when no check-ins yet
+      const mealsThisWeek = Number.isFinite(mealsPlannedCount) ? mealsPlannedCount : 0;
       const effectiveConsistency = checkInsThisWeek > 0 ? consistencyPercent : Math.min(Math.round((mealsThisWeek / 21) * 100), 100);
       const effectiveCheckIns = checkInsThisWeek > 0 ? checkInsThisWeek : mealsThisWeek;
       const effectiveTarget = checkInsThisWeek > 0 ? checkInsWeeklyTarget : 21;
@@ -178,6 +165,11 @@ const Progress = () => {
       setLoading(false);
     }
   }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    void loadProgressData().finally(() => setRefreshing(false));
+  }, [loadProgressData]);
 
   useFocusEffect(
     useCallback(() => {

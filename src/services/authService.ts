@@ -51,6 +51,16 @@ export const authService = {
     return response.data.data;
   },
 
+  /** Lean payload for Progress tab (no full meal plan / recipe population). */
+  async getProgress(): Promise<{
+    user: any;
+    mealsPlannedCount: number;
+    targetCalories: number;
+  }> {
+    const response = await api.get("/auth/progress");
+    return response.data.data;
+  },
+
   async generateMealPlan(): Promise<{ plan: any[]; targetCalories: number; shoppingList: any[] }> {
     const response = await api.post("/auth/meal-plan");
     return response.data.data;
