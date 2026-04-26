@@ -1,7 +1,8 @@
 import { router } from "expo-router";
 import { Heart, MessageCircle } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
   Image,
@@ -11,18 +12,30 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { communityService } from "@/src/services/communityService";
+
+const commentTimestamp = (dateValue: string | Date | undefined) => {
+  if (!dateValue) return "";
+  try {
+    return new Date(dateValue).toLocaleString();
+  } catch {
+    return "";
+  }
+};
 
 type FeedComment = {
   id: string;
   text: string;
   user: string;
-  time: string;
+  /** Same format as post details (`toLocaleString`). */
+  timestamp: string;
 };
 
 type CommentsModalProps = {
   visible: boolean;
   onClose: () => void;
   comments: FeedComment[];
+  commentsLoading: boolean;
   commentText: string;
   onChangeCommentText: (text: string) => void;
   onSubmitComment: () => void;
@@ -33,6 +46,7 @@ function CommentsModal({
   visible,
   onClose,
   comments,
+  commentsLoading,
   commentText,
   onChangeCommentText,
   onSubmitComment,
@@ -53,26 +67,42 @@ function CommentsModal({
             className="flex-1"
             contentContainerStyle={{ padding: 16 }}
             renderItem={({ item }) => (
-              <View className="flex-row mb-4">
+              <View className="flex-row mb-5">
                 <Image
                   source={{
                     uri: "https://i.pravatar.cc/100?img=" + (item.id.charCodeAt(0) % 70),
                   }}
-                  className="w-8 h-8 rounded-full mr-3"
+                  className="w-9 h-9 rounded-full"
                 />
-                <View className="flex-1">
-                  <View className="flex-row items-center mb-1">
-                    <Text className="font-semibold text-sm mr-2">{item.user}</Text>
-                    <Text className="text-xs text-gray-500">{item.time}</Text>
+                <View className="ml-3 flex-1">
+                  <View className="bg-[#F8F9FA] p-3 rounded-2xl">
+                    <Text className="font-semibold text-[14px] text-[#1A1E2B]">{item.user}</Text>
+                    <Text className="text-[#4A5568] mt-1 text-[14px] leading-5">{item.text}</Text>
                   </View>
-                  <Text className="text-sm text-gray-700">{item.text}</Text>
+                  <View className="flex-row mt-2 items-center flex-wrap">
+                    <Text className="text-[#8A8A8A] text-[11px] font-medium mr-3">
+                      {item.timestamp}
+                    </Text>
+                    <TouchableOpacity activeOpacity={0.7} className="mr-3">
+                      <Text className="text-[#8A8A8A] text-[11px] font-medium">Like</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7}>
+                      <Text className="text-[#8A8A8A] text-[11px] font-medium">Reply</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             )}
             ListEmptyComponent={
-              <Text className="text-center text-gray-500 py-8">
-                No comments yet. Be the first!
-              </Text>
+              commentsLoading ? (
+                <View className="py-12 items-center justify-center">
+                  <ActivityIndicator color="#8A957F" />
+                </View>
+              ) : (
+                <Text className="text-center text-gray-500 py-8">
+                  No comments yet. Be the first!
+                </Text>
+              )
             }
           />
           <View className="p-4 border-t border-gray-200 flex-row">
@@ -102,7 +132,10 @@ export default function PostCard({
 }: {
   post: any;
   onToggleLike?: (postId: string) => Promise<{ likedByMe: boolean; likeCount: number } | void>;
-  onAddComment?: (postId: string, content: string) => Promise<{ commentCount: number } | void>;
+  onAddComment?: (
+    postId: string,
+    content: string
+  ) => Promise<{ commentCount: number; comment?: any } | void>;
 }) {
   const [isLiked, setIsLiked] = useState(Boolean(post.likedByMe));
   const [likesCount, setLikesCount] = useState(Number(post.likeCount || 0));
@@ -110,6 +143,39 @@ export default function PostCard({
   const [isCommentsVisible, setIsCommentsVisible] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<FeedComment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+
+  useEffect(() => {
+    setComments([]);
+    setCommentText("");
+    setIsCommentsVisible(false);
+  }, [post.id]);
+
+  useEffect(() => {
+    if (!isCommentsVisible || !post.id) return;
+    let cancelled = false;
+    (async () => {
+      setCommentsLoading(true);
+      try {
+        const data = await communityService.getPostDetails(String(post.id));
+        if (cancelled) return;
+        const mapped: FeedComment[] = (data.comments || []).map((c: any) => ({
+          id: String(c.id),
+          text: String(c.content ?? ""),
+          user: c.user?.fullName || "User",
+          timestamp: commentTimestamp(c.createdAt),
+        }));
+        setComments(mapped);
+      } catch {
+        if (!cancelled) setComments([]);
+      } finally {
+        if (!cancelled) setCommentsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isCommentsVisible, post.id]);
 
   const handleLike = async () => {
     if (!onToggleLike) return;
@@ -129,20 +195,46 @@ export default function PostCard({
       Alert.alert("Error", "Please write a comment");
       return;
     }
+    const text = commentText.trim();
     try {
       if (onAddComment) {
-        const data = await onAddComment(post.id, commentText.trim());
-        if (data) setCommentsCount(Number(data.commentCount || commentsCount + 1));
+        const data = await onAddComment(post.id, text);
+        if (data) setCommentsCount(Number(data.commentCount ?? commentsCount + 1));
+        if (data?.comment) {
+          const c = data.comment;
+          const row: FeedComment = {
+            id: String(c.id),
+            text: String(c.content ?? ""),
+            user: c.user?.fullName || "You",
+            timestamp: commentTimestamp(c.createdAt),
+          };
+          setComments((prev) => {
+            if (prev.some((x) => x.id === row.id)) return prev;
+            return [...prev, row];
+          });
+        } else {
+          setComments((prev) => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              text,
+              user: "You",
+              timestamp: commentTimestamp(new Date()),
+            },
+          ]);
+        }
       } else {
         setCommentsCount(commentsCount + 1);
+        setComments((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            text,
+            user: "You",
+            timestamp: commentTimestamp(new Date()),
+          },
+        ]);
       }
-      const newComment: FeedComment = {
-        id: Date.now().toString(),
-        text: commentText,
-        user: "You",
-        time: "Just now",
-      };
-      setComments([...comments, newComment]);
       setCommentText("");
     } catch {
       Alert.alert("Error", "Failed to add comment");
@@ -199,6 +291,7 @@ export default function PostCard({
         visible={isCommentsVisible}
         onClose={() => setIsCommentsVisible(false)}
         comments={comments}
+        commentsLoading={commentsLoading}
         commentText={commentText}
         onChangeCommentText={setCommentText}
         onSubmitComment={handleAddComment}

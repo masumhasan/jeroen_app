@@ -179,15 +179,15 @@ const PostDetailsScreen = () => {
           <Text className="text-[#4A5568] mt-1 leading-5">{item.content}</Text>
         </View>
 
-        <View className="flex-row mt-2 space-x-4">
-          <Text className="text-[#8A8A8A] text-[11px] font-medium">
+        <View className="flex-row mt-2 items-center flex-wrap">
+          <Text className="text-[#8A8A8A] text-[11px] font-medium mr-3">
             {item.timestamp}
           </Text>
-          <TouchableOpacity><Text className="text-[#8A8A8A] text-[11px] font-medium">Like</Text></TouchableOpacity>
-          <TouchableOpacity>
-            <Text className="text-[#8A8A8A] text-[11px] font-medium">
-              Reply
-            </Text>
+          <TouchableOpacity activeOpacity={0.7} className="mr-3">
+            <Text className="text-[#8A8A8A] text-[11px] font-medium">Like</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.7}>
+            <Text className="text-[#8A8A8A] text-[11px] font-medium">Reply</Text>
           </TouchableOpacity>
         </View>
       </View>
