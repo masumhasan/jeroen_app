@@ -1,3 +1,5 @@
+import { Text, View } from "react-native";
+
 interface Props {
   ingredients: string[];
   instructions: string[];

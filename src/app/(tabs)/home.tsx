@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert } from "react-native";
 import { authService } from "../../services/authService";
+import { resolveRecipeImageUrl } from "@/src/utils/imageUrl";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -61,11 +62,8 @@ export default function Home() {
   const currentDayData = mealPlan.find(d => d.day === DAYS[selectedDayIndex]);
   const meals = currentDayData?.meals || [];
 
-  const getFullImageUrl = (path: string) => {
-    if (!path) return "https://raw.githubusercontent.com/masumhasan/jeroen_app/main/lunch.jpg";
-    if (path.startsWith('http')) return path;
-    return `http://10.0.2.2:5000${path}`;
-  };
+  const fallbackImg =
+    "https://raw.githubusercontent.com/masumhasan/jeroen_app/main/lunch.jpg";
 
   if (loading) {
     return (
@@ -112,12 +110,14 @@ export default function Home() {
           if (idx === 0) console.log("Rendering Meal:", JSON.stringify(meal, null, 2));
 
           return (
-            <TouchableOpacity 
+            <TouchableOpacity
               key={idx}
-              onPress={() => router.push({
-                pathname: "/dishdetails",
-                params: { recipeId: meal.recipe._id }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(page)/(home)/dishdetails",
+                  params: { recipeId: String(meal.recipe._id) },
+                })
+              }
             >
               <MealCard
                 title={meal.recipe.name || "Unknown Recipe"}
@@ -126,7 +126,10 @@ export default function Home() {
                 carbs={`${meal.recipe.nutrition?.khd || 0}g`}
                 fat={`${meal.recipe.nutrition?.vetten || 0}g`}
                 type={(meal.mealType || meal.type || "Meal").toUpperCase()}
-                image={getFullImageUrl(meal.recipe.recipeImage)}
+                image={resolveRecipeImageUrl(
+                  meal.recipe.recipeImage,
+                  fallbackImg
+                )}
               />
             </TouchableOpacity>
           );
