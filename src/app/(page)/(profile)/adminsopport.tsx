@@ -1,10 +1,14 @@
 import * as ImagePicker from "expo-image-picker";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { Camera, ChevronLeft, SendHorizontal, X } from "lucide-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { supportService, type SupportApiMessage } from "@/src/services/supportService";
+import { resolveRecipeImageUrl } from "@/src/utils/imageUrl";
 import {
   ActivityIndicator,
   Alert,
+  Dimensions,
   Image,
   KeyboardAvoidingView,
   Modal,
@@ -22,7 +26,6 @@ import {
 import Animated, {
   FadeInDown,
   FadeInUp,
-  interpolate,
   SlideInLeft,
   SlideInRight,
   useAnimatedStyle,
@@ -33,9 +36,17 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
 
-const avatar =
+/** Support agent image (incoming messages + header). */
+const SUPPORT_AGENT_AVATAR =
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300&auto=format&fit=crop";
+
+/** When user has no profile image in stored user data. */
+const DEFAULT_USER_AVATAR = "https://i.pravatar.cc/100?img=47";
+
+/** Ensures footer (locale date + checkmarks) stays inside the bubble for short messages. */
+const BUBBLE_MIN_WIDTH = 276;
 
 // Message type definition
 interface Message {
@@ -44,7 +55,6 @@ interface Message {
   time: string;
   isMe: boolean;
   image?: string;
-  status: "sending" | "sent" | "delivered" | "read";
   type: "text" | "image";
 }
 
@@ -54,18 +64,19 @@ const ChatBubble = ({
   message,
   time,
   isMe,
-  status,
   type,
   image,
   onDelete,
+  myAvatarUri,
 }: {
   message: string;
   time: string;
   isMe?: boolean;
-  status?: "sending" | "sent" | "delivered" | "read";
   type?: "text" | "image";
   image?: string;
   onDelete?: () => void;
+  /** Current user — shown on the right for outgoing bubbles. */
+  myAvatarUri: string;
 }) => {
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0);
@@ -87,20 +98,10 @@ const ChatBubble = ({
     scale.value = withSpring(1);
   };
 
-  const getStatusIcon = () => {
-    switch (status) {
-      case "sending":
-        return <ActivityIndicator size={8} color="#EEF3E8" />;
-      case "sent":
-        return <Text className="text-[#EEF3E8] text-[8px]">✓</Text>;
-      case "delivered":
-        return <Text className="text-[#EEF3E8] text-[8px]">✓✓</Text>;
-      case "read":
-        return <Text className="text-[#1BC47D] text-[8px]">✓✓</Text>;
-      default:
-        return null;
-    }
-  };
+  const bubbleMaxWidth = Math.max(
+    BUBBLE_MIN_WIDTH,
+    Dimensions.get("window").width * 0.85 - 52
+  );
 
   return (
     <Animated.View
@@ -113,14 +114,14 @@ const ChatBubble = ({
         {!isMe && (
           <Animated.Image
             entering={FadeInDown.delay(100)}
-            source={{ uri: avatar }}
-            className="w-8 h-8 rounded-full mr-2"
+            source={{ uri: SUPPORT_AGENT_AVATAR }}
+            className="w-8 h-8 rounded-full mr-2 shrink-0"
           />
         )}
 
         <Swipeable
           renderRightActions={
-            isMe
+            isMe && onDelete
               ? () => (
                   <AnimatedPressable
                     onPress={onDelete}
@@ -136,184 +137,159 @@ const ChatBubble = ({
           <AnimatedPressable
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            style={[animatedStyle]}
-            className={`max-w-[75%] ${type === "image" ? "p-1" : "px-4 py-3"} rounded-[18px] ${
-              isMe
-                ? "bg-[#98A08C] rounded-br-[6px]"
-                : "bg-white rounded-bl-[6px] border border-[#ECECEC]"
-            }`}
-            style={{
-              shadowColor: "#000",
-              shadowOpacity: isMe ? 0.08 : 0.06,
-              shadowRadius: 6,
-              shadowOffset: { width: 0, height: 2 },
-              elevation: 2,
-            }}
+            style={[
+              animatedStyle,
+              {
+                maxWidth: bubbleMaxWidth,
+                alignSelf: isMe ? "flex-end" : "flex-start",
+              },
+            ]}
           >
-            {type === "image" && image ? (
-              <Animated.Image
-                source={{ uri: image }}
-                className="w-48 h-48 rounded-[12px]"
-                entering={FadeInDown.duration(400)}
-              />
-            ) : (
-              <Text
-                className={`text-[12px] leading-5 ${isMe ? "text-white" : "text-[#222222]"}`}
-              >
-                {message}
-              </Text>
-            )}
+            {/* Inner box owns min width + overflow so timestamp cannot paint outside the bubble */}
+            <View
+              style={{
+                minWidth: BUBBLE_MIN_WIDTH,
+                maxWidth: bubbleMaxWidth,
+                borderRadius: 18,
+                borderBottomRightRadius: isMe ? 6 : 18,
+                borderBottomLeftRadius: isMe ? 18 : 6,
+                paddingHorizontal: type === "image" ? 4 : 16,
+                paddingVertical: type === "image" ? 4 : 12,
+                backgroundColor: isMe ? "#98A08C" : "#FFFFFF",
+                borderWidth: isMe ? 0 : 1,
+                borderColor: "#ECECEC",
+                overflow: "hidden",
+                shadowColor: "#000",
+                shadowOpacity: isMe ? 0.08 : 0.06,
+                shadowRadius: 6,
+                shadowOffset: { width: 0, height: 2 },
+                elevation: 2,
+              }}
+            >
+              {type === "image" && image ? (
+                <Animated.Image
+                  source={{ uri: image }}
+                  className="w-48 h-48 rounded-[12px]"
+                  entering={FadeInDown.duration(400)}
+                />
+              ) : (
+                <Text
+                  className={`text-[12px] leading-5 ${isMe ? "text-white" : "text-[#222222]"}`}
+                >
+                  {message}
+                </Text>
+              )}
 
-            <View className="flex-row items-center justify-end mt-1 space-x-1">
-              <Text
-                className={`text-[10px] ${isMe ? "text-[#EEF3E8]" : "text-[#8E8E8E]"}`}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  alignSelf: "stretch",
+                  marginTop: 6,
+                  flexWrap: "nowrap",
+                }}
               >
-                {time}
-              </Text>
-              {isMe && <View className="ml-1">{getStatusIcon()}</View>}
+                <Text
+                  style={{
+                    fontSize: 10,
+                    lineHeight: 13,
+                    flexShrink: 0,
+                    color: isMe ? "#EEF3E8" : "#8E8E8E",
+                    textAlign: "right",
+                  }}
+                >
+                  {time}
+                </Text>
+              </View>
             </View>
           </AnimatedPressable>
         </Swipeable>
+
+        {isMe ? (
+          <Animated.Image
+            entering={FadeInDown.delay(100)}
+            source={{ uri: myAvatarUri }}
+            className="w-8 h-8 rounded-full ml-2 shrink-0"
+          />
+        ) : null}
       </View>
     </Animated.View>
   );
 };
 
-const TypingIndicator = () => {
-  const dot1 = useSharedValue(0);
-  const dot2 = useSharedValue(0);
-  const dot3 = useSharedValue(0);
+const IMAGE_FALLBACK =
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400";
 
-  useEffect(() => {
-    dot1.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 400 }),
-        withTiming(0, { duration: 400 }),
-      ),
-      -1,
-      true,
-    );
-
-    dot2.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 400, delay: 200 }),
-        withTiming(0, { duration: 400 }),
-      ),
-      -1,
-      true,
-    );
-
-    dot3.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 400, delay: 400 }),
-        withTiming(0, { duration: 400 }),
-      ),
-      -1,
-      true,
-    );
-  }, []);
-
-  const dot1Style = useAnimatedStyle(() => ({
-    opacity: dot1.value,
-    transform: [{ translateY: interpolate(dot1.value, [0, 1], [0, -5]) }],
-  }));
-
-  const dot2Style = useAnimatedStyle(() => ({
-    opacity: dot2.value,
-    transform: [{ translateY: interpolate(dot2.value, [0, 1], [0, -5]) }],
-  }));
-
-  const dot3Style = useAnimatedStyle(() => ({
-    opacity: dot3.value,
-    transform: [{ translateY: interpolate(dot3.value, [0, 1], [0, -5]) }],
-  }));
-
-  return (
-    <View className="flex-row items-center space-x-1 px-4 py-3 bg-white rounded-[18px] rounded-bl-[6px] border border-[#ECECEC] max-w-[75%]">
-      <Animated.View
-        style={dot1Style}
-        className="w-2 h-2 bg-[#98A08C] rounded-full"
-      />
-      <Animated.View
-        style={dot2Style}
-        className="w-2 h-2 bg-[#98A08C] rounded-full"
-      />
-      <Animated.View
-        style={dot3Style}
-        className="w-2 h-2 bg-[#98A08C] rounded-full"
-      />
-    </View>
-  );
-};
+function mapSupportToUiMessage(m: SupportApiMessage): Message {
+  const hasImage = Boolean(m.imageUrl);
+  const textBody = (m.body || "").trim();
+  const displayText =
+    hasImage && !textBody ? "" : textBody || (m.text === "[Image]" ? "" : m.text || "");
+  return {
+    id: m.id,
+    text: displayText,
+    time: m.time,
+    isMe: m.from === "user",
+    type: hasImage ? "image" : "text",
+    image: hasImage ? resolveRecipeImageUrl(m.imageUrl, IMAGE_FALLBACK) : undefined,
+  };
+}
 
 const AdminSupport = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Hello",
-      time: "3:00 pm",
-      isMe: true,
-      status: "read",
-      type: "text",
-    },
-    {
-      id: "2",
-      text: "How can we help you",
-      time: "3:01 pm",
-      isMe: false,
-      status: "read",
-      type: "text",
-    },
-    {
-      id: "3",
-      text: "I need a emergency appointment.......... are you available now.",
-      time: "3:01 pm",
-      isMe: true,
-      status: "read",
-      type: "text",
-    },
-    {
-      id: "4",
-      text: "Yes we are available for you , at first book an appointment and come ,",
-      time: "3:02 pm",
-      isMe: false,
-      status: "read",
-      type: "text",
-    },
-  ]);
-
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [loadingThread, setLoadingThread] = useState(true);
+  const [myAvatarUri, setMyAvatarUri] = useState(DEFAULT_USER_AVATAR);
   const [showImagePicker, setShowImagePicker] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const inputRef = useRef<TextInput>(null);
   const headerScale = useSharedValue(1);
 
-  useEffect(() => {
-    // Simulate admin typing
-    const typingTimer = setTimeout(() => {
-      setIsTyping(true);
-
-      setTimeout(() => {
-        setIsTyping(false);
-        const autoReply: Message = {
-          id: Date.now().toString(),
-          text: "Is there anything else I can help you with?",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          isMe: false,
-          status: "sent",
-          type: "text",
-        };
-        setMessages((prev) => [...prev, autoReply]);
-        scrollToBottom();
-      }, 3000);
-    }, 5000);
-
-    return () => clearTimeout(typingTimer);
+  const loadThread = useCallback(async (showFullSpinner: boolean) => {
+    if (showFullSpinner) setLoadingThread(true);
+    try {
+      const data = await supportService.getThread();
+      setMessages((data.messages || []).map(mapSupportToUiMessage));
+    } catch {
+      Alert.alert("Error", "Could not load your support conversation.");
+    } finally {
+      if (showFullSpinner) setLoadingThread(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      void SecureStore.getItemAsync("userData")
+        .then((raw) => {
+          if (!raw || !active) return;
+          try {
+            const u = JSON.parse(raw) as Record<string, unknown>;
+            const pic =
+              (typeof u.avatar === "string" && u.avatar) ||
+              (typeof u.profileImage === "string" && u.profileImage) ||
+              (typeof u.photo === "string" && u.photo) ||
+              "";
+            if (pic.trim()) {
+              setMyAvatarUri(resolveRecipeImageUrl(pic.trim(), DEFAULT_USER_AVATAR));
+            }
+          } catch {
+            /* keep default */
+          }
+        })
+        .catch(() => {});
+      void supportService.markThreadRead().catch(() => {});
+      void loadThread(true);
+      const interval = setInterval(() => {
+        if (active) void loadThread(false);
+      }, 12000);
+      return () => {
+        active = false;
+        clearInterval(interval);
+      };
+    }, [loadThread])
+  );
 
   const scrollToBottom = (animated = true) => {
     setTimeout(() => {
@@ -322,48 +298,45 @@ const AdminSupport = () => {
   };
 
   const handleSend = async () => {
-    if (inputText.trim() === "") return;
+    if (!inputText.trim()) return;
+    try {
+      const sent = await supportService.sendText(inputText.trim());
+      setMessages((prev) => [...prev, mapSupportToUiMessage(sent)]);
+      setInputText("");
+      scrollToBottom();
+      void loadThread(false);
+    } catch {
+      Alert.alert("Error", "Could not send your message. Please try again.");
+    }
+  };
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text: inputText.trim(),
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      isMe: true,
-      status: "sending",
-      type: "text",
-    };
+  const guessMime = (uri: string) => {
+    const lower = uri.toLowerCase();
+    if (lower.endsWith(".png")) return "image/png";
+    if (lower.endsWith(".webp")) return "image/webp";
+    if (lower.endsWith(".gif")) return "image/gif";
+    return "image/jpeg";
+  };
 
-    setMessages((prev) => [...prev, newMessage]);
-    setInputText("");
-    scrollToBottom();
-
-    // Simulate sending
-    setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === newMessage.id ? { ...msg, status: "sent" } : msg,
-        ),
-      );
-    }, 1000);
-
-    setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === newMessage.id ? { ...msg, status: "delivered" } : msg,
-        ),
-      );
-    }, 2000);
-
-    setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === newMessage.id ? { ...msg, status: "read" } : msg,
-        ),
-      );
-    }, 3000);
+  const uploadSupportImage = async (asset: ImagePicker.ImagePickerAsset) => {
+    const uri = asset.uri;
+    const filename =
+      uri.split("/").pop()?.split("?")[0] || `support-${Date.now()}.jpg`;
+    const mimeType = asset.mimeType || guessMime(uri);
+    try {
+      const sent = await supportService.sendWithImage({
+        body: inputText.trim(),
+        uri,
+        mimeType,
+        filename,
+      });
+      setMessages((prev) => [...prev, mapSupportToUiMessage(sent)]);
+      setInputText("");
+      scrollToBottom();
+      void loadThread(false);
+    } catch {
+      Alert.alert("Error", "Could not send the image. Please try again.");
+    }
   };
 
   const pickImage = async () => {
@@ -382,36 +355,12 @@ const AdminSupport = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.8,
-      base64: true,
     });
 
     setShowImagePicker(false);
 
     if (!result.canceled && result.assets[0]) {
-      const imageMessage: Message = {
-        id: Date.now().toString(),
-        text: "",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isMe: true,
-        status: "sending",
-        type: "image",
-        image: result.assets[0].uri,
-      };
-
-      setMessages((prev) => [...prev, imageMessage]);
-      scrollToBottom();
-
-      // Simulate image upload
-      setTimeout(() => {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === imageMessage.id ? { ...msg, status: "sent" } : msg,
-          ),
-        );
-      }, 1500);
+      await uploadSupportImage(result.assets[0]);
     }
   };
 
@@ -434,48 +383,8 @@ const AdminSupport = () => {
     setShowImagePicker(false);
 
     if (!result.canceled && result.assets[0]) {
-      const imageMessage: Message = {
-        id: Date.now().toString(),
-        text: "",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isMe: true,
-        status: "sending",
-        type: "image",
-        image: result.assets[0].uri,
-      };
-
-      setMessages((prev) => [...prev, imageMessage]);
-      scrollToBottom();
-
-      // Simulate image upload
-      setTimeout(() => {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === imageMessage.id ? { ...msg, status: "sent" } : msg,
-          ),
-        );
-      }, 1500);
+      await uploadSupportImage(result.assets[0]);
     }
-  };
-
-  const deleteMessage = (messageId: string) => {
-    Alert.alert(
-      "Delete Message",
-      "Are you sure you want to delete this message?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          onPress: () => {
-            setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
-          },
-          style: "destructive",
-        },
-      ],
-    );
   };
 
   const headerAnimatedStyle = useAnimatedStyle(() => ({
@@ -511,13 +420,13 @@ const AdminSupport = () => {
 
               <Animated.Image
                 entering={FadeInDown.delay(200).springify()}
-                source={{ uri: avatar }}
+                source={{ uri: SUPPORT_AGENT_AVATAR }}
                 className="w-10 h-10 rounded-full mr-3"
               />
 
               <View>
                 <Text className="text-[15px] font-semibold text-[#111111]">
-                  Admin Maria
+                  Support Team
                 </Text>
                 <View className="flex-row items-center">
                   <View className="w-2 h-2 rounded-full bg-[#1BC47D]" />
@@ -537,30 +446,34 @@ const AdminSupport = () => {
             </Animated.Text>
 
             {/* Messages */}
-            <ScrollView
-              ref={scrollViewRef}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingHorizontal: 14,
-                paddingBottom: 20,
-              }}
-              onContentSizeChange={() => scrollToBottom()}
-            >
-              {messages.map((msg, index) => (
-                <ChatBubble
-                  key={msg.id}
-                  message={msg.text}
-                  time={msg.time}
-                  isMe={msg.isMe}
-                  status={msg.status}
-                  type={msg.type}
-                  image={msg.image}
-                  onDelete={() => deleteMessage(msg.id)}
-                />
-              ))}
-
-              {isTyping && <TypingIndicator />}
-            </ScrollView>
+            {loadingThread ? (
+              <View className="flex-1 items-center justify-center py-20">
+                <ActivityIndicator size="large" color="#98A08C" />
+                <Text className="text-[13px] text-[#888] mt-3">Loading conversation…</Text>
+              </View>
+            ) : (
+              <ScrollView
+                ref={scrollViewRef}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 14,
+                  paddingBottom: 20,
+                }}
+                onContentSizeChange={() => scrollToBottom()}
+              >
+                {messages.map((msg) => (
+                  <ChatBubble
+                    key={msg.id}
+                    message={msg.text}
+                    time={msg.time}
+                    isMe={msg.isMe}
+                    type={msg.type}
+                    image={msg.image}
+                    myAvatarUri={myAvatarUri}
+                  />
+                ))}
+              </ScrollView>
+            )}
 
             {/* Input area */}
             <Animated.View entering={FadeInUp} className="px-4 pb-4">
