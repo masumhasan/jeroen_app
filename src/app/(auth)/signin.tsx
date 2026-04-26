@@ -135,7 +135,7 @@ const Signin = () => {
 
     try {
       await authService.signin({ email, password });
-      router.replace("/home");
+      router.replace("/community");
     } catch (error: any) {
       Alert.alert("Login Error", error.response?.data?.message || "Invalid email or password");
     } finally {

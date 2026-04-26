@@ -2,7 +2,7 @@ import { Fonts } from "@/assets/fonts/fonts";
 import {
   community,
   cookbook,
-  home,
+  mealplans,
   profile,
   progress,
 } from "@/assets/icons/icons";
@@ -31,8 +31,8 @@ export default function Layout() {
   }
 
   const icons: any = {
-    home,
     community,
+    home: mealplans,
     cookbook,
     progress,
     profile,
@@ -42,6 +42,7 @@ export default function Layout() {
     <SafeAreaView edges={["top"]} className="flex-1 bg-[#FFFFFF]">
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <Tabs
+        initialRouteName="community"
         screenOptions={({ route }) => ({
           headerShown: false,
 
@@ -81,13 +82,20 @@ export default function Layout() {
                 fontWeight: focused ? "700" : "400",
               }}
             >
-              {route.name.charAt(0).toUpperCase() + route.name.slice(1)}
+              {route.name === "home"
+                ? "Meal Plans"
+                : route.name.charAt(0).toUpperCase() + route.name.slice(1)}
             </Text>
           ),
         })}
       >
-        <Tabs.Screen name="home" />
         <Tabs.Screen name="community" />
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: "Meal Plans",
+          }}
+        />
         <Tabs.Screen name="cookbook" />
         <Tabs.Screen name="progress" />
         <Tabs.Screen name="profile" />

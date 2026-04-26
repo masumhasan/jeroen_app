@@ -59,7 +59,7 @@ const FinalPage = () => {
         recommendedCarbs: editableData.carbs,
         recommendedFat: editableData.fat
       });
-      router.push("/home");
+      router.push("/community");
     } catch (error) {
       console.error("Error saving recommendations:", error);
     } finally {
