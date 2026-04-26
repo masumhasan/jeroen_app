@@ -12,39 +12,58 @@ import {
   View,
 } from "react-native";
 
-export default function PostCard({ post }: any) {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(post.likes);
-  const [commentsCount, setCommentsCount] = useState(post.comments);
+export default function PostCard({
+  post,
+  onToggleLike,
+  onAddComment,
+}: {
+  post: any;
+  onToggleLike?: (postId: string) => Promise<{ likedByMe: boolean; likeCount: number } | void>;
+  onAddComment?: (postId: string, content: string) => Promise<{ commentCount: number } | void>;
+}) {
+  const [isLiked, setIsLiked] = useState(Boolean(post.likedByMe));
+  const [likesCount, setLikesCount] = useState(Number(post.likeCount || 0));
+  const [commentsCount, setCommentsCount] = useState(Number(post.commentCount || 0));
   const [isCommentsVisible, setIsCommentsVisible] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<any[]>([]);
 
-  const handleLike = () => {
-    if (isLiked) {
-      setLikesCount(likesCount - 1);
-    } else {
-      setLikesCount(likesCount + 1);
+  const handleLike = async () => {
+    if (!onToggleLike) return;
+    try {
+      const data = await onToggleLike(post.id);
+      if (data) {
+        setIsLiked(Boolean(data.likedByMe));
+        setLikesCount(Number(data.likeCount || 0));
+      }
+    } catch {
+      // no-op
     }
-    setIsLiked(!isLiked);
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (!commentText.trim()) {
       Alert.alert("Error", "Please write a comment");
       return;
     }
-
-    const newComment = {
-      id: Date.now().toString(),
-      text: commentText,
-      user: "You",
-      time: "Just now",
-    };
-
-    setComments([...comments, newComment]);
-    setCommentsCount(commentsCount + 1);
-    setCommentText("");
+    try {
+      if (onAddComment) {
+        const data = await onAddComment(post.id, commentText.trim());
+        if (data) setCommentsCount(Number(data.commentCount || commentsCount + 1));
+      } else {
+        setCommentsCount(commentsCount + 1);
+      }
+      const newComment = {
+        id: Date.now().toString(),
+        text: commentText,
+        user: "You",
+        time: "Just now",
+      };
+      setComments([...comments, newComment]);
+      setCommentText("");
+    } catch {
+      Alert.alert("Error", "Failed to add comment");
+    }
   };
 
   const CommentsModal = ({
@@ -125,14 +144,14 @@ export default function PostCard({ post }: any) {
   return (
     <>
       <TouchableOpacity
-        onPress={() => router.push("/detalspost")}
+        onPress={() => router.push({ pathname: "/detalspost", params: { postId: post.id } })}
         className="bg-white mx-4 mb-4 rounded-2xl border border-gray-200 overflow-hidden"
         activeOpacity={0.7}
       >
         {/* user info */}
         <View className="flex-row items-center p-3">
           <Image
-            source={{ uri: "https://i.pravatar.cc/100" }}
+            source={{ uri: post.userAvatar || "https://i.pravatar.cc/100" }}
             className="w-9 h-9 rounded-full mr-2"
           />
 
@@ -149,7 +168,7 @@ export default function PostCard({ post }: any) {
         <Text className="px-3 pb-3 text-sm text-gray-700">{post.text}</Text>
 
         {/* image */}
-        <Image source={{ uri: post.image }} className="w-full h-56" />
+        {post.image ? <Image source={{ uri: post.image }} className="w-full h-56" /> : null}
 
         {/* actions */}
         <View className="flex-row items-center p-3">

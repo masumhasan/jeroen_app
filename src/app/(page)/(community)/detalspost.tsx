@@ -1,9 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Animated,
-  Dimensions,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -14,21 +16,19 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const { width } = Dimensions.get("window");
+import { communityService } from "../../../services/communityService";
+import { resolveRecipeImageUrl } from "../../../utils/imageUrl";
 
 // Types
 interface Comment {
   id: string;
   name: string;
-  avatar: string;
   content: string;
   timestamp: string;
-  likes: number;
-  isLiked?: boolean;
 }
 
 const PostDetailsScreen = () => {
+  const { postId } = useLocalSearchParams();
   // Animation values
   const scrollY = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -36,26 +36,14 @@ const PostDetailsScreen = () => {
 
   // State
   const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(42);
+  const [likeCount, setLikeCount] = useState(0);
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-      content: "Looks amazing! What containers are you using?",
-      timestamp: "3h ago",
-      likes: 5,
-    },
-    {
-      id: "2",
-      name: "Alex Rodriguez",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-      content: "Great job! Can you share the recipes?",
-      timestamp: "2h ago",
-      likes: 3,
-    },
-  ]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [post, setPost] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState("");
+  const [updatingPost, setUpdatingPost] = useState(false);
 
   // Animations
   React.useEffect(() => {
@@ -71,6 +59,30 @@ const PostDetailsScreen = () => {
         useNativeDriver: true,
       }),
     ]).start();
+    const load = async () => {
+      if (!postId) return;
+      try {
+        setLoading(true);
+        const data = await communityService.getPostDetails(String(postId));
+        setPost(data.post);
+        setEditContent(String(data.post?.content || ""));
+        setIsLiked(Boolean(data.post?.likedByMe));
+        setLikeCount(Number(data.post?.likeCount || 0));
+        setComments(
+          (data.comments || []).map((c: any) => ({
+            id: c.id,
+            name: c.user?.fullName || "User",
+            content: c.content,
+            timestamp: new Date(c.createdAt).toLocaleString(),
+          }))
+        );
+      } catch (error) {
+        console.error("Failed to load post details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    void load();
   }, []);
 
   // Header animation
@@ -81,24 +93,71 @@ const PostDetailsScreen = () => {
   });
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    if (!post?.id) return;
+    void communityService.toggleLike(post.id).then((data) => {
+      setIsLiked(Boolean(data.likedByMe));
+      setLikeCount(Number(data.likeCount || 0));
+    });
+  };
+
+  const handleSavePostEdit = async () => {
+    if (!post?.id) return;
+    const content = editContent.trim();
+    if (!content) {
+      Alert.alert("Error", "Post content cannot be empty.");
+      return;
+    }
+    try {
+      setUpdatingPost(true);
+      const updated = await communityService.updatePost(post.id, content);
+      setPost(updated);
+      setEditContent(updated.content || content);
+      setIsEditing(false);
+    } catch (error: any) {
+      Alert.alert(
+        "Edit failed",
+        error?.response?.data?.message || "Could not update this post."
+      );
+    } finally {
+      setUpdatingPost(false);
+    }
+  };
+
+  const handleDeletePost = () => {
+    if (!post?.id) return;
+    Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await communityService.deletePost(post.id);
+            router.back();
+          } catch (error: any) {
+            Alert.alert(
+              "Delete failed",
+              error?.response?.data?.message || "Could not delete this post."
+            );
+          }
+        },
+      },
+    ]);
   };
 
   const handleAddComment = () => {
     if (!commentText.trim()) return;
-
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      name: "You",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-      content: commentText,
-      timestamp: "Just now",
-      likes: 0,
-    };
-
-    setComments([newComment, ...comments]);
-    setCommentText("");
+    if (!post?.id) return;
+    void communityService.addComment(post.id, commentText.trim()).then((data) => {
+      const newComment: Comment = {
+        id: data.comment.id,
+        name: data.comment?.user?.fullName || "You",
+        content: data.comment.content,
+        timestamp: new Date(data.comment.createdAt).toLocaleString(),
+      };
+      setComments([newComment, ...comments]);
+      setCommentText("");
+    });
   };
 
   const renderComment = ({ item }: { item: Comment }) => (
@@ -110,7 +169,7 @@ const PostDetailsScreen = () => {
         transform: [{ translateY: slideAnim }],
       }}
     >
-      <Image source={{ uri: item.avatar }} className="w-9 h-9 rounded-full" />
+      <Image source={{ uri: "https://i.pravatar.cc/100" }} className="w-9 h-9 rounded-full" />
 
       <View className="ml-3 flex-1">
         <View className="bg-[#F8F9FA] p-3 rounded-2xl">
@@ -124,11 +183,7 @@ const PostDetailsScreen = () => {
           <Text className="text-[#8A8A8A] text-[11px] font-medium">
             {item.timestamp}
           </Text>
-          <TouchableOpacity>
-            <Text className="text-[#8A8A8A] text-[11px] font-medium">
-              Like ({item.likes})
-            </Text>
-          </TouchableOpacity>
+          <TouchableOpacity><Text className="text-[#8A8A8A] text-[11px] font-medium">Like</Text></TouchableOpacity>
           <TouchableOpacity>
             <Text className="text-[#8A8A8A] text-[11px] font-medium">
               Reply
@@ -141,6 +196,12 @@ const PostDetailsScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      {loading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator color="#89957F" />
+        </View>
+      ) : (
+      <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       <KeyboardAvoidingView
@@ -165,7 +226,26 @@ const PostDetailsScreen = () => {
             Post Details
           </Text>
 
-          <View className="w-10" />
+          {post?.isAuthor ? (
+            <View className="flex-row items-center gap-2">
+              <TouchableOpacity
+                onPress={() => setIsEditing((prev) => !prev)}
+                className="px-2 py-1 rounded-md bg-[#F3F5F1]"
+              >
+                <Text className="text-[12px] text-[#6E7B62] font-semibold">
+                  {isEditing ? "Cancel" : "Edit"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleDeletePost}
+                className="px-2 py-1 rounded-md bg-[#FFF1F1]"
+              >
+                <Text className="text-[12px] text-[#D05050] font-semibold">Delete</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View className="w-10" />
+          )}
         </Animated.View>
 
         <Animated.ScrollView
@@ -197,7 +277,7 @@ const PostDetailsScreen = () => {
               <View className="ml-3 flex-1">
                 <View className="flex-row items-center justify-between">
                   <Text className="text-[16px] font-semibold text-[#1A1E2B]">
-                    Sarah Johnson
+                    {post?.user?.fullName || "User"}
                   </Text>
                   {/* <TouchableOpacity activeOpacity={0.7}>
                     <Ionicons
@@ -209,33 +289,52 @@ const PostDetailsScreen = () => {
                 </View>
                 <View className="flex-row items-center mt-1">
                   <View className="bg-[#E8F3ED] px-2 py-1 rounded-full">
-                    <Text className="text-[10px] font-medium text-[#4A7C59]">
-                      Healthy Recipes
-                    </Text>
+                    <Text className="text-[10px] font-medium text-[#4A7C59]">{post?.topic?.name || "Topic"}</Text>
                   </View>
-                  <Text className="text-[11px] text-[#8A8A8A] ml-2">
-                    2h ago
-                  </Text>
+                  <Text className="text-[11px] text-[#8A8A8A] ml-2">{post?.createdAt ? new Date(post.createdAt).toLocaleString() : ""}</Text>
                 </View>
               </View>
             </View>
 
             {/* Post Text */}
-            <Text className="text-[15px] text-[#4A5568] mt-4 leading-6">
-              Just tried this amazing quinoa bowl recipe! Perfect for meal prep
-              🥗
-            </Text>
+            {isEditing ? (
+              <View className="mt-4">
+                <TextInput
+                  value={editContent}
+                  onChangeText={setEditContent}
+                  multiline
+                  className="bg-white border border-[#E2E2E2] rounded-2xl p-4 h-[120px] text-[14px]"
+                />
+                <TouchableOpacity
+                  onPress={handleSavePostEdit}
+                  disabled={updatingPost}
+                  className={`mt-3 self-end px-4 py-2 rounded-lg ${
+                    updatingPost ? "bg-[#A0A89B]" : "bg-[#7E8B73]"
+                  }`}
+                >
+                  {updatingPost ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Text className="text-white font-semibold">Save</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text className="text-[15px] text-[#4A5568] mt-4 leading-6">
+                {post?.content}
+              </Text>
+            )}
 
             {/* Post Image */}
-            <View className="mt-4 rounded-2xl overflow-hidden">
+            {post?.image ? <View className="mt-4 rounded-2xl overflow-hidden">
               <Image
                 source={{
-                  uri: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+                  uri: resolveRecipeImageUrl(post.image, "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"),
                 }}
                 className="w-full h-[260px]"
                 resizeMode="cover"
               />
-            </View>
+            </View> : null}
 
             {/* Like / Comment Stats */}
             <View className="flex-row items-center justify-between mt-4">
@@ -334,6 +433,8 @@ const PostDetailsScreen = () => {
           </View>
         </Animated.View>
       </KeyboardAvoidingView>
+      </>
+      )}
     </SafeAreaView>
   );
 };

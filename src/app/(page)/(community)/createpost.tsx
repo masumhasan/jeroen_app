@@ -1,7 +1,7 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -15,31 +15,36 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { communityService } from "../../../services/communityService";
 
-const topics = [
-  "Healthy Recipes",
-  "Weekly Meal Plans",
-  "Fitness Nutrition",
-  "Meal Prep Ideas",
-  "Weight Loss",
-  "Muscle Building",
-  "Vegetarian",
-  "Vegan",
-  "Keto",
-  "Gluten-Free",
-];
-
-const CreatePost = ({ navigation }: any) => {
+const CreatePost = () => {
+  const [topics, setTopics] = useState<any[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string>("");
   const [postContent, setPostContent] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isPosting, setIsPosting] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [loadingTopics, setLoadingTopics] = useState<boolean>(true);
 
   // Filter topics based on search
   const filteredTopics = topics.filter((topic) =>
-    topic.toLowerCase().includes(searchQuery.toLowerCase()),
+    topic.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  useEffect(() => {
+    const loadTopics = async () => {
+      try {
+        setLoadingTopics(true);
+        const data = await communityService.getTopics();
+        setTopics(data || []);
+      } catch (error) {
+        console.error("Failed to load topics:", error);
+      } finally {
+        setLoadingTopics(false);
+      }
+    };
+    void loadTopics();
+  }, []);
 
   // Request permissions for image picker
   const requestImagePickerPermission = async () => {
@@ -92,23 +97,16 @@ const CreatePost = ({ navigation }: any) => {
     setIsPosting(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Here you would typically send the post to your backend
-      const postData = {
-        topic: selectedTopic,
+      await communityService.createPost({
+        topicId: selectedTopic,
         content: postContent,
-        image: selectedImage,
-        timestamp: new Date().toISOString(),
-      };
-
-      console.log("Post created:", postData);
+        imageUri: selectedImage,
+      });
 
       Alert.alert("Success", "Your post has been created successfully!", [
         {
           text: "OK",
-          onPress: () => navigation?.goBack() || navigation?.navigate("Home"),
+          onPress: () => router.back(),
         },
       ]);
 
@@ -123,20 +121,6 @@ const CreatePost = ({ navigation }: any) => {
     }
   };
 
-  // Handle share meal plan
-  const handleShareMealPlan = () => {
-    Alert.alert("Share Meal Plan", "Would you like to share a meal plan?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Continue",
-        onPress: () => {
-          // Navigate to meal plan selection or creation
-          navigation?.navigate("MealPlans");
-        },
-      },
-    ]);
-  };
-
   // Handle cancel/go back
   const handleCancel = () => {
     if (postContent || selectedTopic || selectedImage) {
@@ -148,12 +132,12 @@ const CreatePost = ({ navigation }: any) => {
           {
             text: "Discard",
             style: "destructive",
-            onPress: () => navigation?.goBack(),
+            onPress: () => router.back(),
           },
         ],
       );
     } else {
-      navigation?.goBack();
+      router.back();
     }
   };
 
@@ -167,7 +151,7 @@ const CreatePost = ({ navigation }: any) => {
           {/* Header */}
           <View className="flex-row items-center justify-between mb-6">
             <TouchableOpacity
-              onPress={() => router.back()}
+              onPress={handleCancel}
               className="w-10 h-10 rounded-full bg-[#EDEDED] items-center justify-center"
             >
               <Ionicons name="arrow-back" size={20} color="#333" />
@@ -214,22 +198,26 @@ const CreatePost = ({ navigation }: any) => {
 
             {/* Topic Chips */}
             <View className="flex-row flex-wrap gap-3 mb-6">
-              {filteredTopics.map((topic, index) => (
+              {loadingTopics ? (
+                <View className="w-full py-6 items-center">
+                  <ActivityIndicator color="#7E8B73" />
+                </View>
+              ) : filteredTopics.map((topic, index) => (
                 <TouchableOpacity
-                  key={index}
-                  onPress={() => setSelectedTopic(topic)}
+                  key={topic.id || index}
+                  onPress={() => setSelectedTopic(topic.id)}
                   className={`px-4 py-2 rounded-full border ${
-                    selectedTopic === topic
+                    selectedTopic === topic.id
                       ? "bg-[#7E8B73] border-[#7E8B73]"
                       : "border-[#D6D6D6]"
                   }`}
                 >
                   <Text
                     className={`text-[13px] ${
-                      selectedTopic === topic ? "text-white" : "text-[#555]"
+                      selectedTopic === topic.id ? "text-white" : "text-[#555]"
                     }`}
                   >
-                    {topic}
+                    {topic.name}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -284,14 +272,21 @@ const CreatePost = ({ navigation }: any) => {
                 </Text>
               </TouchableOpacity>
 
-              {/* Share Meal Plan */}
+              {/* Post */}
               <TouchableOpacity
-                onPress={handleShareMealPlan}
-                className="flex-row items-center border border-[#E0C97A] rounded-xl px-5 py-4 w-[48%] justify-center"
+                onPress={handlePost}
+                disabled={isPosting}
+                className={`flex-row items-center rounded-xl px-5 py-4 w-[48%] justify-center ${
+                  isPosting ? "bg-[#A0A89B]" : "bg-[#7E8B73]"
+                }`}
               >
-                <Feather name="share-2" size={18} color="#B89B3C" />
-                <Text className="ml-2 text-[#B89B3C] font-medium">
-                  Share Meal Plan
+                {isPosting ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Feather name="send" size={18} color="#FFFFFF" />
+                )}
+                <Text className="ml-2 text-[#FFFFFF] font-medium">
+                  Post
                 </Text>
               </TouchableOpacity>
             </View>

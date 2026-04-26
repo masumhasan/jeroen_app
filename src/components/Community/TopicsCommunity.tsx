@@ -1,39 +1,21 @@
 import React from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
-const DATA = [
-  {
-    id: "1",
-    title: "Healthy Recipes",
-    followers: "2,453 followers",
-    following: true,
-    color: "#7E8B77",
-  },
-  {
-    id: "2",
-    title: "Weekly Meal Plans",
-    followers: "1,892 followers",
-    following: true,
-    color: "#D8CF8E",
-  },
-  {
-    id: "3",
-    title: "Fitness Nutrition",
-    followers: "3,201 followers",
-    following: false,
-    color: "#9C8F82",
-  },
-  {
-    id: "4",
-    title: "Meal Prep Ideas",
-    followers: "1,576 followers",
-    following: false,
-    color: "#D87C5A",
-  },
-];
+interface TopicItem {
+  id: string;
+  name: string;
+  followerCount: number;
+  following: boolean;
+  color?: string;
+}
 
-const TopicsCommunity = () => {
-  const renderItem = ({ item }) => {
+interface TopicsCommunityProps {
+  topics: TopicItem[];
+  onToggleFollow: (topicId: string) => void;
+}
+
+const TopicsCommunity = ({ topics, onToggleFollow }: TopicsCommunityProps) => {
+  const renderItem = ({ item }: { item: TopicItem }) => {
     return (
       <View className="bg-white border border-gray-200 rounded-xl px-4 py-3 flex-row items-center justify-between mb-3">
         {/* Left Section */}
@@ -47,15 +29,18 @@ const TopicsCommunity = () => {
           {/* Text */}
           <View>
             <Text className="text-[15px] font-semibold text-gray-800">
-              {item.title}
+              {item.name}
             </Text>
-            <Text className="text-xs text-gray-400 mt-1">{item.followers}</Text>
+            <Text className="text-xs text-gray-400 mt-1">
+              {(item.followerCount || 0).toLocaleString()} followers
+            </Text>
           </View>
         </View>
 
         {/* Follow Button */}
         <TouchableOpacity
           activeOpacity={0.8}
+          onPress={() => onToggleFollow(item.id)}
           className={`px-4 py-2 rounded-full ${
             item.following ? "bg-[#8A957F]" : "bg-gray-200"
           }`}
@@ -75,7 +60,7 @@ const TopicsCommunity = () => {
   return (
     <View className="flex-1 bg-[#FFFFFF] p-4">
       <FlatList
-        data={DATA}
+        data={topics}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
