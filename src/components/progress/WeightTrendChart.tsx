@@ -6,7 +6,15 @@ import Animated from "react-native-reanimated";
 
 const screenWidth = Dimensions.get("window").width;
 
-const WeightTrendChart = () => {
+type WeightTrendChartProps = {
+  labels: string[];
+  values: number[];
+};
+
+const WeightTrendChart = ({ labels, values }: WeightTrendChartProps) => {
+  const safeValues = values.length > 0 ? values : [0];
+  const safeLabels = labels.length > 0 ? labels : ["Week 1"];
+
   return (
     <Animated.View className="bg-[#FFFFFF] rounded-2xl p-4 mb-4 shadow-sm">
       <LinearGradient
@@ -18,10 +26,10 @@ const WeightTrendChart = () => {
 
         <LineChart
           data={{
-            labels: ["Week 1", "Week 3", "Week 5", "Week 8"],
+            labels: safeLabels,
             datasets: [
               {
-                data: [75, 74.3, 73.2, 72.7, 72.1, 71.8, 71.5],
+                data: safeValues,
               },
             ],
           }}

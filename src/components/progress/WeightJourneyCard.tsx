@@ -9,13 +9,20 @@ import Animated, {
 } from "react-native-reanimated";
 import ProgressBar from "./ProgressBar";
 
-const WeightJourneyCard = () => {
-  const progress = 0.7; // 70% to goal
-  const startWeight = 75;
-  const currentWeight = 71.5;
-  const targetWeight = 70;
-  const weightLost = (startWeight - currentWeight).toFixed(1);
-  const remainingToLose = (currentWeight - targetWeight).toFixed(1);
+type WeightJourneyCardProps = {
+  startWeight: number;
+  currentWeight: number;
+  targetWeight: number;
+  progress: number;
+};
+
+const WeightJourneyCard = ({
+  startWeight,
+  currentWeight,
+  targetWeight,
+  progress,
+}: WeightJourneyCardProps) => {
+  const remainingToLose = Math.max(currentWeight - targetWeight, 0).toFixed(1);
 
   const cardScale = useSharedValue(1);
   const weightPulse = useSharedValue(1);
