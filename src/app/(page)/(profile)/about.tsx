@@ -1,10 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { contentService } from "../../../services/contentService";
-import { htmlToPlainText } from "../../../utils/contentFormatter";
+import RichContentViewer from "../../../components/profile/RichContentViewer";
 
 const About = () => {
   const [content, setContent] = useState("");
@@ -19,7 +19,7 @@ const About = () => {
         setError("");
         const response = await contentService.getByType("about-us");
         if (isMounted) {
-          setContent(htmlToPlainText(response.content));
+          setContent(response.content);
         }
       } catch {
         if (isMounted) {
@@ -59,11 +59,13 @@ const About = () => {
             <ActivityIndicator size="small" color="#333" />
           </View>
         ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text className="text-[14px] text-[#333] leading-6">
-              {error || content}
-            </Text>
-          </ScrollView>
+          <>
+            {error ? (
+              <Text className="text-[14px] text-[#333] leading-6">{error}</Text>
+            ) : (
+              <RichContentViewer html={content} />
+            )}
+          </>
         )}
       </View>
     </SafeAreaView>

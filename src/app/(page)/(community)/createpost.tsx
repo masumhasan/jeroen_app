@@ -19,7 +19,7 @@ import { communityService } from "../../../services/communityService";
 
 const CreatePost = () => {
   const [topics, setTopics] = useState<any[]>([]);
-  const [selectedTopic, setSelectedTopic] = useState<string>("");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [postContent, setPostContent] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isPosting, setIsPosting] = useState<boolean>(false);
@@ -76,7 +76,7 @@ const CreatePost = () => {
         setSelectedImage(result.assets[0].uri);
         Alert.alert("Success", "Image selected successfully");
       }
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to select image");
     }
   };
@@ -84,8 +84,8 @@ const CreatePost = () => {
   // Handle post submission
   const handlePost = async () => {
     // Validation
-    if (!selectedTopic) {
-      Alert.alert("Error", "Please select a topic");
+    if (selectedTopics.length === 0) {
+      Alert.alert("Error", "Please select at least one topic");
       return;
     }
 
@@ -98,7 +98,7 @@ const CreatePost = () => {
 
     try {
       await communityService.createPost({
-        topicId: selectedTopic,
+        topicIds: selectedTopics,
         content: postContent,
         imageUri: selectedImage,
       });
@@ -111,10 +111,10 @@ const CreatePost = () => {
       ]);
 
       // Reset form
-      setSelectedTopic("");
+      setSelectedTopics([]);
       setPostContent("");
       setSelectedImage(null);
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to create post. Please try again.");
     } finally {
       setIsPosting(false);
@@ -123,7 +123,7 @@ const CreatePost = () => {
 
   // Handle cancel/go back
   const handleCancel = () => {
-    if (postContent || selectedTopic || selectedImage) {
+    if (postContent || selectedTopics.length > 0 || selectedImage) {
       Alert.alert(
         "Discard Post",
         "You have unsaved changes. Are you sure you want to discard this post?",
@@ -205,16 +205,24 @@ const CreatePost = () => {
               ) : filteredTopics.map((topic, index) => (
                 <TouchableOpacity
                   key={topic.id || index}
-                  onPress={() => setSelectedTopic(topic.id)}
+                  onPress={() =>
+                    setSelectedTopics((prev) =>
+                      prev.includes(topic.id)
+                        ? prev.filter((id) => id !== topic.id)
+                        : [...prev, topic.id],
+                    )
+                  }
                   className={`px-4 py-2 rounded-full border ${
-                    selectedTopic === topic.id
+                    selectedTopics.includes(topic.id)
                       ? "bg-[#7E8B73] border-[#7E8B73]"
                       : "border-[#D6D6D6]"
                   }`}
                 >
                   <Text
                     className={`text-[13px] ${
-                      selectedTopic === topic.id ? "text-white" : "text-[#555]"
+                      selectedTopics.includes(topic.id)
+                        ? "text-white"
+                        : "text-[#555]"
                     }`}
                   >
                     {topic.name}

@@ -20,9 +20,9 @@ export const communityService = {
     return response.data.data.posts as any[];
   },
 
-  async createPost(payload: { topicId: string; content: string; imageUri?: string | null }) {
+  async createPost(payload: { topicIds: string[]; content: string; imageUri?: string | null }) {
     const formData = new FormData();
-    formData.append("topicId", payload.topicId);
+    formData.append("topicIds", JSON.stringify(payload.topicIds));
     formData.append("content", payload.content);
     if (payload.imageUri) {
       const filename = payload.imageUri.split("/").pop() || `post-${Date.now()}.jpg`;
