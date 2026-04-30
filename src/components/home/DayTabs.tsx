@@ -77,9 +77,17 @@ interface DayTabsProps {
   selectedDayIndex: number;
   onDayChange: (index: number) => void;
   weekStartDay?: string;
+  mealPlanStartDate?: string | null;
+  totalDays?: number;
 }
 
-export default function DayTabs({ selectedDayIndex, onDayChange, weekStartDay = "Monday" }: DayTabsProps) {
+export default function DayTabs({
+  selectedDayIndex,
+  onDayChange,
+  weekStartDay = "Monday",
+  mealPlanStartDate,
+  totalDays = 7,
+}: DayTabsProps) {
   const flatListRef = useRef<FlatList<DayItemType>>(null);
 
   const days = useMemo<DayItemType[]>(() => {
@@ -88,24 +96,31 @@ export default function DayTabs({ selectedDayIndex, onDayChange, weekStartDay = 
     const orderedDays = [...ALL_DAYS.slice(start), ...ALL_DAYS.slice(0, start)];
 
     const today = new Date();
-    const todayDayName = JS_DAY_TO_NAME[today.getDay()];
-    const todayOrderIdx = orderedDays.indexOf(todayDayName);
-    const offsetFromStart = todayOrderIdx >= 0 ? todayOrderIdx : 0;
+    let startDate: Date;
 
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - offsetFromStart);
+    if (mealPlanStartDate) {
+      startDate = new Date(mealPlanStartDate);
+    } else {
+      const todayDayName = JS_DAY_TO_NAME[today.getDay()];
+      const todayOrderIdx = orderedDays.indexOf(todayDayName);
+      const offsetFromStart = todayOrderIdx >= 0 ? todayOrderIdx : 0;
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - offsetFromStart);
+    }
 
-    return orderedDays.map((dayName, i) => {
+    const items: DayItemType[] = [];
+    for (let i = 0; i < totalDays; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
-      return {
+      items.push({
         id: i,
         day: date.toLocaleDateString("en-US", { weekday: "short" }),
         date: date.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
         isToday: today.toDateString() === date.toDateString(),
-      };
-    });
-  }, [weekStartDay]);
+      });
+    }
+    return items;
+  }, [weekStartDay, mealPlanStartDate, totalDays]);
 
   const handlePress = (index: number): void => {
     onDayChange(index);

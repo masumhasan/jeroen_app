@@ -1,6 +1,16 @@
 import api from './api';
 import * as SecureStore from 'expo-secure-store';
 
+interface MealPlanResponse {
+  plan: any[];
+  nextWeekPlan?: any[];
+  targetCalories: number;
+  weekStartDay?: string;
+  mealPlanStartDate?: string;
+  nextWeekStartDate?: string;
+  shoppingList: any[];
+}
+
 export const authService = {
   async checkSignupAvailability(payload: { email: string; phoneNumber: string }) {
     const response = await api.post("/auth/signup/check-availability", payload);
@@ -51,7 +61,7 @@ export const authService = {
     return response.data.data.user;
   },
 
-  async getMealPlan(): Promise<{ plan: any[]; targetCalories: number; weekStartDay?: string; shoppingList: any[] }> {
+  async getMealPlan(): Promise<MealPlanResponse> {
     const response = await api.get("/auth/meal-plan");
     return response.data.data;
   },
@@ -66,8 +76,13 @@ export const authService = {
     return response.data.data;
   },
 
-  async generateMealPlan(): Promise<{ plan: any[]; targetCalories: number; weekStartDay?: string; shoppingList: any[] }> {
+  async generateMealPlan(): Promise<MealPlanResponse> {
     const response = await api.post("/auth/meal-plan");
+    return response.data.data;
+  },
+
+  async generateNextWeekMealPlan(): Promise<MealPlanResponse> {
+    const response = await api.post("/auth/meal-plan", { nextWeek: true });
     return response.data.data;
   },
 
