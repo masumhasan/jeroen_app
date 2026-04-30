@@ -188,6 +188,22 @@ const profile = () => {
               </Text>
             </View>
           ))}
+
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() =>
+              router.push({
+                pathname: "/finalpage",
+                params: { returnTo: "profile" },
+              })
+            }
+            className="bg-[#F5F5F5] rounded-[16px] px-4 py-5 flex-row items-center justify-between"
+          >
+            <Text className="text-[15px] text-[#8E8E93]">
+              Customize Target Consumption
+            </Text>
+            <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
+          </TouchableOpacity>
         </View>
       </View>
 
