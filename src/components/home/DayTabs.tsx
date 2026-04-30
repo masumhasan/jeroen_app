@@ -1,6 +1,5 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useMemo, useRef } from "react";
 import {
-    Dimensions,
     FlatList,
     ListRenderItem,
     Text,
@@ -8,7 +7,6 @@ import {
     View,
 } from "react-native";
 
-// Define types for the day item
 interface DayItemType {
   id: number;
   day: string;
@@ -69,39 +67,45 @@ const DayItem = memo<DayItemProps>(
 
 DayItem.displayName = "DayItem";
 
+const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const JS_DAY_TO_NAME: Record<number, string> = {
+  0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday",
+  4: "Thursday", 5: "Friday", 6: "Saturday",
+};
+
 interface DayTabsProps {
   selectedDayIndex: number;
   onDayChange: (index: number) => void;
+  weekStartDay?: string;
 }
 
-export default function DayTabs({ selectedDayIndex, onDayChange }: DayTabsProps) {
+export default function DayTabs({ selectedDayIndex, onDayChange, weekStartDay = "Monday" }: DayTabsProps) {
   const flatListRef = useRef<FlatList<DayItemType>>(null);
-  
+
   const days = useMemo<DayItemType[]>(() => {
+    const startIdx = ALL_DAYS.indexOf(weekStartDay);
+    const start = startIdx >= 0 ? startIdx : 0;
+    const orderedDays = [...ALL_DAYS.slice(start), ...ALL_DAYS.slice(0, start)];
+
     const today = new Date();
-    // Get the Monday of the current week
-    const dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-    const monday = new Date(today.setDate(diff));
+    const todayDayName = JS_DAY_TO_NAME[today.getDay()];
+    const todayOrderIdx = orderedDays.indexOf(todayDayName);
+    const offsetFromStart = todayOrderIdx >= 0 ? todayOrderIdx : 0;
 
-    const daysArray: DayItemType[] = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - offsetFromStart);
 
-      daysArray.push({
+    return orderedDays.map((dayName, i) => {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      return {
         id: i,
         day: date.toLocaleDateString("en-US", { weekday: "short" }),
-        date: date.toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-        }),
-        isToday: new Date().toDateString() === date.toDateString(),
-      });
-    }
-
-    return daysArray;
-  }, []);
+        date: date.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+        isToday: today.toDateString() === date.toDateString(),
+      };
+    });
+  }, [weekStartDay]);
 
   const handlePress = (index: number): void => {
     onDayChange(index);

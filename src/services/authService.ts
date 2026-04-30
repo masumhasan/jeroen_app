@@ -51,7 +51,7 @@ export const authService = {
     return response.data.data.user;
   },
 
-  async getMealPlan(): Promise<{ plan: any[]; targetCalories: number; shoppingList: any[] }> {
+  async getMealPlan(): Promise<{ plan: any[]; targetCalories: number; weekStartDay?: string; shoppingList: any[] }> {
     const response = await api.get("/auth/meal-plan");
     return response.data.data;
   },
@@ -66,7 +66,7 @@ export const authService = {
     return response.data.data;
   },
 
-  async generateMealPlan(): Promise<{ plan: any[]; targetCalories: number; shoppingList: any[] }> {
+  async generateMealPlan(): Promise<{ plan: any[]; targetCalories: number; weekStartDay?: string; shoppingList: any[] }> {
     const response = await api.post("/auth/meal-plan");
     return response.data.data;
   },

@@ -8,14 +8,23 @@ import { Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Ale
 import { authService } from "../../services/authService";
 import { resolveRecipeImageUrl } from "@/src/utils/imageUrl";
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+function buildWeekDays(startDay: string) {
+  const idx = ALL_DAYS.indexOf(startDay);
+  const start = idx >= 0 ? idx : 0;
+  return [...ALL_DAYS.slice(start), ...ALL_DAYS.slice(0, start)];
+}
 
 export default function Home() {
   const [mealPlan, setMealPlan] = useState<any[]>([]);
   const [targetCalories, setTargetCalories] = useState(0);
+  const [weekStartDay, setWeekStartDay] = useState("Monday");
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
+
+  const orderedDays = buildWeekDays(weekStartDay);
 
   useEffect(() => {
     fetchMealPlan();
@@ -26,15 +35,15 @@ export default function Home() {
     try {
       let data = await authService.getMealPlan();
       if (!data.plan || data.plan.length === 0) {
-        // Generate if not exists
         data = await authService.generateMealPlan();
       }
       setMealPlan(data.plan);
       setTargetCalories(data.targetCalories);
-      
-      // Set initial day to today if possible
+      if (data.weekStartDay) setWeekStartDay(data.weekStartDay);
+
+      const days = buildWeekDays(data.weekStartDay || "Monday");
       const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-      const todayIdx = DAYS.indexOf(today);
+      const todayIdx = days.indexOf(today);
       if (todayIdx !== -1) {
         setSelectedDayIndex(todayIdx);
       }
@@ -51,6 +60,7 @@ export default function Home() {
       const data = await authService.generateMealPlan();
       setMealPlan(data.plan);
       setTargetCalories(data.targetCalories);
+      if (data.weekStartDay) setWeekStartDay(data.weekStartDay);
       Alert.alert("Success", "New meal plan generated successfully!");
     } catch (error) {
       Alert.alert("Error", "Failed to regenerate meal plan");
@@ -59,7 +69,7 @@ export default function Home() {
     }
   };
 
-  const currentDayData = mealPlan.find(d => d.day === DAYS[selectedDayIndex]);
+  const currentDayData = mealPlan.find(d => d.day === orderedDays[selectedDayIndex]);
   const meals = currentDayData?.meals || [];
 
   const fallbackImg =
@@ -93,7 +103,8 @@ export default function Home() {
         {/* Days */}
         <DayTabs 
           selectedDayIndex={selectedDayIndex} 
-          onDayChange={setSelectedDayIndex} 
+          onDayChange={setSelectedDayIndex}
+          weekStartDay={weekStartDay}
         />
 
         {/* Daily total */}
@@ -127,7 +138,7 @@ export default function Home() {
                 carbs={`${meal.recipe.nutrition?.khd || 0}g`}
                 fat={`${meal.recipe.nutrition?.vetten || 0}g`}
                 type={(meal.mealType || meal.type || "Meal").toUpperCase()}
-                day={currentDayData?.day || DAYS[selectedDayIndex]}
+                day={currentDayData?.day || orderedDays[selectedDayIndex]}
                 image={resolveRecipeImageUrl(
                   meal.recipe.recipeImage,
                   fallbackImg

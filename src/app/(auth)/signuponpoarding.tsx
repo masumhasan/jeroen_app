@@ -7,6 +7,7 @@ import { authService } from "../../services/authService";
 import {
   Alert,
   Dimensions,
+  FlatList,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -37,6 +38,7 @@ interface UserData {
   height: string;
   weight: string;
   activity: string;
+  weekStartDay: string;
   goal: string;
   dietarySelections: {
     dietary: string[];
@@ -102,11 +104,14 @@ const GENDER_OPTIONS = [
   { id: "other", label: "Other", icon: "person" as const },
 ];
 
+const WEEK_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
 const STEPS = [
-  { label: "Basic Info", percent: 20, icon: "person" },
-  { label: "Activity", percent: 40, icon: "fitness" },
-  { label: "Goals", percent: 60, icon: "flag" },
-  { label: "Dietary", percent: 80, icon: "restaurant" },
+  { label: "Basic Info", percent: 17, icon: "person" },
+  { label: "Activity", percent: 33, icon: "fitness" },
+  { label: "Week Start", percent: 50, icon: "calendar" },
+  { label: "Goals", percent: 67, icon: "flag" },
+  { label: "Dietary", percent: 83, icon: "restaurant" },
   { label: "Meal Plan", percent: 100, icon: "calendar" },
 ];
 
@@ -163,7 +168,7 @@ const ProgressHeader: React.FC<{ currentStep: number }> = ({ currentStep }) => {
 
       <View className="flex-row justify-between items-center mb-2">
         <Text className="text-[#98A08C] font-semibold text-sm">
-          Step {currentStep + 1} of 5
+          Step {currentStep + 1} of {STEPS.length}
         </Text>
         <Text className="text-[#89957F] font-bold text-sm">
           {STEPS[currentStep].percent}% Complete
@@ -427,6 +432,96 @@ const ContinueButton: React.FC<{
   );
 };
 
+// Week Day Picker (Apple-style scroll wheel)
+const ITEM_HEIGHT = 56;
+const VISIBLE_ITEMS = 5;
+const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
+
+const WeekDayPicker: React.FC<{
+  selected: string;
+  onSelect: (day: string) => void;
+}> = ({ selected, onSelect }) => {
+  const flatListRef = useRef<any>(null);
+  const [ready, setReady] = useState(false);
+
+  const initialIndex = WEEK_DAYS.indexOf(selected);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      flatListRef.current?.scrollToOffset({
+        offset: initialIndex * ITEM_HEIGHT,
+        animated: false,
+      });
+      setReady(true);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const onMomentumScrollEnd = (e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const idx = Math.round(y / ITEM_HEIGHT);
+    const clamped = Math.max(0, Math.min(idx, WEEK_DAYS.length - 1));
+    onSelect(WEEK_DAYS[clamped]);
+  };
+
+  const renderItem = ({ item, index }: { item: string; index: number }) => {
+    const isSelected = item === selected;
+    return (
+      <View style={{ height: ITEM_HEIGHT, justifyContent: "center", alignItems: "center" }}>
+        <Text
+          style={{
+            fontSize: isSelected ? 28 : 20,
+            fontWeight: isSelected ? "700" : "400",
+            color: isSelected ? TEXT_DARK : "#C0C0C0",
+          }}
+        >
+          {item}
+        </Text>
+      </View>
+    );
+  };
+
+  return (
+    <View style={{ height: PICKER_HEIGHT, width: "100%", opacity: ready ? 1 : 0 }}>
+      {/* Selection indicator lines */}
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: ITEM_HEIGHT * 2,
+          left: 32,
+          right: 32,
+          height: ITEM_HEIGHT,
+          borderTopWidth: 1,
+          borderBottomWidth: 1,
+          borderColor: "#D0D0D0",
+          zIndex: 10,
+        }}
+      />
+
+      <FlatList
+        ref={flatListRef}
+        data={WEEK_DAYS}
+        keyExtractor={(item) => item}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        snapToInterval={ITEM_HEIGHT}
+        decelerationRate="fast"
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        contentContainerStyle={{
+          paddingTop: ITEM_HEIGHT * 2,
+          paddingBottom: ITEM_HEIGHT * 2,
+        }}
+      />
+    </View>
+  );
+};
+
 // Validation Functions
 const validateBasicInfo = (data: UserData): Record<string, string> => {
   const errors: Record<string, string> = {};
@@ -463,6 +558,7 @@ const Signuponpoarding = () => {
     height: "",
     weight: "",
     activity: "",
+    weekStartDay: "Monday",
     goal: "",
     dietarySelections: {
       dietary: [],
@@ -490,14 +586,16 @@ const Signuponpoarding = () => {
       return;
     }
 
-    if (currentStep === 2 && !userData.goal) {
+    // Step 2 (Week Start) always has a default, no validation needed
+
+    if (currentStep === 3 && !userData.goal) {
       Alert.alert("Selection Required", "Please select your fitness goal");
       return;
     }
 
     setErrors({});
 
-    if (currentStep < 4) {
+    if (currentStep < STEPS.length - 1) {
       swiperRef.current?.scrollBy(1);
     } else {
       // Final submission
@@ -530,6 +628,7 @@ const Signuponpoarding = () => {
       if (!isNaN(weightNum)) signupData.weight = weightNum;
       
       if (userData.activity) signupData.activityLevel = userData.activity;
+      if (userData.weekStartDay) signupData.weekStartDay = userData.weekStartDay;
       if (userData.goal) signupData.goal = userData.goal;
       
       if (userData.dietarySelections.dietary.length > 0) {
@@ -699,7 +798,33 @@ const Signuponpoarding = () => {
             ))}
           </ScrollView>
 
-          {/* Step 3: Goals */}
+          {/* Step 3: Week Starts From */}
+          <View
+            style={{ flex: 1, backgroundColor: BG }}
+            className="px-5"
+          >
+            <Animated.Text
+              entering={FadeInDown.delay(100)}
+              className="text-3xl font-bold text-gray-800 mb-2 pt-4"
+            >
+              Week Starts From
+            </Animated.Text>
+            <Animated.Text
+              entering={FadeInDown.delay(200)}
+              className="text-gray-500 text-base mb-8"
+            >
+              Choose which day your meal plan week begins
+            </Animated.Text>
+
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <WeekDayPicker
+                selected={userData.weekStartDay}
+                onSelect={(day) => updateUserData("weekStartDay", day)}
+              />
+            </View>
+          </View>
+
+          {/* Step 4: Goals */}
           <ScrollView
             showsVerticalScrollIndicator={false}
             className="flex-1 px-5"
@@ -750,7 +875,7 @@ const Signuponpoarding = () => {
             </Animated.View>
           </ScrollView>
 
-          {/* Step 4: Dietary Process */}
+          {/* Step 5: Dietary Process */}
           <View style={{ flex: 1, backgroundColor: BG }}>
             <DitaryProcess
               value={userData.dietarySelections}
@@ -758,7 +883,7 @@ const Signuponpoarding = () => {
             />
           </View>
 
-          {/* Step 5: Meal Plan */}
+          {/* Step 6: Meal Plan */}
           <View style={{ flex: 1, backgroundColor: BG }}>
             <MeelPlan
               value={userData.mealPlan}
@@ -768,11 +893,11 @@ const Signuponpoarding = () => {
         </Swiper>
 
         <ContinueButton
-          title={currentStep < 3 ? "Complete " : "Generate My Plan"}
+          title={currentStep < STEPS.length - 1 ? "Continue" : "Generate My Plan"}
           onPress={handleNext}
           disabled={
             (currentStep === 1 && !userData.activity) ||
-            (currentStep === 2 && !userData.goal)
+            (currentStep === 3 && !userData.goal)
           }
           loading={loading}
         />
