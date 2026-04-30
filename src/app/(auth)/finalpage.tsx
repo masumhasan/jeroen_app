@@ -410,16 +410,7 @@ const FinalPage = () => {
             <Text className="text-gray-500 mt-1">Calories per day</Text>
           </Animated.View>
 
-          <Animated.Text
-            className="text-center text-gray-600 font-semibold mt-8"
-            style={{
-              opacity: fadeAnim,
-            }}
-          >
-            Customize Macronutrient Breakdown
-          </Animated.Text>
-
-          <View className="flex-row justify-between mt-6">
+          <View className="flex-row justify-between mt-8">
             <Animated.View
               className="items-center"
               style={{
@@ -460,7 +451,16 @@ const FinalPage = () => {
             </Animated.View>
           </View>
 
-          <View className="mt-8">
+          <Animated.Text
+            className="text-center text-gray-600 font-semibold mt-6"
+            style={{
+              opacity: fadeAnim,
+            }}
+          >
+            Customize Macronutrient Breakdown
+          </Animated.Text>
+
+          <View className="mt-6">
             <View className="flex-row justify-between items-center mb-1">
               <Text className="text-gray-500">Protein</Text>
               <Text className="text-gray-500 text-sm">{pctP}%</Text>
