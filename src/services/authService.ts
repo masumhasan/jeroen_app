@@ -2,6 +2,11 @@ import api from './api';
 import * as SecureStore from 'expo-secure-store';
 
 export const authService = {
+  async checkSignupAvailability(payload: { email: string; phoneNumber: string }) {
+    const response = await api.post("/auth/signup/check-availability", payload);
+    return response.data;
+  },
+
   async signup(userData: any) {
     const response = await api.post('/auth/signup', userData);
     if (response.data.data.token) {
