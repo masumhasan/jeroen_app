@@ -178,7 +178,7 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
         </View>
         {/* Dietary Restrictions */}
         <View className="mt-6">
-          <SectionHeader title="Dietary Restrictions" optional />
+          <SectionHeader title="Dietary Preferences" optional />
           <View className="flex-row flex-wrap mt-2">
             {dietary.map((item, index) => (
               <Chip
@@ -230,24 +230,6 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
               </View>
             )}
           </View>
-        </View>
-
-        {/* Allergies */}
-        <View className="mt-6">
-          <SectionHeader title="Allergies" optional />
-          <View className="bg-gray-50 rounded-xl border border-gray-100">
-            <TextInput
-              placeholder="e.g., Peanuts, Shellfish, Eggs"
-              placeholderTextColor="#9CA3AF"
-              value={value.allergies}
-              onChangeText={(text) => onChange({ ...value, allergies: text })}
-              className="px-4 py-3 text-gray-700"
-              multiline
-            />
-          </View>
-          <Text className="text-gray-400 text-xs mt-1 ml-1">
-            Separate multiple allergies with commas
-          </Text>
         </View>
 
         {/* Target Weight */}
