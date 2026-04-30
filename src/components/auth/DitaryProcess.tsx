@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   ScrollView,
   Text,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import api from "../../services/api";
 
 // Animated TouchableOpacity
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -92,38 +94,43 @@ interface Props {
   onChange: (value: any) => void;
 }
 
+const FALLBACK_DIETARY = [
+  "Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free",
+  "Keto", "Paleo", "Low-Carb", "Mediterranean",
+];
+
+const FALLBACK_INGREDIENTS = [
+  "Potatoes", "Onions", "Garlic", "Tomatoes", "Mushrooms",
+  "Bell Peppers", "Eggplant", "Zucchini", "Broccoli",
+  "Cauliflower", "Spinach", "Carrots", "Celery", "Corn",
+  "Peas", "Green Beans",
+];
+
 const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [dietary, setDietary] = useState<string[]>(FALLBACK_DIETARY);
+  const [ingredients, setIngredients] = useState<string[]>(FALLBACK_INGREDIENTS);
+  const [catalogLoading, setCatalogLoading] = useState(true);
 
-  const dietary = [
-    "Vegetarian",
-    "Vegan",
-    "Gluten-Free",
-    "Dairy-Free",
-    "Keto",
-    "Paleo",
-    "Low-Carb",
-    "Mediterranean",
-  ];
-
-  const ingredients = [
-    "Potatoes",
-    "Onions",
-    "Garlic",
-    "Tomatoes",
-    "Mushrooms",
-    "Bell Peppers",
-    "Eggplant",
-    "Zucchini",
-    "Broccoli",
-    "Cauliflower",
-    "Spinach",
-    "Carrots",
-    "Celery",
-    "Corn",
-    "Peas",
-    "Green Beans",
-  ];
+  useEffect(() => {
+    const fetchCatalog = async () => {
+      try {
+        const [dietRes, allergyRes] = await Promise.all([
+          api.get("/auth/catalog/dietary-preferences"),
+          api.get("/auth/catalog/allergies"),
+        ]);
+        const dietData = dietRes.data?.data;
+        const allergyData = allergyRes.data?.data;
+        if (Array.isArray(dietData) && dietData.length > 0) setDietary(dietData);
+        if (Array.isArray(allergyData) && allergyData.length > 0) setIngredients(allergyData);
+      } catch {
+        // keep fallbacks
+      } finally {
+        setCatalogLoading(false);
+      }
+    };
+    fetchCatalog();
+  }, []);
 
   const filteredIngredients = ingredients.filter((ingredient) =>
     ingredient.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -176,9 +183,12 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* Dietary Restrictions */}
+        {/* Dietary Preferences */}
         <View className="mt-6">
           <SectionHeader title="Dietary Preferences" optional />
+          {catalogLoading ? (
+            <ActivityIndicator size="small" color="#89957F" style={{ marginTop: 12 }} />
+          ) : (
           <View className="flex-row flex-wrap mt-2">
             {dietary.map((item, index) => (
               <Chip
@@ -189,6 +199,7 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
               />
             ))}
           </View>
+          )}
         </View>
 
         {/* Unwanted Ingredients */}
