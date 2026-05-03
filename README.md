@@ -23,7 +23,9 @@ The core mobile experience for the Jeroen platform. A beautiful, high-performanc
 ```bash
 npm install
 ```
-
+```bash
+npx expo run:android
+```
 ### 2. Start the App
 ```bash
 npx expo start
