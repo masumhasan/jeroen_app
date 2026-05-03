@@ -204,22 +204,22 @@ const FinalPage = () => {
   };
 
   const handleContinue = async () => {
-    const burn = macroCaloriesFromGrams(
+    const finalCalories = macroCaloriesFromGrams(
       editableData.protein,
       editableData.carbs,
       editableData.fat,
     );
-    if (burn > editableData.calories) {
+    if (finalCalories < 1) {
       Alert.alert(
-        "Macros too high",
-        "Protein, carbs, and fat cannot add up to more calories than your daily target.",
+        "No macros set",
+        "Please set at least some protein, carbs, or fat before saving.",
       );
       return;
     }
     try {
       setIsSaving(true);
       await authService.updateProfile({
-        recommendedCalories: editableData.calories,
+        recommendedCalories: finalCalories,
         recommendedProtein: editableData.protein,
         recommendedCarbs: editableData.carbs,
         recommendedFat: editableData.fat,
@@ -273,6 +273,12 @@ const FinalPage = () => {
     outputRange: [0.5, 1],
   });
 
+  const coveredCalories = macroCaloriesFromGrams(
+    editableData.protein,
+    editableData.carbs,
+    editableData.fat,
+  );
+
   const maxP = maxProteinGrams(
     editableData.calories,
     editableData.carbs,
@@ -292,17 +298,17 @@ const FinalPage = () => {
   const pctP = macroPercentOfCalories(
     editableData.protein,
     4,
-    editableData.calories,
+    coveredCalories || 1,
   );
   const pctC = macroPercentOfCalories(
     editableData.carbs,
     4,
-    editableData.calories,
+    coveredCalories || 1,
   );
   const pctF = macroPercentOfCalories(
     editableData.fat,
     9,
-    editableData.calories,
+    coveredCalories || 1,
   );
 
   if (loading) {
@@ -390,21 +396,9 @@ const FinalPage = () => {
             </Text>
 
             <Animated.View className="flex-row items-center mt-2">
-              <TouchableOpacity
-                onPress={openCalorieModal}
-                className="flex-row items-center"
-                activeOpacity={0.7}
-              >
-                <Text className="text-4xl font-bold text-gray-700">
-                  {editableData.calories.toLocaleString()}
-                </Text>
-                <Ionicons
-                  name="pencil-outline"
-                  size={16}
-                  color="#6B7280"
-                  style={{ marginLeft: 6 }}
-                />
-              </TouchableOpacity>
+              <Text className="text-4xl font-bold text-gray-700">
+                {coveredCalories.toLocaleString()}
+              </Text>
             </Animated.View>
 
             <Text className="text-gray-500 mt-1">Calories per day</Text>
@@ -459,6 +453,41 @@ const FinalPage = () => {
           >
             Customize Macronutrient Breakdown
           </Animated.Text>
+
+          <View className="items-center mt-3">
+            <View className="flex-row items-baseline">
+              <TouchableOpacity
+                onPress={openCalorieModal}
+                className="flex-row items-center"
+                activeOpacity={0.7}
+              >
+                <Text className="text-2xl font-bold text-gray-400">
+                  {editableData.calories.toLocaleString()}
+                </Text>
+                <Ionicons
+                  name="pencil-outline"
+                  size={12}
+                  color="#9CA3AF"
+                  style={{ marginLeft: 4 }}
+                />
+              </TouchableOpacity>
+              <Text className="text-2xl font-bold text-gray-300 mx-1">/</Text>
+              <Text
+                className="text-2xl font-bold"
+                style={{
+                  color:
+                    coveredCalories > editableData.calories
+                      ? "#DC2626"
+                      : "#8A957F",
+                }}
+              >
+                {coveredCalories.toLocaleString()}
+              </Text>
+            </View>
+            <Text className="text-xs text-gray-400 mt-1">
+              Budget / Your target (kcal)
+            </Text>
+          </View>
 
           <View className="mt-6">
             <View className="flex-row justify-between items-center mb-1">
