@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Check, ChevronLeft, ChevronRight, Clock, X } from "lucide-react-native";
+import { Check, ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -19,25 +19,8 @@ type ParsedStep = {
   step: number;
   title: string;
   body: string;
-  timeLabel: string;
 };
 
-const pickDuration = (raw: string): string => {
-  const t = raw || "";
-  const range = t.match(/(\d+)\s*[-–]\s*(\d+)\s*(min|minuten|sec|seconde)/i);
-  if (range) {
-    const unit = /min/i.test(range[3]) ? "min" : "sec";
-    return `${range[1]}-${range[2]} ${unit}`;
-  }
-  const single = t.match(/(\d+)\s*(min|minuten|sec|seconde|uur)/i);
-  if (single) {
-    const u = single[2].toLowerCase();
-    if (u.startsWith("min")) return `${single[1]} min`;
-    if (u.startsWith("sec")) return `${single[1]} sec`;
-    if (u.startsWith("uur")) return `${single[1]} h`;
-  }
-  return "~3 min";
-};
 
 const splitTitleAndBody = (
   raw: string,
@@ -91,7 +74,6 @@ const buildSteps = (details: string[] | undefined): ParsedStep[] => {
         title: "No instructions",
         body:
           "This recipe has no step-by-step instructions in the database yet. Add them in the recipe manager.",
-        timeLabel: "—",
       },
     ];
   }
@@ -101,7 +83,6 @@ const buildSteps = (details: string[] | undefined): ParsedStep[] => {
       step: i + 1,
       title: title || `Step ${i + 1}`,
       body: body || raw,
-      timeLabel: pickDuration(raw),
     };
   });
 };
@@ -226,13 +207,6 @@ const CookingMode = () => {
                       {item.title}
                     </Text>
                   ) : null}
-
-                  <View className="flex-row items-center bg-gray-100 px-4 py-2 rounded-full mb-4">
-                    <Clock size={16} color={SAGE} />
-                    <Text className="text-gray-600 font-medium ml-2">
-                      {item.timeLabel}
-                    </Text>
-                  </View>
 
                   <View className="w-full p-1">
                     <Text className="text-gray-700 text-base leading-6 text-center">
