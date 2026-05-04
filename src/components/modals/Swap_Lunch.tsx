@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { authService } from "../../services/authService";
+import { recipeService } from "../../services/recipeService";
 import { resolveRecipeImageUrl } from "../../utils/imageUrl";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -67,8 +68,11 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
     "all" | "<400" | "400-550" | ">550"
   >("all");
   const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
+  const [selectedSource, setSelectedSource] = useState<"main" | "user">("main");
   const [alternatives, setAlternatives] = useState<AlternativeMeal[]>([]);
+  const [userRecipes, setUserRecipes] = useState<AlternativeMeal[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingUserRecipes, setLoadingUserRecipes] = useState(false);
   const [swapping, setSwapping] = useState(false);
 
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
@@ -117,8 +121,21 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
     }
   };
 
+  const fetchUserRecipes = async () => {
+    setLoadingUserRecipes(true);
+    try {
+      const recipes = await recipeService.getMyUserRecipes();
+      setUserRecipes(recipes || []);
+    } catch {
+      setUserRecipes([]);
+    } finally {
+      setLoadingUserRecipes(false);
+    }
+  };
+
   useEffect(() => {
     if (modalVisible) {
+      fetchUserRecipes();
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: 0,
@@ -162,6 +179,8 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
       setSelectedSort("calories");
       setSelectedFilter("all");
       setSelectedMeal(null);
+      setSelectedSource("main");
+      setUserRecipes([]);
     });
   };
 
@@ -210,17 +229,19 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
         <Animated.View
           style={{ transform: [{ translateY: slideAnim }] }}
           className="h-[85%]"
-          {...panResponder.panHandlers}
         >
           <View className="flex-1 bg-[#FFFFFF] rounded-t-3xl overflow-hidden">
-            <View className="items-center pt-2 pb-1">
+            <View
+              className="items-center pt-2 pb-1"
+              {...panResponder.panHandlers}
+            >
               <View className="w-12 h-1 bg-gray-300 rounded-full" />
             </View>
 
             <ScrollView
               showsVerticalScrollIndicator={false}
               className="flex-1 px-5 bg-[#FFFFFF]"
-              contentContainerStyle={{ paddingBottom: 100 }}
+              contentContainerStyle={{ paddingBottom: 16 }}
             >
               <View className="flex-row justify-between items-center mb-4 pt-2">
                 <View>
@@ -308,8 +329,55 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
                     carbs={Number(meal?.nutrition?.khd || 0)}
                     fat={Number(meal?.nutrition?.vetten || 0)}
                     image={resolveRecipeImageUrl(meal.recipeImage, FALLBACK_RECIPE_IMAGE)}
-                    active={selectedMeal === meal._id}
-                    onPress={() => setSelectedMeal(meal._id)}
+                    active={selectedSource === "main" && selectedMeal === meal._id}
+                    onPress={() => {
+                      setSelectedMeal(meal._id);
+                      setSelectedSource("main");
+                    }}
+                  />
+                ))
+              )}
+
+              {/* From Your Recipes */}
+              <View className="mt-6 mb-2">
+                <View
+                  className="h-px mb-4"
+                  style={{ backgroundColor: "rgba(137,149,127,0.2)" }}
+                />
+                <Text className="text-[15px] font-semibold text-[#111]">
+                  From Your Recipes
+                </Text>
+                <Text className="text-gray-400 text-[12px] mt-0.5">
+                  Swap with a recipe you submitted
+                </Text>
+              </View>
+
+              {loadingUserRecipes ? (
+                <View className="py-6 items-center">
+                  <ActivityIndicator color="#89957F" />
+                </View>
+              ) : userRecipes.length === 0 ? (
+                <View className="py-4">
+                  <Text className="text-gray-400 text-[13px]">
+                    You haven't added any recipes yet.
+                  </Text>
+                </View>
+              ) : (
+                userRecipes.map((meal) => (
+                  <MealCard
+                    key={meal._id}
+                    name={meal.name}
+                    cal={Number(meal?.nutrition?.kcal || 0)}
+                    protein={Number(meal?.nutrition?.eiwitten || 0)}
+                    carbs={Number(meal?.nutrition?.khd || 0)}
+                    fat={Number(meal?.nutrition?.vetten || 0)}
+                    image={resolveRecipeImageUrl(meal.recipeImage, FALLBACK_RECIPE_IMAGE)}
+                    active={selectedSource === "user" && selectedMeal === meal._id}
+                    onPress={() => {
+                      setSelectedMeal(meal._id);
+                      setSelectedSource("user");
+                    }}
+                    badge="Crowdsourced"
                   />
                 ))
               )}
@@ -391,6 +459,7 @@ const MealCard = ({
   image,
   active = false,
   onPress,
+  badge,
 }: {
   name: string;
   cal: number;
@@ -400,6 +469,7 @@ const MealCard = ({
   image: string;
   active: boolean;
   onPress: () => void;
+  badge?: string;
 }) => {
   return (
     <TouchableOpacity
@@ -414,7 +484,14 @@ const MealCard = ({
       <Image source={{ uri: image }} className="w-16 h-16 rounded-xl mr-3" />
 
       <View className="flex-1">
-        <Text className="font-semibold text-base">{name}</Text>
+        <View className="flex-row items-center gap-2">
+          <Text className="font-semibold text-base flex-shrink" numberOfLines={1}>{name}</Text>
+          {badge ? (
+            <View className="bg-[#FFF3E0] border border-[#FFE0B2] px-1.5 py-0.5 rounded-full">
+              <Text className="text-[9px] font-bold text-[#E65100]">{badge}</Text>
+            </View>
+          ) : null}
+        </View>
 
         <View className="flex-row mt-2 flex-wrap gap-2">
           <Text className="text-gray-600 text-xs bg-gray-100 px-2 py-1 rounded-full">
