@@ -132,7 +132,12 @@ const MyRecipes = () => {
                       </Text>
                     </View>
                   </View>
-                  <View className="flex-row justify-end mt-1">
+                  <View className="flex-row justify-end mt-1 gap-4">
+                    <TouchableOpacity
+                      onPress={() => router.push({ pathname: "/(page)/(profile)/editrecipe", params: { recipeId: recipe._id } })}
+                    >
+                      <Feather name="edit-2" size={16} color="#89957F" />
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDelete(recipe._id)}>
                       <Feather name="trash-2" size={16} color="#E53E3E" />
                     </TouchableOpacity>

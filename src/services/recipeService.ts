@@ -38,6 +38,13 @@ export const recipeService = {
     return response.data;
   },
 
+  async updateUserRecipe(id: string, formData: FormData) {
+    const response = await api.put(`/user-recipes/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
   async deleteUserRecipe(id: string) {
     const response = await api.delete(`/user-recipes/${id}`);
     return response.data;
