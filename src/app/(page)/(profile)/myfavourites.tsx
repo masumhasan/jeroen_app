@@ -78,7 +78,7 @@ export default function MyFavourites() {
             )}
             {item.category && (
               <Text className="text-[12px] text-[#8E8E93]">
-                {item.category}
+                {Array.isArray(item.category) ? item.category.join(", ") : item.category}
               </Text>
             )}
           </View>

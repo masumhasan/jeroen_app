@@ -127,7 +127,9 @@ const MyRecipes = () => {
                           {recipe.status}
                         </Text>
                       </View>
-                      <Text className="text-[11px] text-[#8E8E93]">{recipe.category}</Text>
+                      <Text className="text-[11px] text-[#8E8E93]">
+                        {Array.isArray(recipe.category) ? recipe.category.join(", ") : recipe.category}
+                      </Text>
                     </View>
                   </View>
                   <View className="flex-row justify-end mt-1">

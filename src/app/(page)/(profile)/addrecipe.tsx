@@ -36,7 +36,7 @@ const MACRO_FIELDS = [
 
 const AddRecipe = () => {
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("Ontbijt");
+  const [categories, setCategories] = useState<string[]>(["Ontbijt"]);
   const [personsServing, setPersonsServing] = useState("1");
   const [cookingTip, setCookingTip] = useState("");
   const [ingredients, setIngredients] = useState([""]);
@@ -81,6 +81,16 @@ const AddRecipe = () => {
     setter: React.Dispatch<React.SetStateAction<string[]>>
   ) => setter((prev) => prev.map((v, i) => (i === idx ? val : v)));
 
+  const toggleCategory = (cat: string) => {
+    setCategories((prev) => {
+      if (prev.includes(cat)) {
+        const updated = prev.filter((c) => c !== cat);
+        return updated.length > 0 ? updated : prev;
+      }
+      return [...prev, cat];
+    });
+  };
+
   const handleSubmit = async () => {
     if (!name.trim()) {
       Alert.alert("Validation", "Recipe name is required.");
@@ -96,7 +106,7 @@ const AddRecipe = () => {
     try {
       const data: any = {
         name: name.trim(),
-        category,
+        category: categories,
         personsServing: Number(personsServing) || 1,
         cookingTip: cookingTip.trim() || null,
         ingredients: validIngredients,
@@ -176,40 +186,42 @@ const AddRecipe = () => {
               placeholderTextColor="#B0B0B0"
             />
 
-            {/* ─── CATEGORY + PERSONS SERVING (side by side) ─── */}
-            <View className="flex-row gap-3 mt-5">
-              <View className="flex-1">
-                <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-                  Category
-                </Text>
-                <View className="rounded-xl border border-gray-100 bg-gray-50 overflow-hidden">
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ padding: 6, gap: 6 }}
-                  >
-                    {CATEGORIES.map((cat) => {
-                      const active = category === cat;
-                      return (
-                        <TouchableOpacity
-                          key={cat}
-                          onPress={() => setCategory(cat)}
-                          className="px-3 py-2 rounded-lg"
-                          style={{
-                            backgroundColor: active ? "#89957F" : "transparent",
-                          }}
+            {/* ─── CATEGORY (multi-select chips) ─── */}
+            <View className="mt-5">
+              <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+                Category ({categories.length} selected)
+              </Text>
+              <View className="rounded-xl border border-gray-100 bg-gray-50 overflow-hidden">
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ padding: 6, gap: 6 }}
+                >
+                  {CATEGORIES.map((cat) => {
+                    const active = categories.includes(cat);
+                    return (
+                      <TouchableOpacity
+                        key={cat}
+                        onPress={() => toggleCategory(cat)}
+                        className="px-3 py-2 rounded-lg flex-row items-center"
+                        style={{
+                          backgroundColor: active ? "#89957F" : "transparent",
+                          gap: 4,
+                        }}
+                      >
+                        {active && (
+                          <Ionicons name="checkmark-circle" size={14} color="#fff" />
+                        )}
+                        <Text
+                          className="text-[12px] font-semibold"
+                          style={{ color: active ? "#fff" : "#777" }}
                         >
-                          <Text
-                            className="text-[12px] font-semibold"
-                            style={{ color: active ? "#fff" : "#777" }}
-                          >
-                            {cat}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
+                          {cat}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
               </View>
             </View>
 
