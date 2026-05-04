@@ -1,4 +1,5 @@
 import CommunityHeader from "@/src/components/Community/CommunityHeader";
+import MealPlanPostCard from "@/src/components/Community/MealPlanPostCard";
 import PostCard from "@/src/components/Community/PostCard";
 import SearchBar from "@/src/components/Community/SearchBar";
 import TopicsCommunity from "@/src/components/Community/TopicsCommunity";
@@ -65,6 +66,8 @@ export default function Community() {
         likeCount: item.likeCount || 0,
         commentCount: item.commentCount || 0,
         likedByMe: !!item.likedByMe,
+        postType: item.postType || "text",
+        mealPlanData: item.mealPlanData || null,
       })),
     [posts]
   );
@@ -140,13 +143,21 @@ export default function Community() {
         <FlatList
           data={mappedPosts}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <PostCard
-              post={item}
-              onToggleLike={handleToggleLike}
-              onAddComment={handleAddComment}
-            />
-          )}
+          renderItem={({ item }) =>
+            item.postType === "meal_plan" ? (
+              <MealPlanPostCard
+                post={item}
+                onToggleLike={handleToggleLike}
+                onAddComment={handleAddComment}
+              />
+            ) : (
+              <PostCard
+                post={item}
+                onToggleLike={handleToggleLike}
+                onAddComment={handleAddComment}
+              />
+            )
+          }
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 90 }}
           ListEmptyComponent={

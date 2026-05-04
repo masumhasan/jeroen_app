@@ -6,9 +6,12 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Dimensions,
   Image,
   KeyboardAvoidingView,
+  Modal,
   Platform,
+  ScrollView,
   StatusBar,
   Text,
   TextInput,
@@ -44,6 +47,7 @@ const PostDetailsScreen = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [updatingPost, setUpdatingPost] = useState(false);
+  const [imageViewerVisible, setImageViewerVisible] = useState(false);
 
   // Animations
   React.useEffect(() => {
@@ -325,16 +329,48 @@ const PostDetailsScreen = () => {
               </Text>
             )}
 
-            {/* Post Image */}
-            {post?.image ? <View className="mt-4 rounded-2xl overflow-hidden">
-              <Image
-                source={{
-                  uri: resolveRecipeImageUrl(post.image, "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"),
-                }}
-                className="w-full h-[260px]"
-                resizeMode="cover"
-              />
-            </View> : null}
+            {/* Post Image — tappable for full-screen view */}
+            {post?.image ? (
+              <TouchableOpacity
+                onPress={() => setImageViewerVisible(true)}
+                activeOpacity={0.9}
+                className="mt-4 rounded-2xl overflow-hidden"
+              >
+                <Image
+                  source={{
+                    uri: resolveRecipeImageUrl(post.image, "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"),
+                  }}
+                  className="w-full"
+                  style={{ height: post.postType === "meal_plan" ? 360 : 260 }}
+                  resizeMode={post.postType === "meal_plan" ? "contain" : "cover"}
+                />
+              </TouchableOpacity>
+            ) : null}
+
+            {/* Structured meal plan details for meal_plan posts */}
+            {post?.postType === "meal_plan" && post?.mealPlanData && (
+              <View className="mt-3 rounded-xl border border-gray-100 overflow-hidden">
+                {(post.mealPlanData.meals || []).map((meal: any, idx: number) => (
+                  <View
+                    key={idx}
+                    className="flex-row items-center justify-between px-4 py-3 border-b border-gray-50"
+                  >
+                    <View className="flex-1">
+                      <Text className="text-[10px] uppercase text-gray-400 font-semibold">{meal.mealType}</Text>
+                      <Text className="text-sm font-semibold text-gray-800 mt-0.5">{meal.name}</Text>
+                      <Text className="text-xs text-gray-500 mt-0.5">
+                        P: {meal.protein}g  C: {meal.carbs}g  F: {meal.fat}g
+                      </Text>
+                    </View>
+                    <Text className="text-sm font-bold text-gray-700">{meal.calories} <Text className="text-[10px] text-gray-400">kcal</Text></Text>
+                  </View>
+                ))}
+                <View className="flex-row justify-between items-center px-4 py-3 bg-gray-50">
+                  <Text className="text-xs font-bold text-gray-700">Total</Text>
+                  <Text className="text-sm font-bold text-[#89957F]">{post.mealPlanData.totalCalories} kcal</Text>
+                </View>
+              </View>
+            )}
 
             {/* Like / Comment Stats */}
             <View className="flex-row items-center justify-between mt-4">
@@ -434,6 +470,33 @@ const PostDetailsScreen = () => {
         </Animated.View>
       </KeyboardAvoidingView>
       </>
+      )}
+
+      {/* Full-screen image viewer */}
+      {post?.image && (
+        <Modal visible={imageViewerVisible} transparent animationType="fade" onRequestClose={() => setImageViewerVisible(false)}>
+          <View className="flex-1 bg-black/95 justify-center items-center">
+            <TouchableOpacity
+              onPress={() => setImageViewerVisible(false)}
+              className="absolute top-12 right-5 z-10 w-10 h-10 rounded-full bg-white/20 items-center justify-center"
+            >
+              <Text className="text-white text-lg font-bold">✕</Text>
+            </TouchableOpacity>
+            <ScrollView
+              className="flex-1 w-full"
+              contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}
+              maximumZoomScale={3}
+              minimumZoomScale={1}
+              showsVerticalScrollIndicator={false}
+            >
+              <Image
+                source={{ uri: resolveRecipeImageUrl(post.image, "") }}
+                style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height * 0.85 }}
+                resizeMode="contain"
+              />
+            </ScrollView>
+          </View>
+        </Modal>
       )}
     </SafeAreaView>
   );

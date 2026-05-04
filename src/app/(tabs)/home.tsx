@@ -2,6 +2,7 @@ import { AppImages } from "@/assets/appimage/appimages";
 import DayTabs from "@/src/components/home/DayTabs";
 import FooterActions from "@/src/components/home/FooterActions";
 import MealCard from "@/src/components/home/MealCard";
+import ShareMealPlanModal from "@/src/components/home/ShareMealPlanModal";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -27,6 +28,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
   const [generatingNextWeek, setGeneratingNextWeek] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
 
   const combinedPlan = useMemo(
     () => [...currentWeekPlan, ...nextWeekPlan],
@@ -187,6 +189,21 @@ export default function Home() {
           </View>
         )}
 
+        {/* Share Daily Meal Plan */}
+        {meals.length > 0 && (
+          <TouchableOpacity
+            onPress={() => setShareModalVisible(true)}
+            className="mt-6 rounded-2xl border border-gray-200 py-4 flex-row items-center justify-center bg-white"
+            activeOpacity={0.7}
+            style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}
+          >
+            <Ionicons name="share-outline" size={18} color="#555" />
+            <Text className="text-gray-700 font-semibold text-sm ml-2 uppercase tracking-wider">
+              Share Your Daily Meal Plan
+            </Text>
+          </TouchableOpacity>
+        )}
+
         {/* Generate Next Week button — on the last day of the entire plan */}
         {isLastDay && (
           <TouchableOpacity
@@ -215,6 +232,26 @@ export default function Home() {
       <FooterActions 
         onRegenerate={handleRegenerate} 
         regenerating={regenerating}
+      />
+
+      <ShareMealPlanModal
+        visible={shareModalVisible}
+        onClose={() => setShareModalVisible(false)}
+        dayData={{
+          day: dayNameForSwap,
+          targetCalories,
+          meals: meals
+            .filter((m: any) => m.recipe)
+            .map((m: any) => ({
+              mealType: m.mealType || m.type || "Meal",
+              name: m.recipe.name || "Unknown",
+              calories: m.recipe.nutrition?.kcal || 0,
+              protein: m.recipe.nutrition?.eiwitten || 0,
+              carbs: m.recipe.nutrition?.khd || 0,
+              fat: m.recipe.nutrition?.vetten || 0,
+              image: resolveRecipeImageUrl(m.recipe.recipeImage, fallbackImg),
+            })),
+        }}
       />
     </View>
   );

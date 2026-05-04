@@ -63,4 +63,25 @@ export const communityService = {
     const response = await api.post(`/community/posts/${postId}/comments`, { content });
     return response.data.data as { comment: any; commentCount: number };
   },
+
+  async shareMealPlan(payload: {
+    topicIds: string[];
+    caption: string;
+    mealPlanData: {
+      day: string;
+      targetCalories: number;
+      meals: {
+        mealType: string;
+        name: string;
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+        image?: string;
+      }[];
+    };
+  }) {
+    const response = await api.post("/community/posts/meal-plan", payload);
+    return response.data.data.post;
+  },
 };
