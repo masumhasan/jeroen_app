@@ -202,9 +202,9 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
           )}
         </View>
 
-        {/* Unwanted Ingredients */}
+        {/* Allergies */}
         <View className="mt-6">
-          <SectionHeader title="Unwanted Ingredients" optional />
+          <SectionHeader title="Allergies" optional />
 
           {/* Search Bar */}
           <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-2 mb-3 border border-gray-100">

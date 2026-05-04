@@ -33,6 +33,7 @@ const Signup = () => {
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [isChecking, setIsChecking] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     Animated.parallel([
@@ -181,7 +182,7 @@ const Signup = () => {
     label: string,
     icon: keyof typeof Ionicons.glyphMap,
     placeholder: string,
-    secureTextEntry?: boolean,
+    isPassword?: boolean,
   ) => {
     const error = fieldErrors[field];
     const hasError = Boolean(error);
@@ -204,7 +205,7 @@ const Signup = () => {
           />
           <TextInput
             placeholder={placeholder}
-            secureTextEntry={secureTextEntry}
+            secureTextEntry={isPassword && !showPassword}
             value={formData[field]}
             onChangeText={(text) => {
               setFormData({ ...formData, [field]: text });
@@ -214,9 +215,18 @@ const Signup = () => {
             placeholderTextColor="#9CA3AF"
             onFocus={() => setFocusedInput(field)}
             onBlur={() => setFocusedInput(null)}
-            autoCapitalize={field === "email" ? "none" : "words"}
+            autoCapitalize={field === "email" || isPassword ? "none" : "words"}
             keyboardType={field === "phone" ? "phone-pad" : field === "email" ? "email-address" : "default"}
           />
+          {isPassword && (
+            <TouchableOpacity onPress={() => setShowPassword((v) => !v)} className="ml-2 p-1">
+              <Ionicons
+                name={showPassword ? "eye-off-outline" : "eye-outline"}
+                size={20}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+          )}
         </Animated.View>
         {hasError ? (
           <Text className="text-red-500 text-sm mt-1.5 ml-0.5">{error}</Text>
