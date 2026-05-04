@@ -1,6 +1,6 @@
 # Jeroen Recipe App 📱
 
-The core mobile experience for the Jeroen platform. A beautiful, high-performance recipe application built with React Native and Expo.
+The core mobile experience for the Jeroen & Lisa. A beautiful, high-performance recipe application built with Private Recipe Data and OIPENAI
 
 ## 🌟 Features
 
