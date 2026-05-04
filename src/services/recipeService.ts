@@ -20,4 +20,26 @@ export const recipeService = {
     const response = await api.get('/recipes/user/favourites');
     return response.data.recipes;
   },
+
+  async submitUserRecipe(formData: FormData) {
+    const response = await api.post('/user-recipes', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  async getMyUserRecipes() {
+    const response = await api.get('/user-recipes/my');
+    return response.data.recipes;
+  },
+
+  async getUserRecipe(id: string) {
+    const response = await api.get(`/user-recipes/${id}`);
+    return response.data;
+  },
+
+  async deleteUserRecipe(id: string) {
+    const response = await api.delete(`/user-recipes/${id}`);
+    return response.data;
+  },
 };

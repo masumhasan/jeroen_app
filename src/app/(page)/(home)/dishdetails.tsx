@@ -20,7 +20,8 @@ const FALLBACK_RECIPE_IMAGE =
   "https://raw.githubusercontent.com/masumhasan/jeroen_app/main/lunch.jpg";
 
 const DishDetails = () => {
-  const { recipeId } = useLocalSearchParams();
+  const { recipeId, source } = useLocalSearchParams();
+  const isCrowdsourced = source === "user";
   const [recipe, setRecipe] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isFavourited, setIsFavourited] = useState(false);
@@ -29,14 +30,16 @@ const DishDetails = () => {
   useEffect(() => {
     if (recipeId) {
       fetchRecipe(recipeId as string);
-      checkIfFavourited(recipeId as string);
+      if (!isCrowdsourced) checkIfFavourited(recipeId as string);
     }
   }, [recipeId]);
 
   const fetchRecipe = async (id: string) => {
     setLoading(true);
     try {
-      const data = await recipeService.getRecipe(id);
+      const data = isCrowdsourced
+        ? await recipeService.getUserRecipe(id)
+        : await recipeService.getRecipe(id);
       setRecipe(data);
     } catch (error) {
       console.error("Error fetching recipe:", error);
@@ -137,6 +140,16 @@ const DishDetails = () => {
             <Text className="text-[26px] font-bold text-[#222] mt-4">
               {recipe.name}
             </Text>
+
+            {(isCrowdsourced || recipe.submittedBy) && (
+              <View className="flex-row items-center mt-2">
+                <View className="bg-[#FFF3E0] border border-[#FFE0B2] px-3 py-1 rounded-full">
+                  <Text className="text-[12px] font-bold text-[#E65100]">
+                    Crowdsourced
+                  </Text>
+                </View>
+              </View>
+            )}
 
             <View className="flex-row mt-4 items-center gap-3 space-x-6">
               <View className="flex-row items-center">

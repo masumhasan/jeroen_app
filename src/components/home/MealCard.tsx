@@ -13,6 +13,7 @@ interface Props {
   type: string;
   day: string;
   image: string;
+  isCrowdsourced?: boolean;
   onMealSwapped?: () => void;
 }
 
@@ -26,6 +27,7 @@ export default function MealCard({
   type,
   day,
   image,
+  isCrowdsourced,
   onMealSwapped,
 }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -41,7 +43,14 @@ export default function MealCard({
 
       <View className="p-4">
         <View className="flex-row justify-between items-center">
-          <Text className="text-xs text-gray-400">{type}</Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-xs text-gray-400">{type}</Text>
+            {isCrowdsourced && (
+              <View className="bg-[#FFF3E0] border border-[#FFE0B2] px-2 py-0.5 rounded-full">
+                <Text className="text-[10px] font-bold text-[#E65100]">Crowdsourced</Text>
+              </View>
+            )}
+          </View>
 
           <Text className="text-gray-500">
             {calories} <Text className="text-xs">cal</Text>

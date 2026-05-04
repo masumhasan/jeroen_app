@@ -6,6 +6,7 @@ import {
   Alert,
   Image,
   Modal,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -81,7 +82,7 @@ const profile = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <View className="flex-1 px-[5%] ">
+      <View className="px-[5%] pt-0">
         {/* Header */}
         <View className="relative items-center justify-center mb-6">
           <Text className="text-[18px] font-bold text-[#111111]">Profile</Text>
@@ -93,6 +94,13 @@ const profile = () => {
             <Feather name="settings" size={22} color="#111111" />
           </TouchableOpacity>
         </View>
+      </View>
+
+      <ScrollView
+        className="flex-1 px-[5%]"
+        contentContainerStyle={{ paddingBottom: 32 }}
+        showsVerticalScrollIndicator={false}
+      >
 
         {/* Profile Image */}
         <View className="items-center mb-4">
@@ -218,8 +226,33 @@ const profile = () => {
             </View>
             <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
           </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push("/addrecipe")}
+            className="bg-[#89957F] rounded-[16px] px-4 py-5 flex-row items-center justify-center"
+          >
+            <Ionicons name="add-circle-outline" size={20} color="#fff" />
+            <Text className="text-[15px] text-white font-semibold ml-2">
+              Add Your Recipe
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push("/myrecipes")}
+            className="bg-[#F5F5F5] rounded-[16px] px-4 py-5 flex-row items-center justify-between"
+          >
+            <View className="flex-row items-center">
+              <Ionicons name="restaurant-outline" size={18} color="#89957F" />
+              <Text className="text-[15px] text-[#8E8E93] ml-2">
+                My Recipes
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
+          </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
 
       <Modal
         visible={showWeightModal}
