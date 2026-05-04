@@ -17,6 +17,7 @@ const _layout = () => {
       <Stack.Screen name="about" options={{ headerShown: false }} />
       <Stack.Screen name="term" options={{ headerShown: false }} />
       <Stack.Screen name="policy" options={{ headerShown: false }} />
+      <Stack.Screen name="myfavourites" options={{ headerShown: false }} />
     </Stack>
   );
 };

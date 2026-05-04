@@ -9,5 +9,15 @@ export const recipeService = {
   async getRecipes(params: any = {}) {
     const response = await api.get('/recipes', { params });
     return response.data;
-  }
+  },
+
+  async toggleFavourite(recipeId: string) {
+    const response = await api.patch(`/recipes/${recipeId}/favourite`);
+    return response.data;
+  },
+
+  async getFavourites() {
+    const response = await api.get('/recipes/user/favourites');
+    return response.data.recipes;
+  },
 };

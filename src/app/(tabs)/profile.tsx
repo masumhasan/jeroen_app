@@ -204,6 +204,20 @@ const profile = () => {
             </Text>
             <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
           </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push("/myfavourites")}
+            className="bg-[#F5F5F5] rounded-[16px] px-4 py-5 flex-row items-center justify-between"
+          >
+            <View className="flex-row items-center">
+              <Ionicons name="heart" size={18} color="#E53E3E" />
+              <Text className="text-[15px] text-[#8E8E93] ml-2">
+                My Favourites
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
+          </TouchableOpacity>
         </View>
       </View>
 

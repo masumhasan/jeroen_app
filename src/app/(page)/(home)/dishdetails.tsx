@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { recipeService } from "../../../services/recipeService";
+import { authService } from "../../../services/authService";
 
 const FALLBACK_RECIPE_IMAGE =
   "https://raw.githubusercontent.com/masumhasan/jeroen_app/main/lunch.jpg";
@@ -22,10 +23,13 @@ const DishDetails = () => {
   const { recipeId } = useLocalSearchParams();
   const [recipe, setRecipe] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isFavourited, setIsFavourited] = useState(false);
+  const [togglingFav, setTogglingFav] = useState(false);
 
   useEffect(() => {
     if (recipeId) {
       fetchRecipe(recipeId as string);
+      checkIfFavourited(recipeId as string);
     }
   }, [recipeId]);
 
@@ -38,6 +42,29 @@ const DishDetails = () => {
       console.error("Error fetching recipe:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkIfFavourited = async (id: string) => {
+    try {
+      const user = await authService.getMe();
+      const favIds = (user.favouriteRecipes || []).map((r: any) =>
+        typeof r === "string" ? r : r._id || r
+      );
+      setIsFavourited(favIds.includes(id));
+    } catch {}
+  };
+
+  const handleToggleFavourite = async () => {
+    if (togglingFav || !recipeId) return;
+    setTogglingFav(true);
+    try {
+      const result = await recipeService.toggleFavourite(recipeId as string);
+      setIsFavourited(result.isFavourited);
+    } catch (error) {
+      console.error("Error toggling favourite:", error);
+    } finally {
+      setTogglingFav(false);
     }
   };
 
@@ -89,8 +116,16 @@ const DishDetails = () => {
             <Ionicons name="chevron-back" size={22} color="#333" />
           </TouchableOpacity>
 
-          <TouchableOpacity className="absolute top-4 right-5 bg-white/80 w-10 h-10 rounded-full items-center justify-center">
-            <Feather name="heart" size={20} color="#333" />
+          <TouchableOpacity
+            onPress={handleToggleFavourite}
+            className="absolute top-4 right-5 bg-white/80 w-10 h-10 rounded-full items-center justify-center"
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={isFavourited ? "heart" : "heart-outline"}
+              size={22}
+              color={isFavourited ? "#E53E3E" : "#333"}
+            />
           </TouchableOpacity>
         </View>
 
