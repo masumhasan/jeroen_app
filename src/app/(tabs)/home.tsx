@@ -160,7 +160,10 @@ export default function Home() {
               onPress={() =>
                 router.push({
                   pathname: "/(page)/(home)/dishdetails",
-                  params: { recipeId: String(meal.recipe._id) },
+                  params: {
+                    recipeId: String(meal.recipe._id),
+                    ...(meal.recipe._isUserRecipe ? { source: "user" } : {}),
+                  },
                 })
               }
             >
@@ -177,6 +180,7 @@ export default function Home() {
                   meal.recipe.recipeImage,
                   fallbackImg
                 )}
+                isCrowdsourced={!!meal.recipe._isUserRecipe}
                 onMealSwapped={fetchMealPlan}
               />
             </TouchableOpacity>

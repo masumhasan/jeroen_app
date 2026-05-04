@@ -37,10 +37,18 @@ const DishDetails = () => {
   const fetchRecipe = async (id: string) => {
     setLoading(true);
     try {
-      const data = isCrowdsourced
-        ? await recipeService.getUserRecipe(id)
-        : await recipeService.getRecipe(id);
-      setRecipe(data);
+      if (isCrowdsourced) {
+        const data = await recipeService.getUserRecipe(id);
+        setRecipe(data);
+      } else {
+        try {
+          const data = await recipeService.getRecipe(id);
+          setRecipe(data);
+        } catch {
+          const data = await recipeService.getUserRecipe(id);
+          setRecipe(data);
+        }
+      }
     } catch (error) {
       console.error("Error fetching recipe:", error);
     } finally {
