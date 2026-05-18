@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { t } from "../../i18n";
-import { CalendarRange, Medal, TrendingDown } from "lucide-react-native";
+import { CalendarRange, Medal, TrendingDown, TrendingUp } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -34,15 +34,16 @@ const StatCard = ({ title, subtitle, index, trend, value }: StatCardProps) => {
     }
   };
   const getTrendIconWorklet = (subtitleValue: string) => {
-    if (subtitleValue === t("statCard.kgLost")) return <TrendingDown size={20} color={"#8A957F"} />;
-    if (subtitleValue === t("statCard.weeks")) return <CalendarRange size={20} color={"#9F8B7A"} />;
+    if (subtitleValue === t("progress.kgLost")) return <TrendingDown size={20} color={"#8A957F"} />;
+    if (subtitleValue === t("progress.kgGained")) return <TrendingUp size={20} color={"#8A957F"} />;
+    if (subtitleValue === t("progress.weeks")) return <CalendarRange size={20} color={"#9F8B7A"} />;
     return <Medal size={20} color={"#8A957F"} />;
   };
   // #F9D8C120
 
   const getTrendBgColorWorklet = (subtitleValue: string) => {
-    if (subtitleValue === t("statCard.kgLost")) return "#F9D8C120";
-    if (subtitleValue === t("statCard.weeks")) return "#E2DC9E20";
+    if (subtitleValue === t("progress.kgLost") || subtitleValue === t("progress.kgGained")) return "#F9D8C120";
+    if (subtitleValue === t("progress.weeks")) return "#E2DC9E20";
     return "#8A957F20";
   };
 

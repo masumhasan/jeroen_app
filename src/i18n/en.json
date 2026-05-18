@@ -249,6 +249,7 @@
   "progress": {
     "title": "Progress Tracking",
     "kgLost": "kg Lost",
+    "kgGained": "kg Gained",
     "weeks": "Weeks",
     "consistency": "Consistency",
     "loading": "Loading your progress...",

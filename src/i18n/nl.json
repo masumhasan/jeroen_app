@@ -249,6 +249,7 @@
   "progress": {
     "title": "Voortgangsoverzicht",
     "kgLost": "kg verloren",
+    "kgGained": "kg aankomen",
     "weeks": "Weken",
     "consistency": "Consistentie",
     "loading": "Uw voortgang wordt geladen...",

@@ -37,6 +37,7 @@ const Progress = () => {
   const [loading, setLoading] = React.useState(true);
   const [stats, setStats] = React.useState({
     kgLost: 0,
+    isWeightGain: false,
     weeks: 1,
     consistencyPercent: 0,
     startWeight: 0,
@@ -100,7 +101,9 @@ const Progress = () => {
       );
       const targetWeight = Number(user?.targetWeight ?? currentWeight);
 
-      const kgLost = Math.max(toOneDecimal(startWeight - currentWeight), 0);
+      const weightDiff = toOneDecimal(startWeight - currentWeight);
+      const isWeightGain = currentWeight > startWeight;
+      const displayKgDiff = Math.abs(weightDiff);
 
       const now = Date.now();
       const firstDate = history[0]?.recordedAt
@@ -148,7 +151,8 @@ const Progress = () => {
       const effectiveTarget = checkInsThisWeek > 0 ? checkInsWeeklyTarget : 21;
 
       setStats({
-        kgLost,
+        kgLost: displayKgDiff,
+        isWeightGain,
         weeks: spanWeeks,
         consistencyPercent: effectiveConsistency,
         startWeight: toOneDecimal(startWeight),
@@ -220,9 +224,9 @@ const Progress = () => {
         >
           <StatCard
             title={stats.kgLost.toString()}
-            subtitle={t("progress.kgLost")}
+            subtitle={stats.isWeightGain ? t("progress.kgGained") : t("progress.kgLost")}
             index={0}
-            trend="down"
+            trend={stats.kgLost === 0 ? "neutral" : stats.isWeightGain ? "up" : "down"}
             value={stats.kgLost.toString()}
           />
           <StatCard
