@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { t } from "../../i18n";
 
 type MotivationCardProps = {
   progressPercent: number;
@@ -11,15 +12,15 @@ const MotivationCard = ({ progressPercent }: MotivationCardProps) => {
   return (
     <View className="border-2 border-[#7b876d] rounded-2xl p-4 bg-[#f7f8f4] items-center">
       <Text className="font-semibold text-lg text-[#5f6b55]">
-        Great Progress! 🎉
+        {t("motivationCard.title")}
       </Text>
 
       <Text className="text-center text-gray-500 text-sm mt-1">
-        You're {bounded}% of the way to your goal.
+        {t("motivationCard.message", { percent: String(bounded) })}
       </Text>
 
       <Text className="text-center text-gray-500 text-sm">
-        Keep up the amazing work and stay consistent!
+        {t("motivationCard.subMessage")}
       </Text>
     </View>
   );

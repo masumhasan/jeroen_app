@@ -37,6 +37,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
+import { t } from "../../../i18n";
 
 /** Support agent image (incoming messages + header). */
 const SUPPORT_AGENT_AVATAR =
@@ -128,7 +129,7 @@ const ChatBubble = ({
                     className="bg-red-500 justify-center items-center w-16 rounded-l-[18px]"
                     entering={FadeInUp}
                   >
-                    <Text className="text-white text-xs">Delete</Text>
+                    <Text className="text-white text-xs">{t("adminSupport.delete")}</Text>
                   </AnimatedPressable>
                 )
               : undefined
@@ -252,7 +253,7 @@ const AdminSupport = () => {
       const data = await supportService.getThread();
       setMessages((data.messages || []).map(mapSupportToUiMessage));
     } catch {
-      Alert.alert("Error", "Could not load your support conversation.");
+      Alert.alert(t("adminSupport.alerts.errorTitle"), t("adminSupport.alerts.loadError"));
     } finally {
       if (showFullSpinner) setLoadingThread(false);
     }
@@ -306,7 +307,7 @@ const AdminSupport = () => {
       scrollToBottom();
       void loadThread(false);
     } catch {
-      Alert.alert("Error", "Could not send your message. Please try again.");
+      Alert.alert(t("adminSupport.alerts.errorTitle"), t("adminSupport.alerts.sendFailed"));
     }
   };
 
@@ -335,7 +336,7 @@ const AdminSupport = () => {
       scrollToBottom();
       void loadThread(false);
     } catch {
-      Alert.alert("Error", "Could not send the image. Please try again.");
+      Alert.alert(t("adminSupport.alerts.errorTitle"), t("adminSupport.alerts.imageFailed"));
     }
   };
 
@@ -345,8 +346,8 @@ const AdminSupport = () => {
 
     if (permissionResult.granted === false) {
       Alert.alert(
-        "Permission Required",
-        "You need to allow access to your photos to send images.",
+        t("adminSupport.alerts.permissionTitle"),
+        t("adminSupport.alerts.photoPermission"),
       );
       return;
     }
@@ -369,8 +370,8 @@ const AdminSupport = () => {
 
     if (permissionResult.granted === false) {
       Alert.alert(
-        "Permission Required",
-        "You need to allow access to your camera to take photos.",
+        t("adminSupport.alerts.permissionTitle"),
+        t("adminSupport.alerts.cameraPermission"),
       );
       return;
     }
@@ -426,12 +427,12 @@ const AdminSupport = () => {
 
               <View>
                 <Text className="text-[15px] font-semibold text-[#111111]">
-                  Support Team
+                  {t("adminSupport.title")}
                 </Text>
                 <View className="flex-row items-center">
                   <View className="w-2 h-2 rounded-full bg-[#1BC47D]" />
                   <Text className="text-[10px] text-[#1BC47D] ml-1">
-                    Online
+                    {t("adminSupport.online")}
                   </Text>
                 </View>
               </View>
@@ -442,14 +443,14 @@ const AdminSupport = () => {
               entering={FadeInDown}
               className="text-center text-[11px] text-[#9A9A9A] my-3"
             >
-              Today
+              {t("adminSupport.today")}
             </Animated.Text>
 
             {/* Messages */}
             {loadingThread ? (
               <View className="flex-1 items-center justify-center py-20">
                 <ActivityIndicator size="large" color="#98A08C" />
-                <Text className="text-[13px] text-[#888] mt-3">Loading conversation…</Text>
+                <Text className="text-[13px] text-[#888] mt-3">{t("adminSupport.loading")}</Text>
               </View>
             ) : (
               <ScrollView
@@ -480,7 +481,7 @@ const AdminSupport = () => {
               <View className="h-[52px] rounded-full bg-[#F4F4F4] flex-row items-center px-4">
                 <TextInput
                   ref={inputRef}
-                  placeholder="Message"
+                  placeholder={t("adminSupport.messagePlaceholder")}
                   placeholderTextColor="#9B9B9B"
                   value={inputText}
                   onChangeText={setInputText}
@@ -537,7 +538,7 @@ const AdminSupport = () => {
               className="bg-white rounded-t-3xl p-6"
             >
               <View className="flex-row justify-between items-center mb-4">
-                <Text className="text-lg font-semibold">Send Photo</Text>
+                <Text className="text-lg font-semibold">{t("adminSupport.sendPhoto")}</Text>
                 <Pressable onPress={() => setShowImagePicker(false)}>
                   <X size={24} color="#111" />
                 </Pressable>
@@ -548,7 +549,7 @@ const AdminSupport = () => {
                   <View className="w-16 h-16 bg-[#F4F4F4] rounded-full items-center justify-center mb-2">
                     <Camera size={24} color="#98A08C" />
                   </View>
-                  <Text className="text-sm">Take Photo</Text>
+                  <Text className="text-sm">{t("adminSupport.takePhoto")}</Text>
                 </Pressable>
 
                 <Pressable onPress={pickImage} className="items-center p-4">
@@ -560,7 +561,7 @@ const AdminSupport = () => {
                       className="w-10 h-10 rounded-lg"
                     />
                   </View>
-                  <Text className="text-sm">Choose from Library</Text>
+                  <Text className="text-sm">{t("adminSupport.chooseLibrary")}</Text>
                 </Pressable>
               </View>
             </Animated.View>

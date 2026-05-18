@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { t } from "../../../i18n";
 
 type Props = {
   selectedCount: number;
@@ -16,7 +17,7 @@ const ProgressHeader = ({
     <View>
       <View className="flex-row justify-between mb-2">
         <Text className="text-gray-600 text-[13px]">
-          {selectedCount} of {totalItems} items
+          {selectedCount} {t("progressHeader.of")} {totalItems} {t("progressHeader.items")}
         </Text>
         <Text className="text-[#89957F] text-[13px]">
           {progressPercentage}%

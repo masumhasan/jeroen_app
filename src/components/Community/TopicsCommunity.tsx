@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 
 interface TopicItem {
   id: string;
@@ -32,7 +33,7 @@ const TopicsCommunity = ({ topics, onToggleFollow }: TopicsCommunityProps) => {
               {item.name}
             </Text>
             <Text className="text-xs text-gray-400 mt-1">
-              {(item.followerCount || 0).toLocaleString()} followers
+              {(item.followerCount || 0).toLocaleString("nl-NL")} {t("topics.followers")}
             </Text>
           </View>
         </View>
@@ -50,7 +51,7 @@ const TopicsCommunity = ({ topics, onToggleFollow }: TopicsCommunityProps) => {
               item.following ? "text-white" : "text-gray-600"
             }`}
           >
-            {item.following ? "Following" : "Follow"}
+            {item.following ? t("topics.following") : t("topics.follow")}
           </Text>
         </TouchableOpacity>
       </View>

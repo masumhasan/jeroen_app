@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 
 interface Props {
   onRegenerate: () => void;
@@ -14,7 +15,7 @@ export default function FooterActions({ onRegenerate, regenerating }: Props) {
         onPress={() => router.push("/shopping_list")}
         className="flex-1 border border-gray-300 rounded-xl py-4 items-center mr-3"
       >
-        <Text className="text-gray-700">Shopping List</Text>
+        <Text className="text-gray-700">{t("footerActions.shoppingList")}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -23,7 +24,7 @@ export default function FooterActions({ onRegenerate, regenerating }: Props) {
         className={`flex-1 bg-[#7A8B6F] rounded-xl py-4 items-center ${regenerating ? 'opacity-50' : ''}`}
       >
         <Text className="text-white font-medium">
-          {regenerating ? "Generating..." : "Regenerate"}
+          {regenerating ? t("footerActions.generating") : t("footerActions.regenerate")}
         </Text>
       </TouchableOpacity>
     </View>

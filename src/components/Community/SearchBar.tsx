@@ -1,6 +1,7 @@
 import { Search } from "lucide-react-native";
 import React from "react";
 import { TextInput, View } from "react-native";
+import { t } from "../../i18n";
 
 interface SearchBarProps {
   value: string;
@@ -14,7 +15,7 @@ export default function SearchBar({ value, onChangeText }: SearchBarProps) {
         <Search size={18} color="#999" />
 
         <TextInput
-          placeholder="Search posts, topics, or users..."
+          placeholder={t("searchBar.placeholder")}
           className="ml-2 flex-1 text-sm"
           value={value}
           onChangeText={onChangeText}

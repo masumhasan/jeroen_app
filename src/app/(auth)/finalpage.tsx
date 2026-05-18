@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { t } from "../../i18n";
 import {
   ActivityIndicator,
   Alert,
@@ -187,7 +188,7 @@ const FinalPage = () => {
   const applyCaloriesFromModal = () => {
     const parsed = parseInt(calDraft.replace(/[^0-9]/g, ""), 10);
     if (!Number.isFinite(parsed) || parsed < 1) {
-      Alert.alert("Invalid value", "Enter a calorie target of at least 1.");
+      Alert.alert(t("finalPage.errors.invalidValue"), t("finalPage.errors.calorieMin"));
       return;
     }
     const cap = Math.min(parsed, 50000);
@@ -211,8 +212,8 @@ const FinalPage = () => {
     );
     if (finalCalories < 1) {
       Alert.alert(
-        "No macros set",
-        "Please set at least some protein, carbs, or fat before saving.",
+        t("finalPage.errors.noMacrosTitle"),
+        t("finalPage.errors.noMacrosMessage"),
       );
       return;
     }
@@ -233,8 +234,8 @@ const FinalPage = () => {
       const err = error as { response?: { data?: { message?: string } } };
       const msg =
         err?.response?.data?.message ||
-        "Could not save your targets. Check your connection and try again.";
-      Alert.alert("Save failed", String(msg));
+        t("finalPage.errors.saveFailedMessage");
+      Alert.alert(t("finalPage.errors.saveFailedTitle"), String(msg));
     } finally {
       setIsSaving(false);
     }
@@ -371,7 +372,7 @@ const FinalPage = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            Perfect, {userData?.firstName || "there"}! 🎉
+            {t("finalPage.title", { firstName: userData?.firstName || "daar" })}
           </Animated.Text>
 
           <Animated.Text
@@ -381,8 +382,7 @@ const FinalPage = () => {
               transform: [{ translateY: slideAnim }],
             }}
           >
-            Your custom plan is ready based on your goal:{" "}
-            {userData?.goal || "Maintenance"}
+            {t("finalPage.subtitle", { goal: userData?.goal || "Gewicht handhaven" })}
           </Animated.Text>
 
           <Animated.View
@@ -392,16 +392,16 @@ const FinalPage = () => {
             }}
           >
             <Text className="text-gray-400 text-sm">
-              Recommended: {aiRecommended.calories.toLocaleString()} calories
+              {t("finalPage.recommended", { calories: aiRecommended.calories.toLocaleString("nl-NL") })}
             </Text>
 
             <Animated.View className="flex-row items-center mt-2">
               <Text className="text-4xl font-bold text-gray-700">
-                {coveredCalories.toLocaleString()}
+                {coveredCalories.toLocaleString("nl-NL")}
               </Text>
             </Animated.View>
 
-            <Text className="text-gray-500 mt-1">Calories per day</Text>
+            <Text className="text-gray-500 mt-1">{t("finalPage.caloriesPerDay")}</Text>
           </Animated.View>
 
           <View className="flex-row justify-between mt-8">
@@ -414,7 +414,7 @@ const FinalPage = () => {
               <View className="w-20 h-20 rounded-full border-4 border-[#B8A99A] items-center justify-center">
                 <Text className="font-bold">{editableData.protein}g</Text>
               </View>
-              <Text className="mt-2 text-gray-700 font-medium">Protein</Text>
+              <Text className="mt-2 text-gray-700 font-medium">{t("finalPage.protein")}</Text>
               <Text className="text-gray-400 text-xs">{pctP}%</Text>
             </Animated.View>
 
@@ -427,7 +427,7 @@ const FinalPage = () => {
               <View className="w-20 h-20 rounded-full border-4 border-[#D6C970] items-center justify-center">
                 <Text className="font-bold">{editableData.carbs}g</Text>
               </View>
-              <Text className="mt-2 text-gray-700 font-medium">Carbs</Text>
+              <Text className="mt-2 text-gray-700 font-medium">{t("finalPage.carbs")}</Text>
               <Text className="text-gray-400 text-xs">{pctC}%</Text>
             </Animated.View>
 
@@ -440,7 +440,7 @@ const FinalPage = () => {
               <View className="w-20 h-20 rounded-full border-4 border-[#88937B] items-center justify-center">
                 <Text className="font-bold">{editableData.fat}g</Text>
               </View>
-              <Text className="mt-2 text-gray-700 font-medium">Fat</Text>
+              <Text className="mt-2 text-gray-700 font-medium">{t("finalPage.fat")}</Text>
               <Text className="text-gray-400 text-xs">{pctF}%</Text>
             </Animated.View>
           </View>
@@ -451,7 +451,7 @@ const FinalPage = () => {
               opacity: fadeAnim,
             }}
           >
-            Customize Macronutrient Breakdown
+            {t("finalPage.customizeMacros")}
           </Animated.Text>
 
           <View className="items-center mt-3">
@@ -462,7 +462,7 @@ const FinalPage = () => {
                 activeOpacity={0.7}
               >
                 <Text className="text-2xl font-bold text-gray-400">
-                  {editableData.calories.toLocaleString()}
+                  {editableData.calories.toLocaleString("nl-NL")}
                 </Text>
                 <Ionicons
                   name="pencil-outline"
@@ -481,17 +481,17 @@ const FinalPage = () => {
                       : "#8A957F",
                 }}
               >
-                {coveredCalories.toLocaleString()}
+                {coveredCalories.toLocaleString("nl-NL")}
               </Text>
             </View>
             <Text className="text-xs text-gray-400 mt-1">
-              Budget / Your target (kcal)
+              {t("finalPage.budgetLabel")}
             </Text>
           </View>
 
           <View className="mt-6">
             <View className="flex-row justify-between items-center mb-1">
-              <Text className="text-gray-500">Protein</Text>
+              <Text className="text-gray-500">{t("finalPage.protein")}</Text>
               <Text className="text-gray-500 text-sm">{pctP}%</Text>
             </View>
             <Slider
@@ -513,7 +513,7 @@ const FinalPage = () => {
             />
 
             <View className="flex-row justify-between items-center mt-2 mb-1">
-              <Text className="text-gray-500">Carbs</Text>
+              <Text className="text-gray-500">{t("finalPage.carbs")}</Text>
               <Text className="text-gray-500 text-sm">{pctC}%</Text>
             </View>
             <Slider
@@ -535,7 +535,7 @@ const FinalPage = () => {
             />
 
             <View className="flex-row justify-between items-center mt-2 mb-1">
-              <Text className="text-gray-500">Fat</Text>
+              <Text className="text-gray-500">{t("finalPage.fat")}</Text>
               <Text className="text-gray-500 text-sm">{pctF}%</Text>
             </View>
             <Slider
@@ -558,8 +558,7 @@ const FinalPage = () => {
           </View>
 
           <Text className="text-center text-xs text-gray-400 mt-4 px-2">
-            Macros are limited so calories from protein (4/g), carbs (4/g), and fat (9/g) do
-            not exceed your daily target.
+            {t("finalPage.macrosNote")}
           </Text>
 
           <Animated.View
@@ -579,7 +578,7 @@ const FinalPage = () => {
                 <ActivityIndicator color="white" />
               ) : (
                 <Text className="text-white font-semibold text-base">
-                  {returnTo === "profile" ? "Save targets" : "Continue to Weekly Plan"}
+                  {returnTo === "profile" ? t("finalPage.saveTargets") : t("finalPage.continueButton")}
                 </Text>
               )}
             </TouchableOpacity>
@@ -595,13 +594,13 @@ const FinalPage = () => {
       >
         <View className="flex-1 justify-center px-6" style={{ backgroundColor: "rgba(0,0,0,0.45)" }}>
           <View className="bg-white rounded-2xl p-5">
-            <Text className="text-lg font-bold text-gray-800 mb-2">Daily calories</Text>
+            <Text className="text-lg font-bold text-gray-800 mb-2">{t("finalPage.dailyCalories")}</Text>
             <TextInput
               className="border border-gray-200 rounded-xl px-3 py-3 text-gray-900 text-lg"
               keyboardType="number-pad"
               value={calDraft}
               onChangeText={setCalDraft}
-              placeholder="e.g. 2000"
+              placeholder={t("finalPage.caloriePlaceholder")}
               autoFocus
             />
             <View className="flex-row gap-3 mt-4">
@@ -609,13 +608,13 @@ const FinalPage = () => {
                 onPress={() => setCalModalOpen(false)}
                 className="flex-1 py-3 rounded-xl bg-gray-100 items-center"
               >
-                <Text className="text-gray-700 font-semibold">Cancel</Text>
+                <Text className="text-gray-700 font-semibold">{t("finalPage.cancel")}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={applyCaloriesFromModal}
                 className="flex-1 py-3 rounded-xl bg-[#8A957F] items-center"
               >
-                <Text className="text-white font-semibold">Save</Text>
+                <Text className="text-white font-semibold">{t("finalPage.save")}</Text>
               </TouchableOpacity>
             </View>
           </View>

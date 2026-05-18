@@ -26,6 +26,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { authService } from "../../../services/authService";
 import { AppImages } from "../../../../assets/appimage/appimages";
+import { t } from "../../../i18n";
 
 // Types
 interface ProfileData {
@@ -154,7 +155,7 @@ const ProfileSetting: React.FC = () => {
         setProfileData(formattedData);
         setOriginalData(formattedData);
       } catch (error) {
-        Alert.alert("Error", "Failed to fetch user data");
+        Alert.alert(t("profileSettings.alerts.errorTitle"), t("profileSettings.alerts.fetchFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -179,26 +180,26 @@ const ProfileSetting: React.FC = () => {
   // Validation
   const validateForm = (): boolean => {
     if (!profileData.firstName.trim()) {
-      Alert.alert("Validation Error", "First name is required");
+      Alert.alert(t("profileSettings.alerts.validationTitle"), t("profileSettings.alerts.firstNameRequired"));
       return false;
     }
     if (!profileData.lastName.trim()) {
-      Alert.alert("Validation Error", "Last name is required");
+      Alert.alert(t("profileSettings.alerts.validationTitle"), t("profileSettings.alerts.lastNameRequired"));
       return false;
     }
     if (!profileData.mobileNumber.trim()) {
-      Alert.alert("Validation Error", "Mobile number is required");
+      Alert.alert(t("profileSettings.alerts.validationTitle"), t("profileSettings.alerts.phoneRequired"));
       return false;
     }
     if (!/^\d+$/.test(profileData.mobileNumber)) {
-      Alert.alert("Validation Error", "Mobile number must contain only digits");
+      Alert.alert(t("profileSettings.alerts.validationTitle"), t("profileSettings.alerts.phoneDigitsOnly"));
       return false;
     }
     if (
       profileData.email &&
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)
     ) {
-      Alert.alert("Validation Error", "Please enter a valid email address");
+      Alert.alert(t("profileSettings.alerts.validationTitle"), t("profileSettings.alerts.emailInvalid"));
       return false;
     }
     return true;
@@ -226,9 +227,9 @@ const ProfileSetting: React.FC = () => {
       await authService.updateProfile(updatePayload);
 
       setOriginalData(profileData);
-      Alert.alert("Success", "Profile updated successfully");
+      Alert.alert(t("profileSettings.alerts.successTitle"), t("profileSettings.alerts.updateSuccess"));
     } catch (error: any) {
-      Alert.alert("Error", error.response?.data?.message || "Failed to update profile");
+      Alert.alert(t("profileSettings.alerts.errorTitle"), error.response?.data?.message || t("profileSettings.alerts.updateFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -241,8 +242,8 @@ const ProfileSetting: React.FC = () => {
 
       if (!permission.granted) {
         Alert.alert(
-          "Permission Required",
-          "Photo library access is needed to change profile picture",
+          t("profileSettings.alerts.permissionTitle"),
+          t("profileSettings.alerts.permissionMessage"),
         );
         return;
       }
@@ -268,19 +269,19 @@ const ProfileSetting: React.FC = () => {
         setIsLoading(false);
       }
     } catch (error) {
-      Alert.alert("Error", "Failed to change profile picture");
+      Alert.alert(t("profileSettings.alerts.errorTitle"), t("profileSettings.alerts.pictureFailed"));
       setIsLoading(false);
     }
   };
 
   const handleDiscard = () => {
     Alert.alert(
-      "Discard Changes",
-      "Are you sure you want to discard your changes?",
+      t("profileSettings.discardTitle"),
+      t("profileSettings.discardMessage"),
       [
-        { text: "Stay", style: "cancel" },
+        { text: t("profileSettings.stay"), style: "cancel" },
         {
-          text: "Discard",
+          text: t("profileSettings.discard"),
           style: "destructive",
           onPress: () => {
             setProfileData(originalData);
@@ -293,11 +294,11 @@ const ProfileSetting: React.FC = () => {
   const handleGoBack = () => {
     if (hasChanges) {
       Alert.alert(
-        "Unsaved Changes",
-        "You have unsaved changes. Are you sure you want to go back?",
+        t("profileSettings.unsavedTitle"),
+        t("profileSettings.unsavedMessage"),
         [
-          { text: "Stay", style: "cancel" },
-          { text: "Leave", onPress: () => router.back() },
+          { text: t("profileSettings.stay"), style: "cancel" },
+          { text: t("profileSettings.leave"), onPress: () => router.back() },
         ],
       );
     } else {
@@ -371,13 +372,13 @@ const ProfileSetting: React.FC = () => {
                 </AnimatedPressable>
 
                 <Text className="text-[20px] font-semibold text-[#111111]">
-                  Edit Profile
+                  {t("profileSettings.title")}
                 </Text>
 
                 {hasChanges && (
                   <TouchableOpacity onPress={handleDiscard}>
                     <Text className="text-[#98A08C] text-[14px] font-medium">
-                      Reset
+                      {t("profileSettings.reset")}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -418,44 +419,44 @@ const ProfileSetting: React.FC = () => {
                 </AnimatedPressable>
 
                 <Text className="text-[12px] text-[#9A9A9A] mt-2">
-                  Tap to change profile photo
+                  {t("profileSettings.tapToChange")}
                 </Text>
               </Animated.View>
 
               {/* Form Fields - Direct Editing */}
               <View className="mb-6">
                 <EditableInputField
-                  label="First Name"
+                  label={t("profileSettings.firstName")}
                   value={profileData.firstName}
                   icon={<User size={16} color="#7A7A7A" strokeWidth={1.8} />}
                   onChangeText={(text) => handleFieldChange("firstName", text)}
-                  placeholder="Enter first name"
+                  placeholder={t("profileSettings.enterFirstName")}
                   maxLength={20}
                   autoCapitalize="words"
                 />
 
                 <EditableInputField
-                  label="Last Name"
+                  label={t("profileSettings.lastName")}
                   value={profileData.lastName}
                   icon={<User size={16} color="#7A7A7A" strokeWidth={1.8} />}
                   onChangeText={(text) => handleFieldChange("lastName", text)}
-                  placeholder="Enter last name"
+                  placeholder={t("profileSettings.enterLastName")}
                   maxLength={20}
                   autoCapitalize="words"
                 />
 
                 <EditableInputField
-                  label="Email Address"
+                  label={t("profileSettings.email")}
                   value={profileData.email || ""}
                   icon={<Text className="text-[#7A7A7A] text-[16px]">@</Text>}
                   onChangeText={(text) => handleFieldChange("email", text)}
-                  placeholder="Enter email address"
+                  placeholder={t("profileSettings.enterEmail")}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
 
                 <EditableInputField
-                  label="Mobile Number"
+                  label={t("profileSettings.phone")}
                   value={profileData.mobileNumber}
                   icon={
                     <View className="flex-row items-center">
@@ -468,7 +469,7 @@ const ProfileSetting: React.FC = () => {
                   onChangeText={(text) =>
                     handleFieldChange("mobileNumber", text)
                   }
-                  placeholder="Enter mobile number"
+                  placeholder={t("profileSettings.enterPhone")}
                   keyboardType="phone-pad"
                   maxLength={15}
                 />
@@ -491,7 +492,7 @@ const ProfileSetting: React.FC = () => {
                   <View className="flex-row items-center">
                     <Save size={20} color="#FFFFFF" />
                     <Text className="text-white text-[16px] font-semibold ml-2">
-                      Save Changes
+                      {t("profileSettings.saveChanges")}
                     </Text>
                   </View>
                 )}

@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { authService } from "../../../services/authService";
+import { t } from "../../../i18n";
 
 const ShoppingList = () => {
   const [loading, setLoading] = useState(true);
@@ -56,7 +57,7 @@ const ShoppingList = () => {
     return (
       <View className="flex-1 bg-[#F7F7F7] items-center justify-center">
         <ActivityIndicator size="large" color="#89957F" />
-        <Text className="mt-3 text-gray-500">Loading shopping list...</Text>
+        <Text className="mt-3 text-gray-500">{t("shoppingList.loading")}</Text>
       </View>
     );
   }
@@ -69,14 +70,14 @@ const ShoppingList = () => {
         </TouchableOpacity>
 
         <Text className="text-[20px] font-semibold text-center flex-1">
-          Shopping List
+          {t("shoppingList.title")}
         </Text>
         {selectedCount > 0 && (
           <TouchableOpacity
             onPress={resetSelection}
             className="bg-gray-200 px-3 py-1 rounded-full"
           >
-            <Text className="text-gray-600 text-sm">Reset</Text>
+            <Text className="text-gray-600 text-sm">{t("shoppingList.reset")}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -84,7 +85,7 @@ const ShoppingList = () => {
       <View>
         <View className="flex-row justify-between mb-2">
           <Text className="text-gray-600 text-[13px]">
-            {selectedCount} of {totalItems} items
+            {t("shoppingList.itemsCount", { selected: String(selectedCount), total: String(totalItems) })}
           </Text>
           <Text className="text-[#89957F] text-[13px]">
             {progressPercentage}%
@@ -139,8 +140,8 @@ const ShoppingList = () => {
 
       {categories.length === 0 && (
         <View className="items-center py-10">
-          <Text className="text-gray-500">No shopping list yet.</Text>
-          <Text className="text-gray-500">Generate your plan to create one.</Text>
+          <Text className="text-gray-500">{t("shoppingList.noList")}</Text>
+          <Text className="text-gray-500">{t("shoppingList.generateHint")}</Text>
         </View>
       )}
 
@@ -148,7 +149,7 @@ const ShoppingList = () => {
       {selectedCount === totalItems && totalItems > 0 && (
         <View className="mt-6 p-4 bg-green-100 rounded-xl">
           <Text className="text-[#89957F] text-center font-semibold">
-            {`  🎉 Congratulations! You've completed your shopping list!`}
+            {t("shoppingList.allDone")}
           </Text>
         </View>
       )}
@@ -156,7 +157,7 @@ const ShoppingList = () => {
       <TouchableOpacity className="bg-[#89957F] rounded-2xl flex-row justify-center items-center gap-[2%] py-3 mt-[6%]">
         <Feather name="download" size={20} color="#FFFFFF" />
         <Text className="text-[#FFFFFF] font-Inter font-bold text-xl">
-          Export List
+          {t("shoppingList.exportList")}
         </Text>
       </TouchableOpacity>
 

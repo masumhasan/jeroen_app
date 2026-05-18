@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { communityService } from "../../../services/communityService";
+import { t } from "../../../i18n";
 
 const CreatePost = () => {
   const [topics, setTopics] = useState<any[]>([]);
@@ -51,8 +52,8 @@ const CreatePost = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert(
-        "Permission needed",
-        "Please grant permission to access your photos",
+        t("createPost.alerts.permissionTitle"),
+        t("createPost.alerts.permissionMessage"),
       );
       return false;
     }
@@ -74,10 +75,10 @@ const CreatePost = () => {
 
       if (!result.canceled) {
         setSelectedImage(result.assets[0].uri);
-        Alert.alert("Success", "Image selected successfully");
+        Alert.alert(t("createPost.alerts.successTitle"), t("createPost.alerts.imageSelected"));
       }
     } catch {
-      Alert.alert("Error", "Failed to select image");
+      Alert.alert(t("createPost.alerts.errorTitle"), t("createPost.alerts.imageFailed"));
     }
   };
 
@@ -85,12 +86,12 @@ const CreatePost = () => {
   const handlePost = async () => {
     // Validation
     if (selectedTopics.length === 0) {
-      Alert.alert("Error", "Please select at least one topic");
+      Alert.alert(t("createPost.alerts.errorTitle"), t("createPost.alerts.topicRequired"));
       return;
     }
 
     if (!postContent.trim()) {
-      Alert.alert("Error", "Please write something in your post");
+      Alert.alert(t("createPost.alerts.errorTitle"), t("createPost.alerts.contentRequired"));
       return;
     }
 
@@ -103,7 +104,7 @@ const CreatePost = () => {
         imageUri: selectedImage,
       });
 
-      Alert.alert("Success", "Your post has been created successfully!", [
+      Alert.alert(t("createPost.alerts.successTitle"), t("createPost.alerts.postCreated"), [
         {
           text: "OK",
           onPress: () => router.back(),
@@ -115,7 +116,7 @@ const CreatePost = () => {
       setPostContent("");
       setSelectedImage(null);
     } catch {
-      Alert.alert("Error", "Failed to create post. Please try again.");
+      Alert.alert(t("createPost.alerts.errorTitle"), t("createPost.alerts.contentRequired"));
     } finally {
       setIsPosting(false);
     }
@@ -125,12 +126,12 @@ const CreatePost = () => {
   const handleCancel = () => {
     if (postContent || selectedTopics.length > 0 || selectedImage) {
       Alert.alert(
-        "Discard Post",
-        "You have unsaved changes. Are you sure you want to discard this post?",
+        t("createPost.discardTitle"),
+        t("createPost.discardMessage"),
         [
-          { text: "Stay", style: "cancel" },
+          { text: t("createPost.stay"), style: "cancel" },
           {
-            text: "Discard",
+            text: t("createPost.discard"),
             style: "destructive",
             onPress: () => router.back(),
           },
@@ -158,7 +159,7 @@ const CreatePost = () => {
             </TouchableOpacity>
 
             <Text className="text-[20px] font-semibold text-[#222]">
-              Create Post
+              {t("createPost.title")}
             </Text>
 
             <TouchableOpacity
@@ -171,7 +172,7 @@ const CreatePost = () => {
               {isPosting ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
-                <Text className="text-white font-medium">Post</Text>
+                <Text className="text-white font-medium">{t("createPost.postButton")}</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -182,14 +183,14 @@ const CreatePost = () => {
           >
             {/* Select Topic */}
             <Text className="text-[15px] font-semibold text-[#333] mb-3">
-              Select Topic *
+              {t("createPost.selectTopic")}
             </Text>
 
             {/* Search */}
             <View className="flex-row items-center bg-white border border-[#E2E2E2] rounded-xl px-3 py-3 mb-4">
               <Feather name="search" size={18} color="#777" />
               <TextInput
-                placeholder="Search topics"
+                placeholder={t("createPost.searchTopics")}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 className="ml-2 flex-1 text-[14px]"
@@ -249,11 +250,11 @@ const CreatePost = () => {
 
             {/* What's on your mind */}
             <Text className="text-[15px] font-semibold text-[#333] mb-3">
-              {` What's on your mind? *`}
+              {t("createPost.whatOnMind")}
             </Text>
 
             <TextInput
-              placeholder="Share your thoughts, recipes, or meal plans..."
+              placeholder={t("createPost.postPlaceholder")}
               multiline
               value={postContent}
               onChangeText={setPostContent}
@@ -276,7 +277,7 @@ const CreatePost = () => {
               >
                 <Feather name="image" size={18} color="#7E8B73" />
                 <Text className="ml-2 text-[#7E8B73] font-medium">
-                  {selectedImage ? "Change Photo" : "Add Photo"}
+                  {selectedImage ? t("createPost.changePhoto") : t("createPost.addPhoto")}
                 </Text>
               </TouchableOpacity>
 
@@ -294,7 +295,7 @@ const CreatePost = () => {
                   <Feather name="send" size={18} color="#FFFFFF" />
                 )}
                 <Text className="ml-2 text-[#FFFFFF] font-medium">
-                  Post
+                  {t("createPost.postButton")}
                 </Text>
               </TouchableOpacity>
             </View>

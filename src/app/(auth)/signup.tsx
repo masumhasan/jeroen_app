@@ -1,6 +1,7 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import { t } from "../../i18n";
 import {
   ActivityIndicator,
   Animated,
@@ -69,22 +70,22 @@ const Signup = () => {
     const email = formData.email.trim();
     const password = formData.password;
 
-    if (!fn) err.firstName = "First name is required";
-    else if (fn.length < 2) err.firstName = "First name must be at least 2 characters";
+    if (!fn) err.firstName = t("signup.errors.firstNameRequired");
+    else if (fn.length < 2) err.firstName = t("signup.errors.firstNameTooShort");
 
-    if (!ln) err.lastName = "Last name is required";
-    else if (ln.length < 2) err.lastName = "Last name must be at least 2 characters";
+    if (!ln) err.lastName = t("signup.errors.lastNameRequired");
+    else if (ln.length < 2) err.lastName = t("signup.errors.lastNameTooShort");
 
-    if (!phone) err.phone = "Phone number is required";
-    else if (phone.length < 8) err.phone = "Phone number is too short";
+    if (!phone) err.phone = t("signup.errors.phoneRequired");
+    else if (phone.length < 8) err.phone = t("signup.errors.phoneTooShort");
 
-    if (!email) err.email = "Email is required";
+    if (!email) err.email = t("signup.errors.emailRequired");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      err.email = "Invalid email address";
+      err.email = t("signup.errors.emailInvalid");
     }
 
-    if (!password) err.password = "Password is required";
-    else if (password.length < 6) err.password = "Password must be at least 6 characters";
+    if (!password) err.password = t("signup.errors.passwordRequired");
+    else if (password.length < 6) err.password = t("signup.errors.passwordTooShort");
 
     setFieldErrors(err);
     return Object.keys(err).length === 0;
@@ -92,7 +93,7 @@ const Signup = () => {
 
   const handleRegisterPress = async () => {
     if (!checkbox) {
-      setFieldErrors({ terms: "Please agree to the Terms & Conditions" });
+      setFieldErrors({ terms: t("signup.errors.termsRequired") });
       return;
     }
 
@@ -141,10 +142,10 @@ const Signup = () => {
         setFieldErrors((prev) => {
           const next = { ...prev };
           if (data.emailTaken) {
-            next.email = "An account with this email already exists.";
+            next.email = t("signup.errors.emailTaken");
           }
           if (data.phoneTaken) {
-            next.phone = "An account with this phone number already exists.";
+            next.phone = t("signup.errors.phoneTaken");
           }
           return next;
         });
@@ -161,7 +162,7 @@ const Signup = () => {
         }
       } else {
         setFieldErrors({
-          general: "Could not verify your details. Check your connection and try again.",
+          general: t("signup.errors.connectionError"),
         });
       }
     } finally {
@@ -253,14 +254,14 @@ const Signup = () => {
             transform: [{ translateY: slideAnim }],
           }}
         >
-          <Text className="text-3xl font-bold text-[#7C866E] mb-2">Create Account</Text>
-          <Text className="text-gray-500 mb-8">Sign up to get started with our services</Text>
+          <Text className="text-3xl font-bold text-[#7C866E] mb-2">{t("signup.title")}</Text>
+          <Text className="text-gray-500 mb-8">{t("signup.subtitle")}</Text>
 
-          {renderInput("firstName", "First Name", "person-outline", "John")}
-          {renderInput("lastName", "Last Name", "person-outline", "Doe")}
-          {renderInput("phone", "Phone Number", "call-outline", "+31 6 12345678")}
-          {renderInput("email", "Email", "mail-outline", "name@example.com")}
-          {renderInput("password", "Password", "lock-closed-outline", "password", true)}
+          {renderInput("firstName", t("signup.firstNameLabel"), "person-outline", t("signup.firstNamePlaceholder"))}
+          {renderInput("lastName", t("signup.lastNameLabel"), "person-outline", t("signup.lastNamePlaceholder"))}
+          {renderInput("phone", t("signup.phoneLabel"), "call-outline", t("signup.phonePlaceholder"))}
+          {renderInput("email", t("signup.emailLabel"), "mail-outline", t("signup.emailPlaceholder"))}
+          {renderInput("password", t("signup.passwordLabel"), "lock-closed-outline", t("signup.passwordPlaceholder"), true)}
 
           <View className="mb-4">
             <View className="flex-row items-center">
@@ -274,8 +275,8 @@ const Signup = () => {
                 {checkbox && <FontAwesome5 name="check" size={10} color="#7C866E" />}
               </TouchableOpacity>
               <Text className="text-sm text-gray-500 ml-2">
-                I agree to{" "}
-                <Text className="text-[#7C866E] font-semibold">Terms & Conditions</Text>
+                {t("signup.agreeTo")}
+                <Text className="text-[#7C866E] font-semibold">{t("signup.termsConditions")}</Text>
               </Text>
             </View>
             {fieldErrors.terms ? (
@@ -297,21 +298,21 @@ const Signup = () => {
               {isChecking ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
-                <Text className="text-white text-center font-semibold text-lg">Register</Text>
+                <Text className="text-white text-center font-semibold text-lg">{t("signup.registerButton")}</Text>
               )}
             </TouchableOpacity>
           </Animated.View>
 
           <View className="flex-row items-center justify-center mt-4">
             <View className="flex-1 h-px bg-gray-200" />
-            <Text className="mx-4 text-gray-400 text-sm">or continue with</Text>
+            <Text className="mx-4 text-gray-400 text-sm">{t("signup.orContinueWith")}</Text>
             <View className="flex-1 h-px bg-gray-200" />
           </View>
 
           <View className="flex-row items-center justify-center mt-8 mb-6">
-            <Text className="text-gray-400">Already have an account? </Text>
+            <Text className="text-gray-400">{t("signup.haveAccount")}</Text>
             <TouchableOpacity onPress={handleLoginPress}>
-              <Text className="text-[#7C866E] font-semibold">Login</Text>
+              <Text className="text-[#7C866E] font-semibold">{t("signup.loginLink")}</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>

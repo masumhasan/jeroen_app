@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { authService } from "../../services/authService";
 import { Alert } from "react-native";
+import { t } from "../../i18n";
 import {
   ActivityIndicator,
   Image,
@@ -83,20 +84,20 @@ const Signin = () => {
     let isValid = true;
 
     if (!email.trim()) {
-      setEmailError("Email is required");
+      setEmailError(t("signin.errors.emailRequired"));
       isValid = false;
     } else if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email");
+      setEmailError(t("signin.errors.emailInvalid"));
       isValid = false;
     } else {
       setEmailError("");
     }
 
     if (!password.trim()) {
-      setPasswordError("Password is required");
+      setPasswordError(t("signin.errors.passwordRequired"));
       isValid = false;
     } else if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters");
+      setPasswordError(t("signin.errors.passwordTooShort"));
       isValid = false;
     } else {
       setPasswordError("");
@@ -137,7 +138,7 @@ const Signin = () => {
       await authService.signin({ email, password });
       router.replace("/community");
     } catch (error: any) {
-      Alert.alert("Login Error", error.response?.data?.message || "Invalid email or password");
+      Alert.alert(t("signin.errors.loginError"), error.response?.data?.message || t("signin.errors.invalidCredentials"));
     } finally {
       setIsLoading(false);
     }
@@ -150,7 +151,7 @@ const Signin = () => {
   const handleEmailBlur = () => {
     emailFocus.value = withTiming(0, { duration: 300 });
     if (email && !validateEmail(email)) {
-      setEmailError("Please enter a valid email");
+      setEmailError(t("signin.errors.emailInvalid"));
     }
   };
 
@@ -193,7 +194,7 @@ const Signin = () => {
               entering={FadeInDown.delay(400).duration(800).springify()}
               className="text-center text-3xl font-bold text-gray-800 mb-2"
             >
-              Welcome Back
+              {t("signin.title")}
             </Animated.Text>
 
             {/* Subtitle Animation */}
@@ -201,12 +202,12 @@ const Signin = () => {
               entering={FadeInDown.delay(600).duration(800).springify()}
               className="text-center text-gray-500 mb-10"
             >
-              Sign in to continue to your Meal Planning
+              {t("signin.subtitle")}
             </Animated.Text>
 
             {/* Email Input Animation */}
             <Text className="text-[#0F0B18] mb-2 font-Inter text-base">
-              Email
+              {t("signin.emailLabel")}
             </Text>
             <Animated.View
               entering={FadeInUp.delay(800).duration(800).springify()}
@@ -221,7 +222,7 @@ const Signin = () => {
                   color={emailError ? "#EF4444" : "#9CA3AF"}
                 />
                 <TextInput
-                  placeholder="Email address"
+                  placeholder={t("signin.emailPlaceholder")}
                   placeholderTextColor="#9CA3AF"
                   value={email}
                   onChangeText={(text) => {
@@ -246,7 +247,7 @@ const Signin = () => {
             </Animated.View>
 
             <Text className="text-[#0F0B18] mb-2 font-Inter text-base">
-              Password
+              {t("signin.passwordLabel")}
             </Text>
             {/* Password Input Animation */}
             <Animated.View
@@ -262,7 +263,7 @@ const Signin = () => {
                   color={passwordError ? "#EF4444" : "#9CA3AF"}
                 />
                 <TextInput
-                  placeholder="Password"
+                  placeholder={t("signin.passwordPlaceholder")}
                   placeholderTextColor="#9CA3AF"
                   value={password}
                   onChangeText={(text) => {
@@ -301,7 +302,7 @@ const Signin = () => {
             >
               <TouchableOpacity onPress={() => router.push("/forgot")}>
                 <Text className="text-[#7C866E] text-sm font-medium">
-                  Forgot Password?
+                  {t("signin.forgotPassword")}
                 </Text>
               </TouchableOpacity>
             </Animated.View>
@@ -321,7 +322,7 @@ const Signin = () => {
                   <ActivityIndicator color="white" />
                 ) : (
                   <Text className="text-white text-center font-semibold text-lg">
-                    Sign In
+                    {t("signin.signInButton")}
                   </Text>
                 )}
               </AnimatedTouchableOpacity>
@@ -334,7 +335,7 @@ const Signin = () => {
             >
               <View className="flex-1 h-px bg-gray-200" />
               <Text className="mx-4 text-gray-400 text-sm">
-                or continue with
+                {t("signin.orContinueWith")}
               </Text>
               <View className="flex-1 h-px bg-gray-200" />
             </Animated.View>
@@ -345,11 +346,11 @@ const Signin = () => {
               className="flex-row items-center justify-center gap-2 mb-4"
             >
               <Text className="text-center text-gray-500">
-                {`Don't have an account?`}
+                {t("signin.noAccount")}
               </Text>
               <TouchableOpacity onPress={() => router.push("/signup")}>
                 <Text className="text-center text-[#7C866E] font-semibold">
-                  Sign Up
+                  {t("signin.signUp")}
                 </Text>
               </TouchableOpacity>
             </Animated.View>

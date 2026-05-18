@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { t } from "../../../../i18n";
 
 interface Props {
   ingredients: string[];
@@ -10,7 +11,7 @@ const DeatilsFull = ({ ingredients, instructions }: Props) => {
     <View className="  pt-6">
       {/* Ingredients */}
       <Text className="text-xl font-semibold text-gray-800 mb-4 ">
-        Ingredients
+        {t("detailsFull.ingredients")}
       </Text>
 
       <View className="flex-col  space-y-3">
@@ -30,7 +31,7 @@ const DeatilsFull = ({ ingredients, instructions }: Props) => {
 
       {/* Instructions */}
       <Text className="text-xl font-semibold text-gray-800  mb-4">
-        Instructions
+        {t("detailsFull.instructions")}
       </Text>
 
       <View className="flex-col gap-[2%]  space-y-4">

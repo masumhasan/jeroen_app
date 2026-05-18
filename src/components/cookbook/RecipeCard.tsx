@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -65,7 +66,7 @@ export default function RecipeCard({ item }: Props) {
             </Text>
 
             <Text className="text-gray-500 text-sm">
-              {item.recipes} recipes
+              {t("recipeCard.recipes", { count: String(item.recipes) })}
             </Text>
 
             <TouchableOpacity
@@ -73,7 +74,7 @@ export default function RecipeCard({ item }: Props) {
               className="bg-[#7C8B74] mt-3 py-2 px-4 rounded-full flex-row items-center justify-center z-50"
               activeOpacity={0.7}
             >
-              <Text className="text-white mr-2 font-medium">View Recipes</Text>
+              <Text className="text-white mr-2 font-medium">{t("recipeCard.viewRecipes")}</Text>
               <Ionicons name="chevron-forward" size={16} color="white" />
             </TouchableOpacity>
           </View>

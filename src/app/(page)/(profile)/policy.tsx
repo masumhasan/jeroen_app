@@ -5,6 +5,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { contentService } from "../../../services/contentService";
 import RichContentViewer from "../../../components/profile/RichContentViewer";
+import { t } from "../../../i18n";
 
 const Policy = () => {
   const [content, setContent] = useState("");
@@ -23,7 +24,7 @@ const Policy = () => {
         }
       } catch {
         if (isMounted) {
-          setError("Unable to load Privacy Policy content right now.");
+          setError(t("policy.loadError"));
         }
       } finally {
         if (isMounted) {
@@ -50,7 +51,7 @@ const Policy = () => {
         </TouchableOpacity>
 
         <Text className="text-[20px] font-semibold text-[#222]">
-          Privacy Policy
+          {t("policy.title")}
         </Text>
       </View>
 

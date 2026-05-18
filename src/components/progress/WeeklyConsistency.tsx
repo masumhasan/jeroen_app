@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import ProgressBar from "./ProgressBar";
+import { t } from "../../i18n";
 
 type WeeklyConsistencyProps = {
   completed: number;
@@ -14,10 +15,10 @@ const WeeklyConsistency = ({ completed, total, label }: WeeklyConsistencyProps) 
 
   return (
     <View className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
-      <Text className="text-lg font-semibold mb-2">Weekly Consistency</Text>
+      <Text className="text-lg font-semibold mb-2">{t("weeklyConsistency.title")}</Text>
 
       <View className="flex-row justify-between mb-2">
-        <Text className="text-xs text-gray-400">{label || "Check-ins this week"}</Text>
+        <Text className="text-xs text-gray-400">{label || t("weeklyConsistency.checkIns")}</Text>
         <Text className="text-xs font-medium">
           {completed}/{safeTotal}
         </Text>

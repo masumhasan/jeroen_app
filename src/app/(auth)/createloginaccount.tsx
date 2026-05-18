@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 
 const createloginaccount = () => {
   return (
@@ -18,13 +19,12 @@ const createloginaccount = () => {
       <View className="px-6 pb-10">
         {/* Title */}
         <Text className="text-[28px] font-bold text-center text-black mb-3">
-          AI-Powered Meal{"\n"}Planning for You
+          {t("createLoginAccount.headline")}
         </Text>
 
         {/* Subtitle */}
         <Text className="text-gray-500 text-center text-[14px] leading-5 mb-8">
-          Personalized nutrition plans tailored to your{"\n"}
-          goals, preferences, and lifestyle.
+          {t("createLoginAccount.description")}
         </Text>
 
         {/* Create Account Button */}
@@ -33,7 +33,7 @@ const createloginaccount = () => {
           className="bg-[#8A977B] py-4 rounded-full mb-4"
         >
           <Text className="text-center text-white font-semibold text-[16px]">
-            Create Account
+            {t("createLoginAccount.createAccount")}
           </Text>
         </TouchableOpacity>
 
@@ -43,7 +43,7 @@ const createloginaccount = () => {
           className="border border-gray-300 py-4 rounded-full"
         >
           <Text className="text-center text-gray-700 font-semibold text-[16px]">
-            Login
+            {t("createLoginAccount.login")}
           </Text>
         </TouchableOpacity>
       </View>

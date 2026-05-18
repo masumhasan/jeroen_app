@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Dimensions, Text } from "react-native";
+import { t } from "../../i18n";
 import { LineChart } from "react-native-chart-kit";
 import Animated from "react-native-reanimated";
 
@@ -22,7 +23,7 @@ const WeightTrendChart = ({ labels, values }: WeightTrendChartProps) => {
         className="rounded-2xl px-[2%] py-2 shadow-sm border border-gray-100 overflow-hidden"
         style={{ elevation: 3 }}
       >
-        <Text className="text-lg font-semibold mb-2">Weight Trend</Text>
+        <Text className="text-lg font-semibold mb-2">{t("weightTrend.title")}</Text>
 
         <LineChart
           data={{

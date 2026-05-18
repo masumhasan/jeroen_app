@@ -5,6 +5,7 @@ import WeightJourneyCard from "@/src/components/progress/WeightJourneyCard";
 import WeightTrendChart from "@/src/components/progress/WeightTrendChart";
 import { authService } from "@/src/services/authService";
 import { useFocusEffect } from "@react-navigation/native";
+import { t } from "../../i18n";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
@@ -187,14 +188,14 @@ const Progress = () => {
       {/* Animated Header */}
       <Animated.View style={headerAnimatedStyle} className="px-4 pt-6 pb-2">
         <Text className="text-2xl font-bold text-gray-900 tracking-tight text-center">
-          Progress Tracking
+          {t("progress.title")}
         </Text>
       </Animated.View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#6d7a61" />
-          <Text className="mt-3 text-gray-500">Loading your progress...</Text>
+          <Text className="mt-3 text-gray-500">{t("progress.loading")}</Text>
         </View>
       ) : (
       <AnimatedScrollView
@@ -219,21 +220,21 @@ const Progress = () => {
         >
           <StatCard
             title={stats.kgLost.toString()}
-            subtitle="kg Lost"
+            subtitle={t("progress.kgLost")}
             index={0}
             trend="down"
             value={stats.kgLost.toString()}
           />
           <StatCard
             title={stats.weeks.toString()}
-            subtitle="Weeks"
+            subtitle={t("progress.weeks")}
             index={1}
             trend="neutral"
             value={stats.weeks.toString()}
           />
           <StatCard
             title={`${stats.consistencyPercent}%`}
-            subtitle="Consistency"
+            subtitle={t("progress.consistency")}
             index={2}
             trend="up"
             value={stats.consistencyPercent.toString()}
@@ -263,8 +264,8 @@ const Progress = () => {
             total={stats.checkInsWeeklyTarget}
             label={
               stats.checkInsWeeklyTarget === 21
-                ? "Meals planned this week"
-                : "Check-ins this week"
+                ? t("progress.mealsPlanned")
+                : t("progress.checkIns")
             }
           />
         </Animated.View>

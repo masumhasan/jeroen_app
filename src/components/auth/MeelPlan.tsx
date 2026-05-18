@@ -2,32 +2,15 @@ import { Check } from "lucide-react-native";
 import React from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
+import { t } from "../../i18n";
 
-const MEAL_PLANS = [
-  {
-    id: "Breakfast",
-    label: "Breakfast",
-  },
-  {
-    id: "snack-1",
-    label: "Snack-1",
-  },
-  {
-    id: "Lunch",
-    label: "Lunch",
-  },
-  {
-    id: "snack-2",
-    label: "Snack-2",
-  },
-  {
-    id: "Dinner",
-    label: "Dinner",
-  },
-  {
-    id: "snack-3",
-    label: "Snack-3",
-  },
+const getMealPlans = () => [
+  { id: "Breakfast", label: t("mealPlan.breakfast") },
+  { id: "snack-1", label: t("mealPlan.snack1") },
+  { id: "Lunch", label: t("mealPlan.lunch") },
+  { id: "snack-2", label: t("mealPlan.snack2") },
+  { id: "Dinner", label: t("mealPlan.dinner") },
+  { id: "snack-3", label: t("mealPlan.snack3") },
 ];
 
 interface Props {
@@ -49,13 +32,13 @@ const MeelPlan: React.FC<Props> = ({ value, onChange }) => {
   return (
     <ScrollView className="flex-1 px-5 pt-8">
       <Text className="text-2xl font-bold text-[#1F1F28] mb-2">
-        Meal Plan Preference
+        {t("mealPlan.title")}
       </Text>
       <Text className="text-[#7A7A7A] text-sm mb-6">
-        Choose your preferred meal plan styles (multiple selection allowed)
+        {t("mealPlan.subtitle")}
       </Text>
 
-      {MEAL_PLANS.map((plan, index) => (
+      {getMealPlans().map((plan, index) => (
         <Animated.View
           key={plan.id}
           entering={FadeInUp.delay(index * 150)}

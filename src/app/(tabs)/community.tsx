@@ -8,6 +8,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { communityService } from "../../services/communityService";
 import { resolveRecipeImageUrl } from "../../utils/imageUrl";
+import { t } from "../../i18n";
 
 const FALLBACK_POST_IMAGE =
   "https://images.unsplash.com/photo-1512621776951-a57141f2eefd";
@@ -16,12 +17,12 @@ const formatRelativeTime = (dateValue: string) => {
   const date = new Date(dateValue);
   const diff = Date.now() - date.getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return t("community.justNow");
+  if (mins < 60) return `${mins}${t("community.minutesAgo")}`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `${hours}${t("community.hoursAgo")}`;
   const days = Math.floor(hours / 24);
-  return `${days}d ago`;
+  return `${days}${t("community.daysAgo")}`;
 };
 
 export default function Community() {
@@ -117,7 +118,7 @@ export default function Community() {
               active === "feed" ? "text-[#FFFFFF]" : "text-gray-600"
             }`}
           >
-            Feed
+            {t("community.feed")}
           </Text>
         </TouchableOpacity>
 
@@ -130,7 +131,7 @@ export default function Community() {
               active === "topics" ? "text-[#FFFFFF]" : "text-gray-600"
             }`}
           >
-            Topics
+            {t("community.topics")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -163,7 +164,7 @@ export default function Community() {
           ListEmptyComponent={
             <View className="items-center py-10 px-6">
               <Text className="text-gray-500 text-center">
-                No posts yet. Follow topics in the Topics tab to see your personalized feed.
+                {t("community.noPosts")}
               </Text>
             </View>
           }

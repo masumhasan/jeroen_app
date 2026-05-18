@@ -17,6 +17,7 @@ import {
 import { authService } from "../../services/authService";
 import { recipeService } from "../../services/recipeService";
 import { resolveRecipeImageUrl } from "../../utils/imageUrl";
+import { t } from "../../i18n";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -204,12 +205,12 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
       });
       closeModal();
       onSwapSuccess?.();
-      Alert.alert("Meal swapped", "Your meal plan has been updated.");
+      Alert.alert(t("swapMeal.alerts.swappedTitle"), t("swapMeal.alerts.swappedMessage"));
     } catch (error: any) {
       console.error("Failed to swap meal:", error);
       const message =
         error?.response?.data?.message || "Could not swap meal. Please try again.";
-      Alert.alert("Swap failed", message);
+      Alert.alert(t("swapMeal.alerts.swapFailedTitle"), message);
     } finally {
       setSwapping(false);
     }
@@ -245,15 +246,15 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
             >
               <View className="flex-row justify-between items-center mb-4 pt-2">
                 <View>
-                  <Text className="text-xl font-semibold">Swap {mealType}</Text>
-                  <Text className="text-gray-500 text-sm">Choose an alternative meal</Text>
+                  <Text className="text-xl font-semibold">{t("swapMeal.title", { mealType })}</Text>
+                  <Text className="text-gray-500 text-sm">{t("swapMeal.subtitle")}</Text>
                 </View>
                 <TouchableOpacity onPress={closeModal}>
                   <Ionicons name="close" size={24} color="black" />
                 </TouchableOpacity>
               </View>
 
-              <Text className="text-gray-500 mb-2">Current Meal</Text>
+              <Text className="text-gray-500 mb-2">{t("swapMeal.currentMeal")}</Text>
               <View className="bg-gray-100 rounded-xl p-3 flex-row items-center">
                 <Image
                   source={{
@@ -270,7 +271,7 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
               <View className="flex-row items-center bg-white rounded-xl px-3 py-2 mt-4 border border-gray-200">
                 <Ionicons name="search" size={18} color="gray" />
                 <TextInput
-                  placeholder="Search meals..."
+                  placeholder={t("swapMeal.searchPlaceholder")}
                   className="ml-2 flex-1"
                   value={searchQuery}
                   onChangeText={setSearchQuery}
@@ -284,31 +285,33 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
 
               <View className="flex-row mt-4 gap-2">
                 <SortButton
-                  title="Calories"
+                  title={t("swapMeal.calories")}
                   active={selectedSort === "calories"}
                   onPress={() => setSelectedSort("calories")}
                 />
                 <SortButton
-                  title="Protein"
+                  title={t("swapMeal.protein")}
                   active={selectedSort === "protein"}
                   onPress={() => setSelectedSort("protein")}
                 />
                 <SortButton
-                  title="Name"
+                  title={t("swapMeal.name")}
                   active={selectedSort === "name"}
                   onPress={() => setSelectedSort("name")}
                 />
               </View>
 
               <View className="flex-row mt-4 gap-2">
-                <Chip title="All" active={selectedFilter === "all"} onPress={() => setSelectedFilter("all")} />
-                <Chip title="< 400 cal" active={selectedFilter === "<400"} onPress={() => setSelectedFilter("<400")} />
-                <Chip title="400-550 cal" active={selectedFilter === "400-550"} onPress={() => setSelectedFilter("400-550")} />
-                <Chip title="> 550 cal" active={selectedFilter === ">550"} onPress={() => setSelectedFilter(">550")} />
+                <Chip title={t("swapMeal.all")} active={selectedFilter === "all"} onPress={() => setSelectedFilter("all")} />
+                <Chip title={t("swapMeal.under400")} active={selectedFilter === "<400"} onPress={() => setSelectedFilter("<400")} />
+                <Chip title={t("swapMeal.range400")} active={selectedFilter === "400-550"} onPress={() => setSelectedFilter("400-550")} />
+                <Chip title={t("swapMeal.over550")} active={selectedFilter === ">550"} onPress={() => setSelectedFilter(">550")} />
               </View>
 
               <Text className="text-gray-500 mt-4 mb-2">
-                {alternatives.length} {alternatives.length === 1 ? "Alternative" : "Alternatives"} Found
+                {alternatives.length === 1
+                  ? t("swapMeal.alternativeFound", { count: String(alternatives.length) })
+                  : t("swapMeal.alternativesFound", { count: String(alternatives.length) })}
               </Text>
 
               {loading ? (
@@ -317,7 +320,7 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
                 </View>
               ) : alternatives.length === 0 ? (
                 <View className="py-8">
-                  <Text className="text-gray-500">No alternatives found within +/-100 calories.</Text>
+                  <Text className="text-gray-500">{t("swapMeal.noAlternatives")}</Text>
                 </View>
               ) : (
                 alternatives.map((meal) => (
@@ -345,10 +348,10 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
                   style={{ backgroundColor: "rgba(137,149,127,0.2)" }}
                 />
                 <Text className="text-[15px] font-semibold text-[#111]">
-                  From Your Recipes
+                  {t("swapMeal.fromYourRecipes")}
                 </Text>
                 <Text className="text-gray-400 text-[12px] mt-0.5">
-                  Swap with a recipe you submitted
+                  {t("swapMeal.fromYourRecipesDesc")}
                 </Text>
               </View>
 
@@ -359,7 +362,7 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
               ) : userRecipes.length === 0 ? (
                 <View className="py-4">
                   <Text className="text-gray-400 text-[13px]">
-                    You haven't added any recipes yet.
+                    {t("swapMeal.noRecipes")}
                   </Text>
                 </View>
               ) : (
@@ -377,7 +380,7 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
                       setSelectedMeal(meal._id);
                       setSelectedSource("user");
                     }}
-                    badge="Crowdsourced"
+                    badge={t("mealCard.crowdsourced")}
                   />
                 ))
               )}
@@ -392,7 +395,7 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
                 {swapping ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
-                  <Text className="text-white text-center font-semibold text-lg">Swap</Text>
+                  <Text className="text-white text-center font-semibold text-lg">{t("swapMeal.swapButton")}</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -425,7 +428,7 @@ const SortButton = ({
       color={active ? "white" : "black"}
     />
     <Text className={`ml-1 text-sm ${active ? "text-white" : "text-black"}`}>
-      Sort: {title}
+      {t("swapMeal.sortBy", { title })}
     </Text>
   </TouchableOpacity>
 );

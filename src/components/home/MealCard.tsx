@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import Swap_Lunch from "../modals/Swap_Lunch";
+import { t } from "../../i18n";
 
 interface Props {
   recipeId: string;
@@ -47,13 +48,13 @@ export default function MealCard({
             <Text className="text-xs text-gray-400">{type}</Text>
             {isCrowdsourced && (
               <View className="bg-[#FFF3E0] border border-[#FFE0B2] px-2 py-0.5 rounded-full">
-                <Text className="text-[10px] font-bold text-[#E65100]">Crowdsourced</Text>
+                <Text className="text-[10px] font-bold text-[#E65100]">{t("mealCard.crowdsourced")}</Text>
               </View>
             )}
           </View>
 
           <Text className="text-gray-500">
-            {calories} <Text className="text-xs">cal</Text>
+            {calories} <Text className="text-xs">{t("mealCard.cal")}</Text>
           </Text>
         </View>
 
@@ -67,7 +68,7 @@ export default function MealCard({
           onPress={() => setModalVisible(true)}
           className="border border-gray-200 rounded-xl py-3 mt-4 items-center"
         >
-          <Text className="text-gray-600">↻ Swap Meal</Text>
+          <Text className="text-gray-600">{t("mealCard.swapMeal")}</Text>
         </TouchableOpacity>
       </View>
 

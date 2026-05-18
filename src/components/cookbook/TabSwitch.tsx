@@ -1,4 +1,5 @@
 import { TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -41,7 +42,7 @@ export default function TabSwitch({ tab, setTab }: Props) {
           activeOpacity={0.7}
         >
           <Animated.Text style={[allTextStyle, { fontWeight: "500" }]}>
-            All Books
+            {t("tabSwitch.allBooks")}
           </Animated.Text>
         </TouchableOpacity>
       </Animated.View>
@@ -53,7 +54,7 @@ export default function TabSwitch({ tab, setTab }: Props) {
           activeOpacity={0.7}
         >
           <Animated.Text style={[libraryTextStyle, { fontWeight: "500" }]}>
-            My Library
+            {t("tabSwitch.myLibrary")}
           </Animated.Text>
         </TouchableOpacity>
       </Animated.View>

@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -76,14 +77,14 @@ export default function LockedCard({ item }: Props) {
             </Text>
 
             <Text className="text-gray-500 text-sm">
-              {item.recipes} recipes
+              {t("lockedCard.recipes", { count: String(item.recipes) })}
             </Text>
 
             <TouchableOpacity
               className="bg-[#7C8B74] mt-3 py-2 rounded-full items-center"
               activeOpacity={0.7}
             >
-              <Text className="text-white font-medium">Buy {item.price}</Text>
+              <Text className="text-white font-medium">{t("lockedCard.buy", { price: item.price ?? "" })}</Text>
             </TouchableOpacity>
           </View>
         </View>

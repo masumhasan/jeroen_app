@@ -1,6 +1,7 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
+import { t } from "../../../i18n";
 import {
   ActivityIndicator,
   Alert,
@@ -75,7 +76,7 @@ const MyRecipes = () => {
         <TouchableOpacity onPress={() => router.back()} className="mr-3">
           <Ionicons name="arrow-back" size={22} color="#111" />
         </TouchableOpacity>
-        <Text className="text-[18px] font-bold text-[#111]">My Recipes</Text>
+        <Text className="text-[18px] font-bold text-[#111]">{t("myRecipes.title")}</Text>
       </View>
 
       {loading ? (
@@ -86,13 +87,13 @@ const MyRecipes = () => {
         <View className="flex-1 items-center justify-center px-8">
           <Feather name="book-open" size={48} color="#ccc" />
           <Text className="text-[16px] text-[#8E8E93] mt-4 text-center">
-            You haven't submitted any recipes yet.
+            {t("myRecipes.empty")}
           </Text>
           <TouchableOpacity
             onPress={() => router.push("/addrecipe")}
             className="mt-6 bg-[#89957F] px-6 py-3 rounded-2xl"
           >
-            <Text className="text-white font-semibold">Add Your First Recipe</Text>
+            <Text className="text-white font-semibold">{t("myRecipes.addFirst")}</Text>
           </TouchableOpacity>
         </View>
       ) : (

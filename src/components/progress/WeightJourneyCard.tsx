@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Text, View } from "react-native";
+import { t } from "../../i18n";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -48,20 +49,20 @@ const WeightJourneyCard = ({
       >
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-lg font-semibold text-gray-900">
-            Weight Journey
+            {t("weightJourney.title")}
           </Text>
         </View>
 
         <View className="flex-row justify-between mb-6">
           {[
-            { label: "Start", value: startWeight, unit: "kg" },
+            { label: t("weightJourney.start"), value: startWeight, unit: t("weightJourney.kg") },
             {
-              label: "Current",
+              label: t("weightJourney.current"),
               value: currentWeight,
-              unit: "kg",
+              unit: t("weightJourney.kg"),
               animated: true,
             },
-            { label: "Target", value: targetWeight, unit: "kg" },
+            { label: t("weightJourney.target"), value: targetWeight, unit: t("weightJourney.kg") },
           ].map((item, index) => (
             <View key={index} className="items-center">
               <Text className="text-gray-400 text-xs mb-1">{item.label}</Text>
@@ -83,7 +84,7 @@ const WeightJourneyCard = ({
 
         <View className="mb-2">
           <View className="flex-row justify-between items-center mb-2">
-            <Text className="text-sm text-gray-600">Progress to Goal</Text>
+            <Text className="text-sm text-gray-600">{t("weightJourney.progressToGoal")}</Text>
             <Text className="text-sm font-semibold text-[#6d7a61]">
               {Math.round(progress * 100)}%
             </Text>
@@ -93,7 +94,7 @@ const WeightJourneyCard = ({
 
         <View className="flex-row justify-center items-center mt-2">
           <Text className="text-xs text-gray-400">
-            {remainingToLose} kg to go
+            {remainingToLose} {t("weightJourney.kgToGo")}
           </Text>
         </View>
       </LinearGradient>

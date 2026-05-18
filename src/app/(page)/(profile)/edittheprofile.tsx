@@ -5,6 +5,7 @@ import { Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } fro
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 import { authService } from "../../../services/authService";
+import { t } from "../../../i18n";
 
 const PRIMARY = "#89957F";
 const PRIMARY_LIGHT = "#F3F5F1";
@@ -12,6 +13,25 @@ const BORDER = "#E7E7E7";
 const TEXT_DARK = "#1F1F28";
 const TEXT_LIGHT = "#7A7A7A";
 const BG = "#FFFFFF";
+
+const GENDER_OPTIONS = [
+  { label: t("editProfile.genders.male"), value: "Male" },
+  { label: t("editProfile.genders.female"), value: "Female" },
+  { label: t("editProfile.genders.other"), value: "Other" },
+];
+
+const ACTIVITY_OPTIONS = [
+  { label: t("editProfile.activities.sedentary"), subtitle: t("editProfile.activities.sedentaryDesc"), value: "Sedentary" },
+  { label: t("editProfile.activities.moderate"), subtitle: t("editProfile.activities.moderateDesc"), value: "Moderate" },
+  { label: t("editProfile.activities.active"), subtitle: t("editProfile.activities.activeDesc"), value: "Active" },
+];
+
+const GOAL_OPTIONS = [
+  { label: t("editProfile.goals.weightLoss"), value: "Weight Loss" },
+  { label: t("editProfile.goals.weightGain"), value: "Weight Gain" },
+  { label: t("editProfile.goals.muscleGain"), value: "Muscle Gain" },
+  { label: t("editProfile.goals.maintenance"), value: "Maintenance" },
+];
 
 const Edittheprofile = () => {
   const [swiperIndex, setSwiperIndex] = useState(0);
@@ -40,7 +60,7 @@ const Edittheprofile = () => {
           setWeight(user.weight?.toString() || "");
         }
       } catch (error) {
-        Alert.alert("Error", "Failed to fetch user data");
+        Alert.alert(t("editProfile.alerts.errorTitle"), t("editProfile.alerts.fetchFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -59,10 +79,10 @@ const Edittheprofile = () => {
         height: parseInt(height),
         weight: parseInt(weight),
       });
-      Alert.alert("Success", "Profile updated successfully");
+      Alert.alert(t("editProfile.alerts.successTitle"), t("editProfile.alerts.updateSuccess"));
       router.back();
     } catch (error: any) {
-      Alert.alert("Error", error.response?.data?.message || "Failed to update profile");
+      Alert.alert(t("editProfile.alerts.errorTitle"), error.response?.data?.message || t("editProfile.alerts.updateFailed"));
     } finally {
       setIsUpdating(false);
     }
@@ -77,9 +97,9 @@ const Edittheprofile = () => {
   const swiperRef = React.useRef<any>(null);
 
   const steps = [
-    { label: "Step 1 of 3", percent: "33%" },
-    { label: "Step 2 of 3", percent: "66%" },
-    { label: "Step 3 of 3", percent: "100%" },
+    { label: t("editProfile.step1"), percent: t("editProfile.percent1") },
+    { label: t("editProfile.step2"), percent: t("editProfile.percent2") },
+    { label: t("editProfile.step3"), percent: t("editProfile.percent3") },
   ];
 
   const progressWidth = ["33%", "66%", "100%"];
@@ -158,11 +178,11 @@ const Edittheprofile = () => {
     </View>
   );
 
-  const GenderButton = ({ label }: { label: string }) => {
-    const active = gender === label;
+  const GenderButton = ({ label, value }: { label: string; value: string }) => {
+    const active = gender === value;
     return (
       <TouchableOpacity
-        onPress={() => setGender(label)}
+        onPress={() => setGender(value)}
         activeOpacity={0.85}
         style={{
           flex: 1,
@@ -293,7 +313,7 @@ const Edittheprofile = () => {
                 marginBottom: 24,
               }}
             >
-              Basic Information
+              {t("editProfile.basicInformation")}
             </Text>
 
             <Text
@@ -304,13 +324,13 @@ const Edittheprofile = () => {
                 fontWeight: "500",
               }}
             >
-              Gender
+              {t("editProfile.gender")}
             </Text>
 
             <View className="flex-row gap-3 mb-5">
-              <GenderButton label="Male" />
-              <GenderButton label="Female" />
-              <GenderButton label="Other" />
+              {GENDER_OPTIONS.map((opt) => (
+                <GenderButton key={opt.value} label={opt.label} value={opt.value} />
+              ))}
             </View>
 
             <Text
@@ -321,7 +341,7 @@ const Edittheprofile = () => {
                 fontWeight: "500",
               }}
             >
-              Age
+              {t("editProfile.age")}
             </Text>
             <TextInput
               value={age}
@@ -349,7 +369,7 @@ const Edittheprofile = () => {
                 fontWeight: "500",
               }}
             >
-              Height (cm)
+              {t("editProfile.height")}
             </Text>
             <TextInput
               value={height}
@@ -377,7 +397,7 @@ const Edittheprofile = () => {
                 fontWeight: "500",
               }}
             >
-              Weight (kg)
+              {t("editProfile.weight")}
             </Text>
             <TextInput
               value={weight}
@@ -409,32 +429,19 @@ const Edittheprofile = () => {
                 marginBottom: 24,
               }}
             >
-              Activity Level
+              {t("editProfile.activityLevel")}
             </Text>
 
-            <OptionCard
-              title="Sedentary"
-              subtitle="Little to no exercise"
-              active={activity === "Sedentary"}
-              onPress={() => setActivity("Sedentary")}
-            />
-
-            <OptionCard
-              title="Moderate"
-              subtitle="Exercise 3-5 days/week"
-              active={activity === "Moderate"}
-              onPress={() => setActivity("Moderate")}
-            />
-
-            <OptionCard
-              title="Active"
-              subtitle="Exercise 6-7 days/week"
-              active={activity === "Active"}
-              onPress={() => setActivity("Active")}
-            />
+            {ACTIVITY_OPTIONS.map((opt) => (
+              <OptionCard
+                key={opt.value}
+                title={opt.label}
+                subtitle={opt.subtitle}
+                active={activity === opt.value}
+                onPress={() => setActivity(opt.value)}
+              />
+            ))}
           </View>
-
-          {/* <BottomButton title="Continue" onPress={goNext} /> */}
         </View>
 
         {/* Page 3 */}
@@ -448,36 +455,24 @@ const Edittheprofile = () => {
                 marginBottom: 24,
               }}
             >
-              Your Goal
+              {t("editProfile.yourGoal")}
             </Text>
 
             <View className="flex-row justify-between flex-wrap">
-              <GoalCard
-                title="Weight Loss"
-                active={goal === "Weight Loss"}
-                onPress={() => setGoal("Weight Loss")}
-              />
-              <GoalCard
-                title="Weight Gain"
-                active={goal === "Weight Gain"}
-                onPress={() => setGoal("Weight Gain")}
-              />
-              <GoalCard
-                title="Muscle Gain"
-                active={goal === "Muscle Gain"}
-                onPress={() => setGoal("Muscle Gain")}
-              />
-              <GoalCard
-                title="Maintenance"
-                active={goal === "Maintenance"}
-                onPress={() => setGoal("Maintenance")}
-              />
+              {GOAL_OPTIONS.map((opt) => (
+                <GoalCard
+                  key={opt.value}
+                  title={opt.label}
+                  active={goal === opt.value}
+                  onPress={() => setGoal(opt.value)}
+                />
+              ))}
             </View>
           </View>
         </View>
       </Swiper>
       {swiperIndex < 2 ? (
-        <BottomButton title="Continue" onPress={goNext} />
+        <BottomButton title={t("editProfile.continue")} onPress={goNext} />
       ) : (
         <View className="px-5 pb-6">
           <TouchableOpacity
@@ -506,7 +501,7 @@ const Edittheprofile = () => {
                     marginRight: 6,
                   }}
                 >
-                  Update
+                  {t("editProfile.update")}
                 </Text>
                 <Ionicons name="checkmark" size={18} color="#fff" />
               </>

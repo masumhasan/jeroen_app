@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { authService } from "../../services/authService";
+import { t } from "../../i18n";
 import {
   Alert,
   Dimensions,
@@ -63,56 +64,64 @@ const SUCCESS = "#34C759";
 const ACTIVITY_OPTIONS = [
   {
     id: "sedentary",
-    title: "Sedentary",
-    subtitle: "Little to no exercise, desk job",
+    title: t("signupOnboarding.activities.sedentary"),
+    subtitle: t("signupOnboarding.activities.sedentaryDesc"),
     value: "Sedentary",
-    calories: "1,800-2,000",
+    calories: "1.800-2.000",
   },
   {
     id: "moderate",
-    title: "Moderate",
-    subtitle: "Exercise 3-5 days/week, active lifestyle",
+    title: t("signupOnboarding.activities.moderate"),
+    subtitle: t("signupOnboarding.activities.moderateDesc"),
     value: "Moderate",
-    calories: "2,200-2,400",
+    calories: "2.200-2.400",
   },
   {
     id: "active",
-    title: "Active",
-    subtitle: "Exercise 6-7 days/week, physical job",
+    title: t("signupOnboarding.activities.active"),
+    subtitle: t("signupOnboarding.activities.activeDesc"),
     value: "Active",
-    calories: "2,600-2,800",
+    calories: "2.600-2.800",
   },
   {
     id: "veryActive",
-    title: "Very Active",
-    subtitle: "Intense exercise daily, athlete",
+    title: t("signupOnboarding.activities.veryActive"),
+    subtitle: t("signupOnboarding.activities.veryActiveDesc"),
     value: "Very Active",
-    calories: "3,000+",
+    calories: "3.000+",
   },
 ];
 
 const GOAL_OPTIONS = [
-  { id: "weightLoss", title: "Weight Loss", emoji: "⚖️", color: "#89957F" },
-  { id: "weightGain", title: "Weight Gain", emoji: "📈", color: "#89957F" },
-  { id: "muscleGain", title: "Muscle Gain", emoji: "💪", color: "#89957F" },
-  { id: "maintenance", title: "Maintenance", emoji: "🎯", color: "#89957F" },
+  { id: "weightLoss", title: t("signupOnboarding.goals.weightLoss"), emoji: "⚖️", color: "#89957F" },
+  { id: "weightGain", title: t("signupOnboarding.goals.weightGain"), emoji: "📈", color: "#89957F" },
+  { id: "muscleGain", title: t("signupOnboarding.goals.muscleGain"), emoji: "💪", color: "#89957F" },
+  { id: "maintenance", title: t("signupOnboarding.goals.maintenance"), emoji: "🎯", color: "#89957F" },
 ];
 
 const GENDER_OPTIONS = [
-  { id: "male", label: "Male", icon: "male" as const },
-  { id: "female", label: "Female", icon: "female" as const },
-  { id: "other", label: "Other", icon: "person" as const },
+  { id: "male", label: t("signupOnboarding.genders.male"), icon: "male" as const },
+  { id: "female", label: t("signupOnboarding.genders.female"), icon: "female" as const },
+  { id: "other", label: t("signupOnboarding.genders.other"), icon: "person" as const },
 ];
 
-const WEEK_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const WEEK_DAYS = [
+  t("signupOnboarding.days.monday"),
+  t("signupOnboarding.days.tuesday"),
+  t("signupOnboarding.days.wednesday"),
+  t("signupOnboarding.days.thursday"),
+  t("signupOnboarding.days.friday"),
+  t("signupOnboarding.days.saturday"),
+  t("signupOnboarding.days.sunday"),
+];
 
 const STEPS = [
-  { label: "Basic Info", percent: 17, icon: "person" },
-  { label: "Activity", percent: 33, icon: "fitness" },
-  { label: "Week Start", percent: 50, icon: "calendar" },
-  { label: "Goals", percent: 67, icon: "flag" },
-  { label: "Dietary", percent: 83, icon: "restaurant" },
-  { label: "Meal Plan", percent: 100, icon: "calendar" },
+  { label: t("signupOnboarding.steps.basicInfo"), percent: 17, icon: "person" },
+  { label: t("signupOnboarding.steps.activity"), percent: 33, icon: "fitness" },
+  { label: t("signupOnboarding.steps.weekStart"), percent: 50, icon: "calendar" },
+  { label: t("signupOnboarding.steps.goals"), percent: 67, icon: "flag" },
+  { label: t("signupOnboarding.steps.dietary"), percent: 83, icon: "restaurant" },
+  { label: t("signupOnboarding.steps.mealPlan"), percent: 100, icon: "calendar" },
 ];
 
 // Progress Header Component
@@ -168,10 +177,10 @@ const ProgressHeader: React.FC<{ currentStep: number }> = ({ currentStep }) => {
 
       <View className="flex-row justify-between items-center mb-2">
         <Text className="text-[#98A08C] font-semibold text-sm">
-          Step {currentStep + 1} of {STEPS.length}
+          {t("signupOnboarding.stepLabel", { current: currentStep + 1 })}
         </Text>
         <Text className="text-[#89957F] font-bold text-sm">
-          {STEPS[currentStep].percent}% Complete
+          {STEPS[currentStep].percent}{t("signupOnboarding.percentComplete")}
         </Text>
       </View>
 
@@ -706,17 +715,17 @@ const Signuponpoarding = () => {
               entering={FadeInDown.delay(100)}
               className="text-3xl font-bold text-gray-800 mb-2"
             >
-              Basic Information
+              {t("signupOnboarding.basicInformation")}
             </Animated.Text>
             <Animated.Text
               entering={FadeInDown.delay(200)}
               className="text-gray-500 text-base mb-8"
             >
-              Let's start with the basics
+              {t("signupOnboarding.basicSubtitle")}
             </Animated.Text>
 
             <Text className="text-sm font-medium text-gray-700 mb-3">
-              Gender
+              {t("signupOnboarding.gender")}
             </Text>
             <View className="flex-row gap-3 mb-4">
               {GENDER_OPTIONS.map((gender) => (
@@ -736,30 +745,30 @@ const Signuponpoarding = () => {
             )}
 
             <InputField
-              label="Age"
+              label={t("signupOnboarding.age")}
               value={userData.age}
               onChangeText={(text) => updateUserData("age", text)}
-              placeholder="Enter your age"
+              placeholder={t("signupOnboarding.agePlaceholder")}
               keyboardType="numeric"
               error={errors.age}
               icon="person-outline"
             />
 
             <InputField
-              label="Height (cm)"
+              label={t("signupOnboarding.height")}
               value={userData.height}
               onChangeText={(text) => updateUserData("height", text)}
-              placeholder="Enter your height"
+              placeholder={t("signupOnboarding.heightPlaceholder")}
               keyboardType="numeric"
               error={errors.height}
               icon="resize-outline"
             />
 
             <InputField
-              label="Weight (kg)"
+              label={t("signupOnboarding.weight")}
               value={userData.weight}
               onChangeText={(text) => updateUserData("weight", text)}
-              placeholder="Enter your weight"
+              placeholder={t("signupOnboarding.weightPlaceholder")}
               keyboardType="numeric"
               error={errors.weight}
               icon="barbell-outline"
@@ -776,13 +785,13 @@ const Signuponpoarding = () => {
               entering={FadeInDown.delay(100)}
               className="text-3xl font-bold text-gray-800 mb-2"
             >
-              Activity Level
+              {t("signupOnboarding.activityLevel")}
             </Animated.Text>
             <Animated.Text
               entering={FadeInDown.delay(200)}
               className="text-gray-500 text-base mb-8"
             >
-              This helps us calculate your daily calorie needs
+              {t("signupOnboarding.activitySubtitle")}
             </Animated.Text>
 
             {ACTIVITY_OPTIONS.map((option, index) => (
@@ -807,13 +816,13 @@ const Signuponpoarding = () => {
               entering={FadeInDown.delay(100)}
               className="text-3xl font-bold text-gray-800 mb-2 pt-4"
             >
-              Week Starts From
+              {t("signupOnboarding.weekStartsFrom")}
             </Animated.Text>
             <Animated.Text
               entering={FadeInDown.delay(200)}
               className="text-gray-500 text-base mb-8"
             >
-              Choose which day your meal plan week begins
+              {t("signupOnboarding.weekStartSubtitle")}
             </Animated.Text>
 
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -834,13 +843,13 @@ const Signuponpoarding = () => {
               entering={FadeInDown.delay(100)}
               className="text-3xl font-bold text-gray-800 mb-2"
             >
-              Your Goal
+              {t("signupOnboarding.yourGoal")}
             </Animated.Text>
             <Animated.Text
               entering={FadeInDown.delay(200)}
               className="text-gray-500 text-base mb-8"
             >
-              What would you like to achieve?
+              {t("signupOnboarding.goalSubtitle")}
             </Animated.Text>
 
             <View className="flex-row justify-between flex-wrap">
@@ -865,12 +874,11 @@ const Signuponpoarding = () => {
               <View className="flex-row items-center mb-2">
                 <Ionicons name="bulb-outline" size={20} color={PRIMARY} />
                 <Text className="text-[#89957F] font-semibold ml-2">
-                  Quick Tip
+                  {t("signupOnboarding.quickTip")}
                 </Text>
               </View>
               <Text className="text-gray-600 text-sm">
-                Your goal helps us customize your meal plan and workout
-                recommendations for better results.
+                {t("signupOnboarding.goalTipText")}
               </Text>
             </Animated.View>
           </ScrollView>
@@ -893,7 +901,7 @@ const Signuponpoarding = () => {
         </Swiper>
 
         <ContinueButton
-          title={currentStep < STEPS.length - 1 ? "Continue" : "Generate My Plan"}
+          title={currentStep < STEPS.length - 1 ? t("signupOnboarding.continue") : t("signupOnboarding.generatePlan")}
           onPress={handleNext}
           disabled={
             (currentStep === 1 && !userData.activity) ||

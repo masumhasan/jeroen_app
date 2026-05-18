@@ -4,25 +4,26 @@ import React, { useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import { t } from "../../i18n";
 
 const slides = [
   {
     icon: "target",
-    title: "Personalized\nCalorie Tracking",
-    desc: "Get precise daily calorie targets based on your unique body metrics and fitness goals.",
-    button: "Next",
+    title: t("onboarding.slide1Title"),
+    desc: t("onboarding.slide1Desc"),
+    button: t("onboarding.next"),
   },
   {
     icon: "sparkles",
-    title: "Smart AI Meal\nGeneration",
-    desc: "Our AI creates delicious, balanced meal plans that adapt to your preferences and dietary needs.",
-    button: "Next",
+    title: t("onboarding.slide2Title"),
+    desc: t("onboarding.slide2Desc"),
+    button: t("onboarding.next"),
   },
   {
     icon: "cart",
-    title: "Auto Shopping\nLists",
-    desc: "Never forget an ingredient. Get organized shopping lists generated from your weekly meal plan.",
-    button: "Get Started",
+    title: t("onboarding.slide3Title"),
+    desc: t("onboarding.slide3Desc"),
+    button: t("onboarding.getStarted"),
   },
 ];
 
@@ -115,7 +116,7 @@ const CreateAccountOnboarding = () => {
         {/* Skip Button - Only show on first two slides */}
         {currentIndex < slides.length - 1 && (
           <TouchableOpacity onPress={handleSkip} className="mt-6">
-            <Text className="text-gray-500 text-[14px] text-center">Skip</Text>
+            <Text className="text-gray-500 text-[14px] text-center">{t("onboarding.skip")}</Text>
           </TouchableOpacity>
         )}
       </View>

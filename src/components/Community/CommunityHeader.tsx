@@ -2,11 +2,12 @@ import { router } from "expo-router";
 import { Plus } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { t } from "../../i18n";
 
 export default function CommunityHeader() {
   return (
     <View className="flex-row items-center justify-between px-5 mb-4">
-      <Text className="text-xl font-semibold text-black">Community</Text>
+      <Text className="text-xl font-semibold text-black">{t("communityHeader.title")}</Text>
       <TouchableOpacity
         onPress={() => router.push("/createpost")}
         className="bg-[#E7E7E7] p-2 rounded-full"

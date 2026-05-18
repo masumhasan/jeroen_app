@@ -1,0 +1,781 @@
+{
+  "signin": {
+    "title": "Welkom terug",
+    "subtitle": "Log in om door te gaan naar jouw maaltijdplanning",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "E-mailadres",
+    "passwordLabel": "Wachtwoord",
+    "passwordPlaceholder": "Wachtwoord",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "signInButton": "Inloggen",
+    "orContinueWith": "of ga verder met",
+    "noAccount": "Nog geen account?",
+    "signUp": "Registreren",
+    "errors": {
+      "emailRequired": "E-mail is verplicht",
+      "emailInvalid": "Voer een geldig e-mailadres in",
+      "passwordRequired": "Wachtwoord is verplicht",
+      "passwordTooShort": "Wachtwoord moet minimaal 6 tekens bevatten",
+      "loginError": "Inlogfout",
+      "invalidCredentials": "Ongeldig e-mailadres of wachtwoord"
+    }
+  },
+  "signup": {
+    "title": "Account aanmaken",
+    "subtitle": "Registreer om aan de slag te gaan",
+    "firstNameLabel": "Voornaam",
+    "firstNamePlaceholder": "Jan",
+    "lastNameLabel": "Achternaam",
+    "lastNamePlaceholder": "de Vries",
+    "phoneLabel": "Telefoonnummer",
+    "phonePlaceholder": "+31 6 12345678",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "naam@voorbeeld.nl",
+    "passwordLabel": "Wachtwoord",
+    "passwordPlaceholder": "wachtwoord",
+    "agreeTo": "Ik ga akkoord met de ",
+    "termsConditions": "Algemene voorwaarden",
+    "registerButton": "Registreren",
+    "orContinueWith": "of ga verder met",
+    "haveAccount": "Al een account? ",
+    "loginLink": "Inloggen",
+    "errors": {
+      "firstNameRequired": "Voornaam is verplicht",
+      "firstNameTooShort": "Voornaam moet minimaal 2 tekens bevatten",
+      "lastNameRequired": "Achternaam is verplicht",
+      "lastNameTooShort": "Achternaam moet minimaal 2 tekens bevatten",
+      "phoneRequired": "Telefoonnummer is verplicht",
+      "phoneTooShort": "Telefoonnummer is te kort",
+      "emailRequired": "E-mail is verplicht",
+      "emailInvalid": "Ongeldig e-mailadres",
+      "passwordRequired": "Wachtwoord is verplicht",
+      "passwordTooShort": "Wachtwoord moet minimaal 6 tekens bevatten",
+      "termsRequired": "Ga akkoord met de algemene voorwaarden",
+      "emailTaken": "Er bestaat al een account met dit e-mailadres.",
+      "phoneTaken": "Er bestaat al een account met dit telefoonnummer.",
+      "connectionError": "Kon uw gegevens niet verifiëren. Controleer uw verbinding en probeer het opnieuw."
+    }
+  },
+  "createLoginAccount": {
+    "headline": "AI-gestuurd maaltijdplan\nvoor jou",
+    "description": "Gepersonaliseerde voedingsplannen afgestemd op jouw\ndoelen, voorkeuren en levensstijl.",
+    "createAccount": "Account aanmaken",
+    "login": "Inloggen"
+  },
+  "onboarding": {
+    "slide1Title": "Persoonlijke\ncalorietracking",
+    "slide1Desc": "Ontvang nauwkeurige dagelijkse caloriedoelen op basis van jouw unieke lichaamsmaten en fitnessdoelen.",
+    "slide2Title": "Slim AI-maaltijdplan\naanmaken",
+    "slide2Desc": "Onze AI maakt heerlijke, uitgebalanceerde maaltijdplannen die zich aanpassen aan jouw voorkeuren en dieetwensen.",
+    "slide3Title": "Automatische\nboodschappenlijsten",
+    "slide3Desc": "Vergeet nooit een ingrediënt. Ontvang georganiseerde boodschappenlijsten op basis van jouw wekelijkse maaltijdplan.",
+    "next": "Volgende",
+    "getStarted": "Aan de slag",
+    "skip": "Overslaan",
+    "completed": "Introductie voltooid",
+    "skipped": "Introductie overgeslagen"
+  },
+  "signupOnboarding": {
+    "stepLabel": "Stap {current} van 6",
+    "percentComplete": "% Voltooid",
+    "steps": {
+      "basicInfo": "Basisinfo",
+      "activity": "Activiteit",
+      "weekStart": "Weekstart",
+      "goals": "Doelen",
+      "dietary": "Dieet",
+      "mealPlan": "Maaltijdplan"
+    },
+    "basicInformation": "Basisgegevens",
+    "basicSubtitle": "Laten we beginnen met de basisinformatie",
+    "gender": "Geslacht",
+    "age": "Leeftijd",
+    "height": "Lengte (cm)",
+    "weight": "Gewicht (kg)",
+    "agePlaceholder": "Voer uw leeftijd in",
+    "heightPlaceholder": "Voer uw lengte in",
+    "weightPlaceholder": "Voer uw gewicht in",
+    "genders": {
+      "male": "Man",
+      "female": "Vrouw",
+      "other": "Anders"
+    },
+    "activityLevel": "Activiteitsniveau",
+    "activitySubtitle": "Dit helpt ons uw dagelijkse caloriebehoefte te berekenen",
+    "activities": {
+      "sedentary": "Sedentair",
+      "sedentaryDesc": "Weinig tot geen beweging, kantoorwerk",
+      "moderate": "Matig",
+      "moderateDesc": "Sport 3-5 dagen/week, actieve levensstijl",
+      "active": "Actief",
+      "activeDesc": "Sport 6-7 dagen/week, lichamelijk werk",
+      "veryActive": "Zeer actief",
+      "veryActiveDesc": "Intensief dagelijks sporten, atleet"
+    },
+    "weekStartsFrom": "Week begint op",
+    "weekStartSubtitle": "Kies op welke dag uw maaltijdplanweek begint",
+    "days": {
+      "monday": "Maandag",
+      "tuesday": "Dinsdag",
+      "wednesday": "Woensdag",
+      "thursday": "Donderdag",
+      "friday": "Vrijdag",
+      "saturday": "Zaterdag",
+      "sunday": "Zondag"
+    },
+    "yourGoal": "Uw doel",
+    "goalSubtitle": "Wat wilt u bereiken?",
+    "goals": {
+      "weightLoss": "Gewicht verliezen",
+      "weightGain": "Gewicht aankomen",
+      "muscleGain": "Spiermassa opbouwen",
+      "maintenance": "Gewicht handhaven"
+    },
+    "quickTip": "Snelle tip",
+    "goalTipText": "Uw doel helpt ons uw maaltijdplan en trainingsaanbevelingen aan te passen voor betere resultaten.",
+    "continue": "Doorgaan",
+    "generatePlan": "Mijn plan genereren"
+  },
+  "forgot": {
+    "title": "E-mailbevestiging",
+    "subtitle": "Voer uw e-mailadres in voor verificatie.",
+    "emailPlaceholder": "naam@voorbeeld.nl",
+    "sendButton": "Verificatiecode verzenden"
+  },
+  "resetPassword": {
+    "title": "Wachtwoord opnieuw instellen",
+    "description": "Maak een nieuw wachtwoord aan voor uw account. Kies een sterk en uniek wachtwoord dat u nog niet eerder heeft gebruikt.",
+    "newPasswordLabel": "Nieuw wachtwoord",
+    "newPasswordPlaceholder": "Voer nieuw wachtwoord in",
+    "confirmPasswordLabel": "Wachtwoord bevestigen",
+    "confirmPasswordPlaceholder": "Bevestig nieuw wachtwoord",
+    "strength": {
+      "label": "Wachtwoordsterkte: ",
+      "weak": "Zwak",
+      "fair": "Redelijk",
+      "good": "Goed",
+      "strong": "Sterk"
+    },
+    "requirements": {
+      "minChars": "Minimaal 8 tekens",
+      "uppercase": "Hoofdletter (A-Z)",
+      "lowercase": "Kleine letter (a-z)",
+      "number": "Cijfer (0-9)",
+      "special": "Speciaal teken (!@#$%)"
+    },
+    "updateButton": "Wachtwoord bijwerken",
+    "successTitle": "Wachtwoord bijgewerkt!",
+    "successMessage": "Uw wachtwoord is succesvol gewijzigd",
+    "errors": {
+      "newRequired": "Nieuw wachtwoord is verplicht",
+      "tooShort": "Wachtwoord moet minimaal {min} tekens bevatten",
+      "noUppercase": "Wachtwoord moet minimaal één hoofdletter bevatten",
+      "noLowercase": "Wachtwoord moet minimaal één kleine letter bevatten",
+      "noNumber": "Wachtwoord moet minimaal één cijfer bevatten",
+      "noSpecial": "Wachtwoord moet minimaal één speciaal teken bevatten",
+      "confirmRequired": "Bevestig uw wachtwoord",
+      "mismatch": "Wachtwoorden komen niet overeen"
+    }
+  },
+  "verify": {
+    "title": "OTP-verificatie",
+    "subtitle": "Voer de 6-cijferige code in die naar uw e-mail is verzonden",
+    "resendIn": "Code opnieuw verzenden over",
+    "resendCode": "Code opnieuw verzenden",
+    "verifyButton": "Code verifiëren"
+  },
+  "finalPage": {
+    "title": "Perfect, {firstName}! 🎉",
+    "subtitle": "Uw aangepaste plan is klaar op basis van uw doel: {goal}",
+    "recommended": "Aanbevolen: {calories} calorieën",
+    "caloriesPerDay": "Calorieën per dag",
+    "protein": "Eiwitten",
+    "carbs": "Koolhydraten",
+    "fat": "Vetten",
+    "customizeMacros": "Macronutriënten aanpassen",
+    "budgetLabel": "Budget / Uw doel (kcal)",
+    "dailyCalories": "Dagelijkse calorieën",
+    "caloriePlaceholder": "bijv. 2000",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "macrosNote": "Macro's zijn beperkt zodat calorieën van eiwitten (4/g), koolhydraten (4/g) en vetten (9/g) uw dagelijks doel niet overschrijden.",
+    "saveTargets": "Doelen opslaan",
+    "continueButton": "Doorgaan naar weekplan",
+    "errors": {
+      "invalidValue": "Ongeldige waarde",
+      "calorieMin": "Voer een caloriedoel in van minimaal 1.",
+      "noMacrosTitle": "Geen macro's ingesteld",
+      "noMacrosMessage": "Stel minimaal wat eiwitten, koolhydraten of vetten in voordat u opslaat.",
+      "saveFailedTitle": "Opslaan mislukt",
+      "saveFailedMessage": "Kon uw doelen niet opslaan. Controleer uw verbinding en probeer het opnieuw."
+    }
+  },
+  "tabs": {
+    "mealPlans": "Maaltijdplannen",
+    "community": "Community",
+    "cookbook": "Kookboek",
+    "progress": "Voortgang",
+    "profile": "Profiel"
+  },
+  "home": {
+    "title": "Weekelijks maaltijdplan",
+    "dailyTarget": "Dagdoel",
+    "cal": "kcal",
+    "loading": "Uw maaltijdplan wordt geladen...",
+    "noMeals": "Geen maaltijden gevonden voor deze dag.",
+    "shareDailyPlan": "Deel uw dagelijkse maaltijdplan",
+    "generateNextWeek": "Maaltijdplan voor volgende week genereren",
+    "unknownRecipe": "Onbekend recept",
+    "alerts": {
+      "successTitle": "Succes",
+      "newPlanGenerated": "Nieuw maaltijdplan succesvol gegenereerd!",
+      "errorTitle": "Fout",
+      "regenerateFailed": "Maaltijdplan opnieuw genereren mislukt",
+      "nextWeekReady": "Het maaltijdplan voor volgende week is klaar!",
+      "nextWeekFailed": "Maaltijdplan voor volgende week genereren mislukt"
+    }
+  },
+  "community": {
+    "feed": "Feed",
+    "topics": "Onderwerpen",
+    "noPosts": "Nog geen berichten. Volg onderwerpen in het tabblad Onderwerpen om uw gepersonaliseerde feed te zien.",
+    "justNow": "Zojuist",
+    "minutesAgo": "m geleden",
+    "hoursAgo": "u geleden",
+    "daysAgo": "d geleden"
+  },
+  "progress": {
+    "title": "Voortgangsoverzicht",
+    "kgLost": "kg verloren",
+    "weeks": "Weken",
+    "consistency": "Consistentie",
+    "loading": "Uw voortgang wordt geladen...",
+    "mealsPlanned": "Maaltijden gepland deze week",
+    "checkIns": "Check-ins deze week"
+  },
+  "profile": {
+    "title": "Profiel",
+    "gender": "Geslacht",
+    "height": "Lengte",
+    "weight": "Gewicht",
+    "activityLevel": "Activiteitsniveau",
+    "goal": "Doel",
+    "notSet": "Niet ingesteld",
+    "currentWeight": "Huidig gewicht",
+    "entryWeight": "Begingewicht",
+    "update": "Bijwerken",
+    "kg": "kg",
+    "cm": "cm",
+    "personalInfo": "Persoonlijke gegevens",
+    "edit": "Bewerken",
+    "customizeTarget": "Verbruiksdoel aanpassen",
+    "myFavourites": "Mijn favorieten",
+    "addRecipe": "Recept toevoegen",
+    "myRecipes": "Mijn recepten",
+    "updateWeight": "Gewicht bijwerken",
+    "current": "Huidig",
+    "entry": "Begin",
+    "newCurrentWeight": "Nieuw huidig gewicht",
+    "weightPlaceholder": "Voer gewicht in kg in",
+    "saveWeight": "Nieuw gewicht opslaan",
+    "alerts": {
+      "invalidWeight": "Ongeldig gewicht",
+      "invalidWeightMessage": "Voer een geldig gewicht in kg in.",
+      "successTitle": "Succes",
+      "weightUpdated": "Gewicht succesvol bijgewerkt.",
+      "errorTitle": "Fout",
+      "weightFailed": "Gewicht bijwerken mislukt. Probeer het opnieuw."
+    }
+  },
+  "shoppingList": {
+    "title": "Boodschappenlijst",
+    "reset": "Opnieuw instellen",
+    "itemsCount": "{selected} van {total} artikelen",
+    "loading": "Boodschappenlijst wordt geladen...",
+    "noList": "Nog geen boodschappenlijst.",
+    "generateHint": "Genereer uw plan om er een aan te maken.",
+    "allDone": "🎉 Gefeliciteerd! U heeft uw boodschappenlijst voltooid!",
+    "exportList": "Lijst exporteren",
+    "empty": "Uw boodschappenlijst is leeg",
+    "generateHintAlt": "Genereer een maaltijdplan om artikelen te zien"
+  },
+  "cookingMode": {
+    "stepLabel": "Stap {index}",
+    "noInstructions": "Geen instructies",
+    "noInstructionsDetail": "Dit recept heeft nog geen stapsgewijze instructies in de database. Voeg ze toe in de receptbeheerder.",
+    "recipeNotFound": "Recept niet gevonden",
+    "stepOf": "Stap {current} van {total}",
+    "previous": "Vorige",
+    "complete": "Voltooid",
+    "next": "Volgende"
+  },
+  "dishDetails": {
+    "recipeNotFound": "Recept niet gevonden",
+    "crowdsourced": "Door gebruikers aangedragen",
+    "estimatedTime": "~{minutes} min (schatting)",
+    "servings": "{count} portie",
+    "servingsPlural": "{count} porties",
+    "oneServing": "1 portie",
+    "startCooking": "Kookmodus starten",
+    "nutritionBreakdown": "Voedingswaarden",
+    "cookingTip": "Kooktip"
+  },
+  "createPost": {
+    "title": "Bericht maken",
+    "selectTopic": "Selecteer onderwerp *",
+    "searchTopics": "Zoek onderwerpen",
+    "whatOnMind": "Wat denkt u? *",
+    "postPlaceholder": "Deel uw gedachten, recepten of maaltijdplannen...",
+    "addPhoto": "Foto toevoegen",
+    "changePhoto": "Foto wijzigen",
+    "postButton": "Plaatsen",
+    "discardTitle": "Bericht verwerpen",
+    "discardMessage": "U heeft niet-opgeslagen wijzigingen. Weet u zeker dat u dit bericht wilt verwerpen?",
+    "stay": "Blijven",
+    "discard": "Verwerpen",
+    "alerts": {
+      "permissionTitle": "Toestemming vereist",
+      "permissionMessage": "Geef toestemming om toegang te krijgen tot uw foto's",
+      "successTitle": "Succes",
+      "imageSelected": "Afbeelding succesvol geselecteerd",
+      "errorTitle": "Fout",
+      "imageFailed": "Afbeelding selecteren mislukt",
+      "topicRequired": "Selecteer minimaal één onderwerp",
+      "contentRequired": "Schrijf iets in uw bericht",
+      "postCreated": "Uw bericht is succesvol aangemaakt!"
+    }
+  },
+  "postDetails": {
+    "title": "Berichtdetails",
+    "edit": "Bewerken",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "save": "Opslaan",
+    "like": "Vind ik leuk",
+    "reply": "Beantwoorden",
+    "writeComment": "Schrijf een reactie...",
+    "noComments": "Nog geen reacties. Wees de eerste!",
+    "commentsTitle": "Reacties",
+    "alerts": {
+      "errorTitle": "Fout",
+      "emptyContent": "Berichtinhoud mag niet leeg zijn.",
+      "editFailedTitle": "Bewerken mislukt",
+      "editFailed": "Dit bericht kon niet worden bijgewerkt.",
+      "deleteTitle": "Bericht verwijderen",
+      "deleteMessage": "Weet u zeker dat u dit bericht wilt verwijderen?",
+      "deleteButton": "Verwijderen",
+      "deleteFailedTitle": "Verwijderen mislukt",
+      "deleteFailed": "Dit bericht kon niet worden verwijderd."
+    }
+  },
+  "profileSettings": {
+    "title": "Profiel bewerken",
+    "reset": "Opnieuw instellen",
+    "tapToChange": "Tik om profielfoto te wijzigen",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "email": "E-mailadres",
+    "phone": "Mobiel nummer",
+    "enterFirstName": "Voer voornaam in",
+    "enterLastName": "Voer achternaam in",
+    "enterEmail": "Voer e-mailadres in",
+    "enterPhone": "Voer mobiel nummer in",
+    "saveChanges": "Wijzigingen opslaan",
+    "discardTitle": "Wijzigingen verwerpen",
+    "discardMessage": "Weet u zeker dat u uw wijzigingen wilt verwerpen?",
+    "unsavedTitle": "Niet-opgeslagen wijzigingen",
+    "unsavedMessage": "U heeft niet-opgeslagen wijzigingen. Weet u zeker dat u terug wilt gaan?",
+    "stay": "Blijven",
+    "discard": "Verwerpen",
+    "leave": "Verlaten",
+    "alerts": {
+      "errorTitle": "Fout",
+      "fetchFailed": "Gebruikersgegevens ophalen mislukt",
+      "validationTitle": "Validatiefout",
+      "firstNameRequired": "Voornaam is verplicht",
+      "lastNameRequired": "Achternaam is verplicht",
+      "phoneRequired": "Mobiel nummer is verplicht",
+      "phoneDigitsOnly": "Mobiel nummer mag alleen cijfers bevatten",
+      "emailInvalid": "Voer een geldig e-mailadres in",
+      "successTitle": "Succes",
+      "updateSuccess": "Profiel succesvol bijgewerkt",
+      "updateFailed": "Profiel bijwerken mislukt",
+      "pictureFailed": "Profielfoto wijzigen mislukt",
+      "permissionTitle": "Toestemming vereist",
+      "permissionMessage": "Toegang tot fotobibliotheek is nodig om de profielfoto te wijzigen"
+    }
+  },
+  "about": {
+    "title": "Over ons",
+    "loadError": "Kan de inhoud van 'Over ons' momenteel niet laden."
+  },
+  "addRecipe": {
+    "title": "Nieuw recept toevoegen",
+    "recipeNameLabel": "Receptnaam",
+    "recipeNamePlaceholder": "Voer receptnaam in",
+    "personsServing": "Aantal porties",
+    "macros": "Macro's",
+    "ingredients": "Ingrediënten",
+    "ingredientPlaceholder": "Ingrediënt {n}",
+    "recipeSteps": "Bereidingsstappen",
+    "stepPlaceholder": "Stap {n}",
+    "cookingTip": "Kooktip",
+    "cookingTipPlaceholder": "Kooktips voor dit recept?",
+    "recipeImage": "Receptafbeelding",
+    "uploadImage": "Klik om afbeelding te uploaden",
+    "cancel": "Annuleren",
+    "saveRecipe": "Recept opslaan",
+    "reviewNote": "Uw recept wordt door ons team beoordeeld voordat het in maaltijdplannen verschijnt.",
+    "category": "Categorie ({count} geselecteerd)",
+    "alerts": {
+      "validationTitle": "Validatie",
+      "nameRequired": "Receptnaam is verplicht.",
+      "ingredientRequired": "Minimaal één ingrediënt is vereist.",
+      "successTitle": "Succes",
+      "submitted": "Uw recept is ter beoordeling ingediend!",
+      "errorTitle": "Fout"
+    }
+  },
+  "editRecipe": {
+    "title": "Recept bewerken",
+    "recipeNameLabel": "Receptnaam",
+    "recipeNamePlaceholder": "Voer receptnaam in",
+    "personsServing": "Aantal porties",
+    "macros": "Macro's",
+    "ingredients": "Ingrediënten",
+    "ingredientPlaceholder": "Ingrediënt {n}",
+    "recipeSteps": "Bereidingsstappen",
+    "stepPlaceholder": "Stap {n}",
+    "cookingTip": "Kooktip",
+    "cookingTipPlaceholder": "Kooktips voor dit recept?",
+    "recipeImage": "Receptafbeelding",
+    "uploadImage": "Klik om afbeelding te uploaden",
+    "cancel": "Annuleren",
+    "updateRecipe": "Recept bijwerken",
+    "category": "Categorie ({count} geselecteerd)",
+    "pendingNote": "Bewerken zet de status van uw recept terug naar 'in behandeling' voor hergoedkeuring.",
+    "alerts": {
+      "errorTitle": "Fout",
+      "loadFailed": "Receptgegevens laden mislukt.",
+      "validationTitle": "Validatie",
+      "nameRequired": "Receptnaam is verplicht.",
+      "ingredientRequired": "Minimaal één ingrediënt is vereist.",
+      "successTitle": "Succes",
+      "resubmitted": "Uw recept is bijgewerkt en ter hergoedkeuring ingediend."
+    }
+  },
+  "adminSupport": {
+    "title": "Ondersteuningsteam",
+    "online": "Online",
+    "today": "Vandaag",
+    "messagePlaceholder": "Bericht",
+    "sendPhoto": "Foto verzenden",
+    "takePhoto": "Foto maken",
+    "chooseLibrary": "Kiezen uit bibliotheek",
+    "loading": "Gesprek wordt geladen…",
+    "delete": "Verwijderen",
+    "alerts": {
+      "loadError": "Kon uw ondersteuningsgesprek niet laden.",
+      "errorTitle": "Fout",
+      "sendFailed": "Kon uw bericht niet verzenden. Probeer het opnieuw.",
+      "imageFailed": "Kon de afbeelding niet verzenden. Probeer het opnieuw.",
+      "permissionTitle": "Toestemming vereist",
+      "photoPermission": "U moet toegang tot uw foto's toestaan om afbeeldingen te verzenden.",
+      "cameraPermission": "U moet toegang tot uw camera toestaan om foto's te maken."
+    }
+  },
+  "changePassword": {
+    "title": "Wachtwoord wijzigen",
+    "description": "Wachtwoord moet minimaal 8 tekens bevatten met hoofdletters, kleine letters, een cijfer en een speciaal teken.",
+    "oldPasswordLabel": "Oud wachtwoord",
+    "newPasswordLabel": "Nieuw wachtwoord",
+    "confirmPasswordLabel": "Wachtwoord bevestigen",
+    "enterCurrentPassword": "Voer huidig wachtwoord in",
+    "enterNewPassword": "Voer nieuw wachtwoord in",
+    "confirmNewPassword": "Bevestig nieuw wachtwoord",
+    "updateButton": "Wachtwoord bijwerken",
+    "successTitle": "Wachtwoord bijgewerkt!",
+    "successMessage": "Uw wachtwoord is succesvol gewijzigd",
+    "strengthLabel": "Wachtwoordsterkte: ",
+    "discardTitle": "Wijzigingen verwerpen",
+    "discardMessage": "U heeft niet-opgeslagen wijzigingen. Weet u zeker dat u terug wilt gaan?",
+    "stay": "Blijven",
+    "leave": "Verlaten",
+    "strength": {
+      "weak": "Zwak",
+      "fair": "Redelijk",
+      "good": "Goed",
+      "strong": "Sterk"
+    },
+    "requirements": {
+      "minChars": "Minimaal {min} tekens",
+      "uppercase": "Hoofdletter (A-Z)",
+      "lowercase": "Kleine letter (a-z)",
+      "number": "Cijfer (0-9)",
+      "special": "Speciaal teken (!@#$%)"
+    },
+    "errors": {
+      "oldRequired": "Oud wachtwoord is verplicht",
+      "newRequired": "Nieuw wachtwoord is verplicht",
+      "tooShort": "Wachtwoord moet minimaal {min} tekens bevatten",
+      "noUppercase": "Wachtwoord moet minimaal één hoofdletter bevatten",
+      "noLowercase": "Wachtwoord moet minimaal één kleine letter bevatten",
+      "noNumber": "Wachtwoord moet minimaal één cijfer bevatten",
+      "noSpecial": "Wachtwoord moet minimaal één speciaal teken bevatten",
+      "confirmRequired": "Bevestig uw wachtwoord",
+      "mismatch": "Wachtwoorden komen niet overeen",
+      "sameAsOld": "Nieuw wachtwoord moet anders zijn dan oud wachtwoord"
+    },
+    "alerts": {
+      "successTitle": "Succes",
+      "successMessage": "Wachtwoord succesvol gewijzigd",
+      "errorTitle": "Fout",
+      "changeFailed": "Wachtwoord wijzigen mislukt. Probeer het opnieuw."
+    }
+  },
+  "editProfile": {
+    "step1": "Stap 1 van 3",
+    "step2": "Stap 2 van 3",
+    "step3": "Stap 3 van 3",
+    "percent1": "33%",
+    "percent2": "66%",
+    "percent3": "100%",
+    "basicInformation": "Basisgegevens",
+    "gender": "Geslacht",
+    "age": "Leeftijd",
+    "height": "Lengte (cm)",
+    "weight": "Gewicht (kg)",
+    "activityLevel": "Activiteitsniveau",
+    "yourGoal": "Uw doel",
+    "continue": "Doorgaan",
+    "update": "Bijwerken",
+    "genders": {
+      "male": "Man",
+      "female": "Vrouw",
+      "other": "Anders"
+    },
+    "activities": {
+      "sedentary": "Sedentair",
+      "sedentaryDesc": "Weinig tot geen beweging",
+      "moderate": "Matig",
+      "moderateDesc": "Sport 3-5 dagen/week",
+      "active": "Actief",
+      "activeDesc": "Sport 6-7 dagen/week"
+    },
+    "goals": {
+      "weightLoss": "Gewicht verliezen",
+      "weightGain": "Gewicht aankomen",
+      "muscleGain": "Spiermassa opbouwen",
+      "maintenance": "Gewicht handhaven"
+    },
+    "alerts": {
+      "errorTitle": "Fout",
+      "fetchFailed": "Gebruikersgegevens ophalen mislukt",
+      "successTitle": "Succes",
+      "updateSuccess": "Profiel succesvol bijgewerkt",
+      "updateFailed": "Profiel bijwerken mislukt"
+    }
+  },
+  "myFavourites": {
+    "title": "Mijn favorieten",
+    "empty": "Nog geen favorieten",
+    "emptyHint": "Tik op het hartpictogram bij een recept om het hier op te slaan."
+  },
+  "myRecipes": {
+    "title": "Mijn recepten",
+    "empty": "U heeft nog geen recepten ingediend.",
+    "addFirst": "Uw eerste recept toevoegen"
+  },
+  "policy": {
+    "title": "Privacybeleid",
+    "loadError": "Kan het privacybeleid momenteel niet laden."
+  },
+  "settings": {
+    "title": "Instellingen",
+    "profileSetting": "Profielinstellingen",
+    "support": "Ondersteuning",
+    "changePassword": "Wachtwoord wijzigen",
+    "aboutUs": "Over ons",
+    "privacyPolicy": "Privacybeleid",
+    "termsConditions": "Algemene voorwaarden",
+    "logout": "Uitloggen",
+    "logoutConfirm": "Weet u zeker dat u wilt uitloggen?",
+    "logOut": "Uitloggen",
+    "cancel": "Annuleren",
+    "alerts": {
+      "errorTitle": "Fout",
+      "logoutFailed": "Uitloggen mislukt"
+    }
+  },
+  "terms": {
+    "title": "Algemene voorwaarden",
+    "loadError": "Kan de algemene voorwaarden momenteel niet laden."
+  },
+  "mediterranean": {
+    "title": "Mediterrane lekkernijen"
+  },
+  "footerActions": {
+    "shoppingList": "Boodschappenlijst",
+    "generating": "Bezig met genereren...",
+    "regenerate": "Opnieuw genereren"
+  },
+  "mealCard": {
+    "crowdsourced": "Door gebruikers aangedragen",
+    "cal": "kcal",
+    "swapMeal": "↻ Maaltijd wisselen"
+  },
+  "shareMealPlan": {
+    "title": "Maaltijdplan delen",
+    "shareButton": "Delen",
+    "dayMealPlan": "{day} maaltijdplan",
+    "target": "Doel: {calories} kcal",
+    "total": "Totaal",
+    "caption": "Bijschrift",
+    "captionPlaceholder": "Voeg een bijschrift toe aan uw maaltijdplan...",
+    "selectTopic": "Selecteer onderwerp *",
+    "alerts": {
+      "topicRequired": "Onderwerp vereist",
+      "topicMessage": "Selecteer minimaal één onderwerp.",
+      "sharedTitle": "Gedeeld!",
+      "sharedMessage": "Uw maaltijdplan is gedeeld met de community.",
+      "ok": "OK",
+      "errorTitle": "Fout",
+      "shareFailed": "Maaltijdplan delen mislukt. Probeer het opnieuw."
+    }
+  },
+  "progressHeader": {
+    "of": "van",
+    "items": "artikelen"
+  },
+  "circleGraph": {
+    "totalCalories": "Totale calorieën",
+    "protein": "Eiwitten",
+    "carbs": "Koolhydraten",
+    "fat": "Vetten"
+  },
+  "detailsFull": {
+    "ingredients": "Ingrediënten",
+    "instructions": "Bereidingswijze"
+  },
+  "communityHeader": {
+    "title": "Community"
+  },
+  "feedTabs": {
+    "feed": "Feed",
+    "topics": "Onderwerpen"
+  },
+  "postCard": {
+    "commentsTitle": "Reacties",
+    "close": "Sluiten",
+    "noComments": "Nog geen reacties. Wees de eerste!",
+    "writeComment": "Schrijf een reactie...",
+    "post": "Plaatsen",
+    "likeAction": "Vind ik leuk",
+    "replyAction": "Beantwoorden",
+    "defaultUser": "Gebruiker",
+    "you": "U",
+    "alerts": {
+      "errorTitle": "Fout",
+      "emptyComment": "Schrijf een reactie",
+      "addFailed": "Reactie toevoegen mislukt"
+    }
+  },
+  "searchBar": {
+    "placeholder": "Zoek berichten, onderwerpen of gebruikers..."
+  },
+  "topics": {
+    "followers": "volgers",
+    "following": "Volgend",
+    "follow": "Volgen"
+  },
+  "cookbookHeader": {
+    "title": "Kookboek",
+    "subtitle": "Ontdek heerlijke recepten"
+  },
+  "lockedCard": {
+    "recipes": "{count} recepten",
+    "buy": "Kopen {price}"
+  },
+  "recipeCard": {
+    "recipes": "{count} recepten",
+    "viewRecipes": "Recepten bekijken"
+  },
+  "tabSwitch": {
+    "allBooks": "Alle boeken",
+    "myLibrary": "Mijn bibliotheek"
+  },
+  "motivationCard": {
+    "title": "Geweldige vooruitgang! 🎉",
+    "message": "U bent {percent}% op weg naar uw doel.",
+    "subMessage": "Blijf zo doorgaan en wees consistent!"
+  },
+  "statCard": {
+    "kgLost": "kg verloren",
+    "weeks": "Weken"
+  },
+  "weeklyConsistency": {
+    "title": "Wekelijkse consistentie",
+    "checkIns": "Check-ins deze week"
+  },
+  "weightJourney": {
+    "title": "Gewichtsverloop",
+    "start": "Begin",
+    "current": "Huidig",
+    "target": "Doel",
+    "kg": "kg",
+    "progressToGoal": "Voortgang naar doel",
+    "kgToGo": "kg te gaan"
+  },
+  "weightTrend": {
+    "title": "Gewichtstrend"
+  },
+  "swapMeal": {
+    "title": "Wissel {mealType}",
+    "subtitle": "Kies een alternatieve maaltijd",
+    "currentMeal": "Huidige maaltijd",
+    "searchPlaceholder": "Zoek maaltijden...",
+    "calories": "Calorieën",
+    "protein": "Eiwitten",
+    "name": "Naam",
+    "all": "Alles",
+    "under400": "< 400 kcal",
+    "range400": "400-550 kcal",
+    "over550": "> 550 kcal",
+    "alternativeFound": "{count} alternatief gevonden",
+    "alternativesFound": "{count} alternatieven gevonden",
+    "noAlternatives": "Geen alternatieven gevonden binnen +/-100 calorieën.",
+    "fromYourRecipes": "Uit uw recepten",
+    "fromYourRecipesDesc": "Wissel met een recept dat u heeft ingediend",
+    "noRecipes": "U heeft nog geen recepten toegevoegd.",
+    "swapButton": "Wisselen",
+    "sortBy": "Sorteren: {title}",
+    "alerts": {
+      "swappedTitle": "Maaltijd gewisseld",
+      "swappedMessage": "Uw maaltijdplan is bijgewerkt.",
+      "swapFailedTitle": "Wisselen mislukt"
+    }
+  },
+  "dietary": {
+    "title": "Dieetvoorkeuren",
+    "subtitle": "Pas uw maaltijdplan aan",
+    "clearAll": "Alles wissen",
+    "allergies": "Allergieën",
+    "optional": "Optioneel",
+    "searchIngredients": "Zoek ingrediënten...",
+    "noIngredients": "Geen ingrediënten gevonden",
+    "targetWeight": "Doelgewicht",
+    "targetWeightPlaceholder": "Voer uw doelgewicht in",
+    "kg": "kg",
+    "preferences": "Dieetvoorkeuren"
+  },
+  "mealPlan": {
+    "title": "Maaltijdplanvoorkeur",
+    "subtitle": "Kies uw gewenste maaltijdplanstijlen (meerdere selecties mogelijk)",
+    "breakfast": "Ontbijt",
+    "snack1": "Tussendoortje-1",
+    "lunch": "Lunch",
+    "snack2": "Tussendoortje-2",
+    "dinner": "Diner",
+    "snack3": "Tussendoortje-3"
+  }
+}

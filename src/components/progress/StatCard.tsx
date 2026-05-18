@@ -1,4 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { t } from "../../i18n";
 import { CalendarRange, Medal, TrendingDown } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -33,26 +34,16 @@ const StatCard = ({ title, subtitle, index, trend, value }: StatCardProps) => {
     }
   };
   const getTrendIconWorklet = (subtitleValue: string) => {
-    switch (subtitleValue) {
-      case "kg Lost":
-        return <TrendingDown size={20} color={"#8A957F"} />;
-      case "Weeks":
-        return <CalendarRange size={20} color={"#9F8B7A"} />;
-      default:
-        return <Medal size={20} color={"#8A957F"} />;
-    }
+    if (subtitleValue === t("statCard.kgLost")) return <TrendingDown size={20} color={"#8A957F"} />;
+    if (subtitleValue === t("statCard.weeks")) return <CalendarRange size={20} color={"#9F8B7A"} />;
+    return <Medal size={20} color={"#8A957F"} />;
   };
   // #F9D8C120
 
   const getTrendBgColorWorklet = (subtitleValue: string) => {
-    switch (subtitleValue) {
-      case "kg Lost":
-        return "#F9D8C120";
-      case "Weeks":
-        return "#E2DC9E20";
-      default:
-        return "#8A957F20";
-    }
+    if (subtitleValue === t("statCard.kgLost")) return "#F9D8C120";
+    if (subtitleValue === t("statCard.weeks")) return "#E2DC9E20";
+    return "#8A957F20";
   };
 
   const getTrendIcon = () => {

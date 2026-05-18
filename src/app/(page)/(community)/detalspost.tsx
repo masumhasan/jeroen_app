@@ -21,6 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { communityService } from "../../../services/communityService";
 import { resolveRecipeImageUrl } from "../../../utils/imageUrl";
+import { t } from "../../../i18n";
 
 // Types
 interface Comment {
@@ -108,7 +109,7 @@ const PostDetailsScreen = () => {
     if (!post?.id) return;
     const content = editContent.trim();
     if (!content) {
-      Alert.alert("Error", "Post content cannot be empty.");
+      Alert.alert(t("postDetails.alerts.errorTitle"), t("postDetails.alerts.emptyContent"));
       return;
     }
     try {
@@ -119,8 +120,8 @@ const PostDetailsScreen = () => {
       setIsEditing(false);
     } catch (error: any) {
       Alert.alert(
-        "Edit failed",
-        error?.response?.data?.message || "Could not update this post."
+        t("postDetails.alerts.editFailedTitle"),
+        error?.response?.data?.message || t("postDetails.alerts.editFailed")
       );
     } finally {
       setUpdatingPost(false);
@@ -129,10 +130,10 @@ const PostDetailsScreen = () => {
 
   const handleDeletePost = () => {
     if (!post?.id) return;
-    Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("postDetails.alerts.deleteTitle"), t("postDetails.alerts.deleteMessage"), [
+      { text: t("postDetails.cancel"), style: "cancel" },
       {
-        text: "Delete",
+        text: t("postDetails.alerts.deleteButton"),
         style: "destructive",
         onPress: async () => {
           try {
@@ -140,8 +141,8 @@ const PostDetailsScreen = () => {
             router.back();
           } catch (error: any) {
             Alert.alert(
-              "Delete failed",
-              error?.response?.data?.message || "Could not delete this post."
+              t("postDetails.alerts.deleteFailedTitle"),
+              error?.response?.data?.message || t("postDetails.alerts.deleteFailed")
             );
           }
         },
@@ -188,10 +189,10 @@ const PostDetailsScreen = () => {
             {item.timestamp}
           </Text>
           <TouchableOpacity activeOpacity={0.7} className="mr-3">
-            <Text className="text-[#8A8A8A] text-[11px] font-medium">Like</Text>
+            <Text className="text-[#8A8A8A] text-[11px] font-medium">{t("postDetails.like")}</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.7}>
-            <Text className="text-[#8A8A8A] text-[11px] font-medium">Reply</Text>
+            <Text className="text-[#8A8A8A] text-[11px] font-medium">{t("postDetails.reply")}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -227,7 +228,7 @@ const PostDetailsScreen = () => {
           </TouchableOpacity>
 
           <Text className="text-[16px] font-semibold text-[#1A1E2B]">
-            Post Details
+            {t("postDetails.title")}
           </Text>
 
           {post?.isAuthor ? (
@@ -237,14 +238,14 @@ const PostDetailsScreen = () => {
                 className="px-2 py-1 rounded-md bg-[#F3F5F1]"
               >
                 <Text className="text-[12px] text-[#6E7B62] font-semibold">
-                  {isEditing ? "Cancel" : "Edit"}
+                  {isEditing ? t("postDetails.cancel") : t("postDetails.edit")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleDeletePost}
                 className="px-2 py-1 rounded-md bg-[#FFF1F1]"
               >
-                <Text className="text-[12px] text-[#D05050] font-semibold">Delete</Text>
+                <Text className="text-[12px] text-[#D05050] font-semibold">{t("postDetails.delete")}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -319,7 +320,7 @@ const PostDetailsScreen = () => {
                   {updatingPost ? (
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
-                    <Text className="text-white font-semibold">Save</Text>
+                    <Text className="text-white font-semibold">{t("postDetails.save")}</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -410,7 +411,7 @@ const PostDetailsScreen = () => {
           >
             <View className="flex-row items-center justify-between mb-5">
               <Text className="text-[18px] font-semibold text-[#1A1E2B]">
-                Comments
+                {t("postDetails.commentsTitle")}
               </Text>
             </View>
 
@@ -424,7 +425,7 @@ const PostDetailsScreen = () => {
                   color="#E0E0E0"
                 />
                 <Text className="text-[#8A8A8A] text-[14px] mt-3">
-                  No comments yet. Be the first!
+                  {t("postDetails.noComments")}
                 </Text>
               </View>
             )}
@@ -448,7 +449,7 @@ const PostDetailsScreen = () => {
 
           <View className="flex-1 flex-row items-center bg-[#F5F7FA] rounded-full px-4 py-2">
             <TextInput
-              placeholder="Write a comment..."
+              placeholder={t("postDetails.writeComment")}
               placeholderTextColor="#9CA3AF"
               value={commentText}
               onChangeText={setCommentText}

@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { recipeService } from "../../../services/recipeService";
+import { t } from "../../../i18n";
 
 const CATEGORIES = [
   "Ontbijt",
@@ -93,12 +94,12 @@ const AddRecipe = () => {
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      Alert.alert("Validation", "Recipe name is required.");
+      Alert.alert(t("addRecipe.alerts.validationTitle"), t("addRecipe.alerts.nameRequired"));
       return;
     }
     const validIngredients = ingredients.filter((i) => i.trim().length > 0);
     if (validIngredients.length === 0) {
-      Alert.alert("Validation", "At least one ingredient is required.");
+      Alert.alert(t("addRecipe.alerts.validationTitle"), t("addRecipe.alerts.ingredientRequired"));
       return;
     }
 
@@ -133,13 +134,13 @@ const AddRecipe = () => {
       }
 
       await recipeService.submitUserRecipe(formData);
-      Alert.alert("Success", "Your recipe has been submitted for review!", [
+      Alert.alert(t("addRecipe.alerts.successTitle"), t("addRecipe.alerts.submitted"), [
         { text: "OK", onPress: () => router.back() },
       ]);
     } catch (error: any) {
       Alert.alert(
-        "Error",
-        error?.response?.data?.message || "Failed to submit recipe."
+        t("addRecipe.alerts.errorTitle"),
+        error?.response?.data?.message || t("addRecipe.alerts.nameRequired")
       );
     } finally {
       setSaving(false);
@@ -162,7 +163,7 @@ const AddRecipe = () => {
               <Ionicons name="close" size={24} color="#111" />
             </TouchableOpacity>
             <Text className="text-[20px] font-black text-[#111]">
-              Add New Recipe
+              {t("addRecipe.title")}
             </Text>
           </View>
         </View>
@@ -176,12 +177,12 @@ const AddRecipe = () => {
           <View className="px-5 pt-5">
             {/* ─── RECIPE NAME ─── */}
             <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-              Recipe Name
+              {t("addRecipe.recipeNameLabel")}
             </Text>
             <TextInput
               value={name}
               onChangeText={setName}
-              placeholder="Enter recipe name"
+              placeholder={t("addRecipe.recipeNamePlaceholder")}
               className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 text-[14px] font-medium text-[#111]"
               placeholderTextColor="#B0B0B0"
             />
@@ -189,7 +190,7 @@ const AddRecipe = () => {
             {/* ─── CATEGORY (multi-select chips) ─── */}
             <View className="mt-5">
               <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-                Category ({categories.length} selected)
+                {t("addRecipe.category", { count: String(categories.length) })}
               </Text>
               <View className="rounded-xl border border-gray-100 bg-gray-50 overflow-hidden">
                 <ScrollView
@@ -228,7 +229,7 @@ const AddRecipe = () => {
             <View className="flex-row gap-3 mt-4">
               <View className="flex-1">
                 <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-                  Persons Serving
+                  {t("addRecipe.personsServing")}
                 </Text>
                 <TextInput
                   value={personsServing}
@@ -243,7 +244,7 @@ const AddRecipe = () => {
 
             {/* ─── MACROS (5-column grid) ─── */}
             <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-5 mb-2">
-              Macros
+              {t("addRecipe.macros")}
             </Text>
             <View className="flex-row gap-2">
               {MACRO_FIELDS.map(({ key, label }) => (
@@ -266,7 +267,7 @@ const AddRecipe = () => {
             {/* ─── INGREDIENTS ─── */}
             <View className="flex-row items-center justify-between mt-6 mb-2">
               <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                Ingredients
+                {t("addRecipe.ingredients")}
               </Text>
               <TouchableOpacity onPress={() => addItem(setIngredients)}>
                 <Feather name="plus" size={18} color="#89957F" />
@@ -277,7 +278,7 @@ const AddRecipe = () => {
                 <TextInput
                   value={ing}
                   onChangeText={(v) => updateItem(idx, v, setIngredients)}
-                  placeholder={`Ingredient ${idx + 1}`}
+                  placeholder={t("addRecipe.ingredientPlaceholder", { n: String(idx + 1) })}
                   className="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-100 bg-gray-50 text-[13px] text-[#111]"
                   placeholderTextColor="#B0B0B0"
                 />
@@ -290,7 +291,7 @@ const AddRecipe = () => {
             {/* ─── RECIPE STEPS ─── */}
             <View className="flex-row items-center justify-between mt-5 mb-2">
               <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                Recipe Steps
+                {t("addRecipe.recipeSteps")}
               </Text>
               <TouchableOpacity onPress={() => addItem(setSteps)}>
                 <Feather name="plus" size={18} color="#89957F" />
@@ -301,7 +302,7 @@ const AddRecipe = () => {
                 <TextInput
                   value={step}
                   onChangeText={(v) => updateItem(idx, v, setSteps)}
-                  placeholder={`Step ${idx + 1}`}
+                  placeholder={t("addRecipe.stepPlaceholder", { n: String(idx + 1) })}
                   multiline
                   className="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-100 bg-gray-50 text-[13px] text-[#111] min-h-[56px]"
                   placeholderTextColor="#B0B0B0"
@@ -318,12 +319,12 @@ const AddRecipe = () => {
 
             {/* ─── COOKING TIP ─── */}
             <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-5 mb-1.5">
-              Cooking Tip
+              {t("addRecipe.cookingTip")}
             </Text>
             <TextInput
               value={cookingTip}
               onChangeText={setCookingTip}
-              placeholder="Any tips for cooking this recipe?"
+              placeholder={t("addRecipe.cookingTipPlaceholder")}
               multiline
               className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 text-[13px] text-[#111] min-h-[56px]"
               placeholderTextColor="#B0B0B0"
@@ -332,7 +333,7 @@ const AddRecipe = () => {
 
             {/* ─── RECIPE IMAGE ─── */}
             <Text className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-5 mb-1.5">
-              Recipe Image
+              {t("addRecipe.recipeImage")}
             </Text>
             <TouchableOpacity
               onPress={pickImage}
@@ -350,7 +351,7 @@ const AddRecipe = () => {
                 <View className="items-center">
                   <Feather name="upload" size={24} color="#B0B0B0" />
                   <Text className="text-[12px] text-gray-400 mt-2 font-medium">
-                    Click to upload image
+                    {t("addRecipe.uploadImage")}
                   </Text>
                 </View>
               )}
@@ -367,7 +368,7 @@ const AddRecipe = () => {
               className="px-6 py-3 rounded-xl"
             >
               <Text className="text-[14px] font-bold text-gray-500">
-                Cancel
+                {t("addRecipe.cancel")}
               </Text>
             </TouchableOpacity>
 
@@ -389,15 +390,14 @@ const AddRecipe = () => {
                 <ActivityIndicator color="#fff" size="small" />
               ) : (
                 <Text className="text-[14px] font-bold text-white">
-                  Save Recipe
+                  {t("addRecipe.saveRecipe")}
                 </Text>
               )}
             </TouchableOpacity>
           </View>
 
           <Text className="text-center text-[11px] text-gray-400 mt-3 px-5">
-            Your recipe will be reviewed by our team before appearing in meal
-            plans.
+            {t("addRecipe.reviewNote")}
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>

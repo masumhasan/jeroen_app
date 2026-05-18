@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 import { recipeService } from "../../../services/recipeService";
+import { t } from "../../../i18n";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const SAGE = "#89957F";
@@ -26,12 +27,12 @@ const splitTitleAndBody = (
   raw: string,
   stepIndex: number
 ): { title: string; body: string } => {
-  const t = (raw || "").trim();
-  if (!t) {
-    return { title: `Step ${stepIndex + 1}`, body: "" };
+  const trimmed = (raw || "").trim();
+  if (!trimmed) {
+    return { title: t("cookingMode.stepLabel", { index: String(stepIndex + 1) }), body: "" };
   }
 
-  const m = t.match(
+  const m = trimmed.match(
     /^([^.!?\n]+[.!?])([\s\S]*)$/
   );
   if (m && m[1] && m[1].length >= 6 && m[1].length <= 100) {
@@ -39,27 +40,27 @@ const splitTitleAndBody = (
     const rest = (m[2] || "").trim();
     return {
       title: title.charAt(0).toUpperCase() + title.slice(1),
-      body: rest || t,
+      body: rest || trimmed,
     };
   }
 
-  const firstLine = t.split(/\r?\n/)[0].trim();
-  if (firstLine.length > 0 && firstLine.length <= 56 && firstLine !== t) {
+  const firstLine = trimmed.split(/\r?\n/)[0].trim();
+  if (firstLine.length > 0 && firstLine.length <= 56 && firstLine !== trimmed) {
     return {
       title: firstLine.charAt(0).toUpperCase() + firstLine.slice(1),
-      body: t.slice(firstLine.length).trim() || t,
+      body: trimmed.slice(firstLine.length).trim() || trimmed,
     };
   }
 
-  if (t.length > 64) {
+  if (trimmed.length > 64) {
     return {
-      title: `Step ${stepIndex + 1}`,
-      body: t,
+      title: t("cookingMode.stepLabel", { index: String(stepIndex + 1) }),
+      body: trimmed,
     };
   }
   return {
-    title: t.charAt(0).toUpperCase() + t.slice(1),
-    body: t,
+    title: trimmed.charAt(0).toUpperCase() + trimmed.slice(1),
+    body: trimmed,
   };
 };
 
@@ -71,9 +72,8 @@ const buildSteps = (details: string[] | undefined): ParsedStep[] => {
     return [
       {
         step: 1,
-        title: "No instructions",
-        body:
-          "This recipe has no step-by-step instructions in the database yet. Add them in the recipe manager.",
+        title: t("cookingMode.noInstructions"),
+        body: t("cookingMode.noInstructionsDetail"),
       },
     ];
   }
@@ -81,7 +81,7 @@ const buildSteps = (details: string[] | undefined): ParsedStep[] => {
     const { title, body } = splitTitleAndBody(raw, i);
     return {
       step: i + 1,
-      title: title || `Step ${i + 1}`,
+      title: title || t("cookingMode.stepLabel", { index: String(i + 1) }),
       body: body || raw,
     };
   });
@@ -128,7 +128,7 @@ const CookingMode = () => {
   if (!recipe) {
     return (
       <View className="flex-1 bg-white items-center justify-center">
-        <Text>Recipe not found</Text>
+        <Text>{t("cookingMode.recipeNotFound")}</Text>
       </View>
     );
   }
@@ -155,7 +155,7 @@ const CookingMode = () => {
               className="text-sm font-semibold text-gray-800"
               numberOfLines={1}
             >
-              Step {index + 1} of {total}
+              {t("cookingMode.stepOf", { current: String(index + 1), total: String(total) })}
             </Text>
           </View>
 
@@ -243,7 +243,7 @@ const CookingMode = () => {
                 index === 0 ? "text-gray-400" : "text-gray-700"
               }`}
             >
-              Previous
+              {t("cookingMode.previous")}
             </Text>
           </TouchableOpacity>
 
@@ -254,7 +254,7 @@ const CookingMode = () => {
               className="flex-row items-center px-6 py-3 rounded-xl"
               style={{ backgroundColor: SAGE, elevation: 3 }}
             >
-              <Text className="text-white font-semibold mr-2">Complete</Text>
+              <Text className="text-white font-semibold mr-2">{t("cookingMode.complete")}</Text>
               <Check size={20} color="white" />
             </TouchableOpacity>
           ) : (
@@ -268,7 +268,7 @@ const CookingMode = () => {
               className="flex-row items-center px-6 py-3 rounded-xl"
               style={{ backgroundColor: SAGE, elevation: 3 }}
             >
-              <Text className="text-white font-semibold mr-2">Next</Text>
+              <Text className="text-white font-semibold mr-2">{t("cookingMode.next")}</Text>
               <ChevronRight size={20} color="white" />
             </TouchableOpacity>
           )}

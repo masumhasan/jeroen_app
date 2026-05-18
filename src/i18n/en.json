@@ -1,0 +1,673 @@
+{
+  "signin": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to continue to your Meal Planning",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Email address",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password",
+    "forgotPassword": "Forgot Password?",
+    "signInButton": "Sign In",
+    "orContinueWith": "or continue with",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign Up",
+    "errors": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email",
+      "passwordRequired": "Password is required",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "loginError": "Login Error",
+      "invalidCredentials": "Invalid email or password"
+    }
+  },
+  "signup": {
+    "title": "Create Account",
+    "subtitle": "Sign up to get started with our services",
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "John",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Doe",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "+31 6 12345678",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "password",
+    "agreeTo": "I agree to ",
+    "termsConditions": "Terms & Conditions",
+    "registerButton": "Register",
+    "orContinueWith": "or continue with",
+    "haveAccount": "Already have an account? ",
+    "loginLink": "Login",
+    "errors": {
+      "firstNameRequired": "First name is required",
+      "firstNameTooShort": "First name must be at least 2 characters",
+      "lastNameRequired": "Last name is required",
+      "lastNameTooShort": "Last name must be at least 2 characters",
+      "phoneRequired": "Phone number is required",
+      "phoneTooShort": "Phone number is too short",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "passwordRequired": "Password is required",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "termsRequired": "Please agree to the Terms & Conditions",
+      "emailTaken": "An account with this email already exists.",
+      "phoneTaken": "An account with this phone number already exists.",
+      "connectionError": "Could not verify your details. Check your connection and try again."
+    }
+  },
+  "createLoginAccount": {
+    "headline": "AI-Powered Meal\nPlanning for You",
+    "description": "Personalized nutrition plans tailored to your\ngoals, preferences, and lifestyle.",
+    "createAccount": "Create Account",
+    "login": "Login"
+  },
+  "onboarding": {
+    "slide1Title": "Personalized\nCalorie Tracking",
+    "slide1Desc": "Get precise daily calorie targets based on your unique body metrics and fitness goals.",
+    "slide2Title": "Smart AI Meal\nGeneration",
+    "slide2Desc": "Our AI creates delicious, balanced meal plans that adapt to your preferences and dietary needs.",
+    "slide3Title": "Auto Shopping\nLists",
+    "slide3Desc": "Never forget an ingredient. Get organized shopping lists generated from your weekly meal plan.",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "skip": "Skip",
+    "completed": "Onboarding completed",
+    "skipped": "Onboarding skipped"
+  },
+  "signupOnboarding": {
+    "stepLabel": "Step {current} of 6",
+    "percentComplete": "% Complete",
+    "steps": {
+      "basicInfo": "Basic Info",
+      "activity": "Activity",
+      "weekStart": "Week Start",
+      "goals": "Goals",
+      "dietary": "Dietary",
+      "mealPlan": "Meal Plan"
+    },
+    "basicInformation": "Basic Information",
+    "basicSubtitle": "Let's start with the basics",
+    "gender": "Gender",
+    "age": "Age",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "agePlaceholder": "Enter your age",
+    "heightPlaceholder": "Enter your height",
+    "weightPlaceholder": "Enter your weight",
+    "genders": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "activityLevel": "Activity Level",
+    "activitySubtitle": "This helps us calculate your daily calorie needs",
+    "activities": {
+      "sedentary": "Sedentary",
+      "sedentaryDesc": "Little to no exercise, desk job",
+      "moderate": "Moderate",
+      "moderateDesc": "Exercise 3-5 days/week, active lifestyle",
+      "active": "Active",
+      "activeDesc": "Exercise 6-7 days/week, physical job",
+      "veryActive": "Very Active",
+      "veryActiveDesc": "Intense exercise daily, athlete"
+    },
+    "weekStartsFrom": "Week Starts From",
+    "weekStartSubtitle": "Choose which day your meal plan week begins",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "yourGoal": "Your Goal",
+    "goalSubtitle": "What would you like to achieve?",
+    "goals": {
+      "weightLoss": "Weight Loss",
+      "weightGain": "Weight Gain",
+      "muscleGain": "Muscle Gain",
+      "maintenance": "Maintenance"
+    },
+    "quickTip": "Quick Tip",
+    "goalTipText": "Your goal helps us customize your meal plan and workout recommendations for better results.",
+    "continue": "Continue",
+    "generatePlan": "Generate My Plan"
+  },
+  "forgot": {
+    "title": "Email Confirmation",
+    "subtitle": "Enter Your email for verification.",
+    "emailPlaceholder": "name@example.com",
+    "sendButton": "Send Verification Code"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "description": "Create a new password for your account. Make sure to choose a strong and unique password that you haven't used before.",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "strength": {
+      "label": "Password Strength: ",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "requirements": {
+      "minChars": "At least 8 characters",
+      "uppercase": "Uppercase letter (A-Z)",
+      "lowercase": "Lowercase letter (a-z)",
+      "number": "Number (0-9)",
+      "special": "Special character (!@#$%)"
+    },
+    "updateButton": "Update Password",
+    "successTitle": "Password Updated!",
+    "successMessage": "Your password has been changed successfully",
+    "errors": {
+      "newRequired": "New password is required",
+      "tooShort": "Password must be at least {min} characters",
+      "noUppercase": "Password must contain at least one uppercase letter",
+      "noLowercase": "Password must contain at least one lowercase letter",
+      "noNumber": "Password must contain at least one number",
+      "noSpecial": "Password must contain at least one special character",
+      "confirmRequired": "Please confirm your password",
+      "mismatch": "Passwords do not match"
+    }
+  },
+  "verify": {
+    "title": "OTP Verification",
+    "subtitle": "Enter the 6-digit code sent to your email",
+    "resendIn": "Resend code in",
+    "resendCode": "Resend Code",
+    "verifyButton": "Verify Code"
+  },
+  "finalPage": {
+    "title": "Perfect, {firstName}! 🎉",
+    "subtitle": "Your custom plan is ready based on your goal: {goal}",
+    "recommended": "Recommended: {calories} calories",
+    "caloriesPerDay": "Calories per day",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "customizeMacros": "Customize Macronutrient Breakdown",
+    "budgetLabel": "Budget / Your target (kcal)",
+    "dailyCalories": "Daily calories",
+    "caloriePlaceholder": "e.g. 2000",
+    "cancel": "Cancel",
+    "save": "Save",
+    "macrosNote": "Macros are limited so calories from protein (4/g), carbs (4/g), and fat (9/g) do not exceed your daily target.",
+    "saveTargets": "Save targets",
+    "continueButton": "Continue to Weekly Plan",
+    "errors": {
+      "invalidValue": "Invalid value",
+      "calorieMin": "Enter a calorie target of at least 1.",
+      "noMacrosTitle": "No macros set",
+      "noMacrosMessage": "Please set at least some protein, carbs, or fat before saving.",
+      "saveFailedTitle": "Save failed",
+      "saveFailedMessage": "Could not save your targets. Check your connection and try again."
+    }
+  },
+  "tabs": {
+    "mealPlans": "Meal Plans",
+    "community": "Community",
+    "cookbook": "Cookbook",
+    "progress": "Progress",
+    "profile": "Profile"
+  },
+  "home": {
+    "title": "Weekly Meal Plan",
+    "dailyTarget": "Daily Target",
+    "cal": "cal",
+    "loading": "Loading your meal plan...",
+    "noMeals": "No meals found for this day.",
+    "shareDailyPlan": "Share Your Daily Meal Plan",
+    "generateNextWeek": "Generate Next Week's Meal Plan",
+    "unknownRecipe": "Unknown Recipe",
+    "alerts": {
+      "successTitle": "Success",
+      "newPlanGenerated": "New meal plan generated successfully!",
+      "errorTitle": "Error",
+      "regenerateFailed": "Failed to regenerate meal plan",
+      "nextWeekReady": "Next week's meal plan is ready!",
+      "nextWeekFailed": "Failed to generate next week's meal plan"
+    }
+  },
+  "community": {
+    "feed": "Feed",
+    "topics": "Topics",
+    "noPosts": "No posts yet. Follow topics in the Topics tab to see your personalized feed.",
+    "justNow": "Just now",
+    "minutesAgo": "m ago",
+    "hoursAgo": "h ago",
+    "daysAgo": "d ago"
+  },
+  "progress": {
+    "title": "Progress Tracking",
+    "kgLost": "kg Lost",
+    "weeks": "Weeks",
+    "consistency": "Consistency",
+    "loading": "Loading your progress...",
+    "mealsPlanned": "Meals planned this week",
+    "checkIns": "Check-ins this week"
+  },
+  "profile": {
+    "title": "Profile",
+    "gender": "Gender",
+    "height": "Height",
+    "weight": "Weight",
+    "activityLevel": "Activity Level",
+    "goal": "Goal",
+    "notSet": "Not set",
+    "currentWeight": "Current Weight",
+    "entryWeight": "Entry Weight",
+    "update": "Update",
+    "kg": "kg",
+    "cm": "cm",
+    "personalInfo": "Personal Information",
+    "edit": "Edit",
+    "customizeTarget": "Customize Target Consumption",
+    "myFavourites": "My Favourites",
+    "addRecipe": "Add Your Recipe",
+    "myRecipes": "My Recipes",
+    "updateWeight": "Update Weight",
+    "current": "Current",
+    "entry": "Entry",
+    "newCurrentWeight": "New Current Weight",
+    "weightPlaceholder": "Enter weight in kg",
+    "saveWeight": "Save New Weight",
+    "alerts": {
+      "invalidWeight": "Invalid weight",
+      "invalidWeightMessage": "Please enter a valid weight in kg.",
+      "successTitle": "Success",
+      "weightUpdated": "Weight updated successfully.",
+      "errorTitle": "Error",
+      "weightFailed": "Failed to update weight. Please try again."
+    }
+  },
+  "shoppingList": {
+    "title": "Shopping List",
+    "reset": "Reset",
+    "itemsCount": "{selected} of {total} items",
+    "loading": "Loading shopping list...",
+    "noList": "No shopping list yet.",
+    "generateHint": "Generate your plan to create one.",
+    "allDone": "🎉 Congratulations! You've completed your shopping list!",
+    "exportList": "Export List",
+    "empty": "Your shopping list is empty",
+    "generateHintAlt": "Generate a meal plan to see items here"
+  },
+  "cookingMode": {
+    "stepLabel": "Step {index}",
+    "noInstructions": "No instructions",
+    "noInstructionsDetail": "This recipe has no step-by-step instructions in the database yet. Add them in the recipe manager.",
+    "recipeNotFound": "Recipe not found",
+    "stepOf": "Step {current} of {total}",
+    "previous": "Previous",
+    "complete": "Complete",
+    "next": "Next"
+  },
+  "dishDetails": {
+    "recipeNotFound": "Recipe not found",
+    "crowdsourced": "Crowdsourced",
+    "estimatedTime": "~{minutes} min (est.)",
+    "servings": "{count} serving",
+    "servingsPlural": "{count} servings",
+    "oneServing": "1 serving",
+    "startCooking": "Start Cooking Mode",
+    "nutritionBreakdown": "Nutrition Breakdown",
+    "cookingTip": "Cooking Tip"
+  },
+  "createPost": {
+    "title": "Create Post",
+    "selectTopic": "Select Topic *",
+    "searchTopics": "Search topics",
+    "whatOnMind": "What's on your mind? *",
+    "postPlaceholder": "Share your thoughts, recipes, or meal plans...",
+    "addPhoto": "Add Photo",
+    "changePhoto": "Change Photo",
+    "postButton": "Post",
+    "alerts": {
+      "permissionTitle": "Permission needed",
+      "permissionMessage": "Please grant permission to access your photos",
+      "successTitle": "Success",
+      "imageSelected": "Image selected successfully",
+      "errorTitle": "Error",
+      "imageFailed": "Failed to select image",
+      "topicRequired": "Please select at least one topic",
+      "contentRequired": "Please write something in your post",
+      "postCreated": "Your post has been created successfully!"
+    }
+  },
+  "postDetails": {
+    "title": "Post Details",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "writeComment": "Write a comment...",
+    "noComments": "No comments yet. Be the first!",
+    "commentsTitle": "Comments"
+  },
+  "profileSettings": {
+    "title": "Edit Profile",
+    "reset": "Reset",
+    "tapToChange": "Tap to change profile photo",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "phone": "Mobile Number",
+    "saveChanges": "Save Changes",
+    "alerts": {
+      "errorTitle": "Error",
+      "fetchFailed": "Failed to fetch user data",
+      "permissionTitle": "Permission Required",
+      "permissionMessage": "Photo library access is needed to change profile picture"
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "loadError": "Unable to load About Us content right now."
+  },
+  "addRecipe": {
+    "title": "Add New Recipe",
+    "recipeNameLabel": "Recipe Name",
+    "personsServing": "Persons Serving",
+    "macros": "Macros",
+    "ingredients": "Ingredients",
+    "recipeSteps": "Recipe Steps",
+    "cookingTip": "Cooking Tip",
+    "recipeImage": "Recipe Image",
+    "uploadImage": "Click to upload image",
+    "cancel": "Cancel",
+    "saveRecipe": "Save Recipe",
+    "reviewNote": "Your recipe will be reviewed by our team before appearing in meal plans.",
+    "category": "Category ({count} selected)",
+    "alerts": {
+      "validationTitle": "Validation",
+      "nameRequired": "Recipe name is required.",
+      "ingredientRequired": "At least one ingredient is required.",
+      "successTitle": "Success",
+      "submitted": "Your recipe has been submitted for review!"
+    }
+  },
+  "adminSupport": {
+    "title": "Support Team",
+    "online": "Online",
+    "today": "Today",
+    "messagePlaceholder": "Message",
+    "sendPhoto": "Send Photo",
+    "takePhoto": "Take Photo",
+    "chooseLibrary": "Choose from Library",
+    "loading": "Loading conversation…",
+    "alerts": {
+      "loadError": "Could not load your support conversation.",
+      "errorTitle": "Error",
+      "sendFailed": "Could not send your message. Please try again.",
+      "permissionTitle": "Permission Required",
+      "photoPermission": "You need to allow access to your photos to send images.",
+      "cameraPermission": "You need to allow access to your camera to take photos."
+    }
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "description": "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+    "oldPasswordLabel": "Old Password",
+    "newPasswordLabel": "New Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "updateButton": "Update Password",
+    "successTitle": "Password Updated!",
+    "successMessage": "Your password has been changed successfully",
+    "strength": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    }
+  },
+  "editRecipe": {
+    "title": "Edit Recipe",
+    "recipeNameLabel": "Recipe Name",
+    "personsServing": "Persons Serving",
+    "macros": "Macros",
+    "ingredients": "Ingredients",
+    "recipeSteps": "Recipe Steps",
+    "cookingTip": "Cooking Tip",
+    "recipeImage": "Recipe Image",
+    "uploadImage": "Click to upload image",
+    "cancel": "Cancel",
+    "updateRecipe": "Update Recipe",
+    "category": "Category ({count} selected)",
+    "pendingNote": "Editing will reset your recipe status to pending for re-approval."
+  },
+  "editProfile": {
+    "step1": "Step 1 of 3",
+    "step2": "Step 2 of 3",
+    "step3": "Step 3 of 3",
+    "basicInformation": "Basic Information",
+    "gender": "Gender",
+    "age": "Age",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "activityLevel": "Activity Level",
+    "yourGoal": "Your Goal",
+    "continue": "Continue",
+    "update": "Update",
+    "genders": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "activities": {
+      "sedentary": "Sedentary",
+      "sedentaryDesc": "Little to no exercise",
+      "moderate": "Moderate",
+      "moderateDesc": "Exercise 3-5 days/week",
+      "active": "Active",
+      "activeDesc": "Exercise 6-7 days/week"
+    },
+    "goals": {
+      "weightLoss": "Weight Loss",
+      "weightGain": "Weight Gain",
+      "muscleGain": "Muscle Gain",
+      "maintenance": "Maintenance"
+    }
+  },
+  "myFavourites": {
+    "title": "My Favourites",
+    "empty": "No favourites yet",
+    "emptyHint": "Tap the heart icon on any recipe to save it here."
+  },
+  "myRecipes": {
+    "title": "My Recipes",
+    "empty": "You haven't submitted any recipes yet.",
+    "addFirst": "Add Your First Recipe"
+  },
+  "policy": {
+    "title": "Privacy Policy",
+    "loadError": "Unable to load Privacy Policy content right now."
+  },
+  "settings": {
+    "title": "Setting",
+    "profileSetting": "Profile Setting",
+    "support": "Support",
+    "changePassword": "Change password",
+    "aboutUs": "About Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsConditions": "Terms and Conditions",
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to log out?",
+    "logOut": "Log Out",
+    "cancel": "Cancel",
+    "alerts": {
+      "errorTitle": "Error",
+      "logoutFailed": "Failed to log out"
+    }
+  },
+  "terms": {
+    "title": "Terms & Condition",
+    "loadError": "Unable to load Terms & Conditions content right now."
+  },
+  "mediterranean": {
+    "title": "Mediterranean Delights"
+  },
+  "footerActions": {
+    "shoppingList": "Shopping List",
+    "generating": "Generating...",
+    "regenerate": "Regenerate"
+  },
+  "mealCard": {
+    "crowdsourced": "Crowdsourced",
+    "cal": "cal",
+    "swapMeal": "↻ Swap Meal"
+  },
+  "shareMealPlan": {
+    "title": "Share Meal Plan",
+    "shareButton": "Share",
+    "dayMealPlan": "{day} Meal Plan",
+    "target": "Target: {calories} kcal",
+    "total": "Total",
+    "captionPlaceholder": "Add a caption to your meal plan...",
+    "selectTopic": "Select Topic *",
+    "alerts": {
+      "topicRequired": "Topic required",
+      "topicMessage": "Please select at least one topic.",
+      "sharedTitle": "Shared!",
+      "sharedMessage": "Your meal plan has been shared to the community.",
+      "ok": "OK",
+      "errorTitle": "Error",
+      "shareFailed": "Failed to share meal plan. Please try again."
+    }
+  },
+  "progressHeader": {
+    "of": "of",
+    "items": "items"
+  },
+  "circleGraph": {
+    "totalCalories": "Total Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat"
+  },
+  "detailsFull": {
+    "ingredients": "Ingredients",
+    "instructions": "Instructions"
+  },
+  "communityHeader": {
+    "title": "Community"
+  },
+  "feedTabs": {
+    "feed": "Feed",
+    "topics": "Topics"
+  },
+  "postCard": {
+    "commentsTitle": "Comments",
+    "close": "Close",
+    "noComments": "No comments yet. Be the first!",
+    "writeComment": "Write a comment...",
+    "post": "Post",
+    "alerts": {
+      "errorTitle": "Error",
+      "emptyComment": "Please write a comment",
+      "addFailed": "Failed to add comment"
+    }
+  },
+  "searchBar": {
+    "placeholder": "Search posts, topics, or users..."
+  },
+  "topics": {
+    "followers": "followers",
+    "following": "Following",
+    "follow": "Follow"
+  },
+  "cookbookHeader": {
+    "title": "Cookbook",
+    "subtitle": "Discover delicious recipes"
+  },
+  "lockedCard": {
+    "recipes": "{count} recipes",
+    "buy": "Buy {price}"
+  },
+  "recipeCard": {
+    "recipes": "{count} recipes",
+    "viewRecipes": "View Recipes"
+  },
+  "tabSwitch": {
+    "allBooks": "All Books",
+    "myLibrary": "My Library"
+  },
+  "motivationCard": {
+    "title": "Great Progress! 🎉",
+    "message": "You're {percent}% of the way to your goal.",
+    "subMessage": "Keep up the amazing work and stay consistent!"
+  },
+  "statCard": {
+    "kgLost": "kg Lost",
+    "weeks": "Weeks"
+  },
+  "weeklyConsistency": {
+    "title": "Weekly Consistency",
+    "checkIns": "Check-ins this week"
+  },
+  "weightJourney": {
+    "title": "Weight Journey",
+    "start": "Start",
+    "current": "Current",
+    "target": "Target",
+    "kg": "kg",
+    "progressToGoal": "Progress to Goal",
+    "kgToGo": "kg to go"
+  },
+  "weightTrend": {
+    "title": "Weight Trend"
+  },
+  "swapMeal": {
+    "title": "Swap {mealType}",
+    "subtitle": "Choose an alternative meal",
+    "currentMeal": "Current Meal",
+    "searchPlaceholder": "Search meals...",
+    "calories": "Calories",
+    "protein": "Protein",
+    "name": "Name",
+    "all": "All",
+    "under400": "< 400 cal",
+    "range400": "400-550 cal",
+    "over550": "> 550 cal",
+    "alternativeFound": "{count} Alternative Found",
+    "alternativesFound": "{count} Alternatives Found",
+    "noAlternatives": "No alternatives found within +/-100 calories.",
+    "fromYourRecipes": "From Your Recipes",
+    "fromYourRecipesDesc": "Swap with a recipe you submitted",
+    "noRecipes": "You haven't added any recipes yet.",
+    "swapButton": "Swap",
+    "sortBy": "Sort: {title}",
+    "alerts": {
+      "swappedTitle": "Meal swapped",
+      "swappedMessage": "Your meal plan has been updated.",
+      "swapFailedTitle": "Swap failed"
+    }
+  },
+  "dietary": {
+    "title": "Dietary Preferences",
+    "subtitle": "Customize your meal plan",
+    "clearAll": "Clear All",
+    "allergies": "Allergies",
+    "searchIngredients": "Search ingredients...",
+    "noIngredients": "No ingredients found",
+    "targetWeight": "Target Weight",
+    "targetWeightPlaceholder": "Enter your target weight",
+    "kg": "kg",
+    "preferences": "Dietary Preferences"
+  },
+  "mealPlan": {
+    "title": "Meal Plan Preference",
+    "subtitle": "Choose your preferred meal plan styles (multiple selection allowed)",
+    "breakfast": "Breakfast",
+    "snack1": "Snack-1",
+    "lunch": "Lunch",
+    "snack2": "Snack-2",
+    "dinner": "Dinner",
+    "snack3": "Snack-3"
+  }
+}

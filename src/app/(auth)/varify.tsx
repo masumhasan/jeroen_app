@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import { t } from "../../i18n";
 import {
   Animated,
   Easing,
@@ -214,11 +215,11 @@ const Verify = () => {
         }}
       >
         <Text className="text-2xl font-semibold text-gray-800 text-center">
-          OTP Verification
+          {t("verify.title")}
         </Text>
 
         <Text className="text-gray-500 text-center mt-3 mb-12 text-base">
-          Enter the 6-digit code sent to your email
+          {t("verify.subtitle")}
         </Text>
 
         {/* OTP Input Boxes */}
@@ -259,7 +260,7 @@ const Verify = () => {
         >
           {!canResend ? (
             <Text className="text-gray-400 text-base">
-              Resend code in{" "}
+              {t("verify.resendIn")}{" "}
               <Text className="text-[#7C866E] font-semibold">
                 {formatTime(timer)}
               </Text>
@@ -267,7 +268,7 @@ const Verify = () => {
           ) : (
             <TouchableOpacity onPress={handleResend}>
               <Text className="text-[#7C866E] text-base font-semibold">
-                Resend Code
+                {t("verify.resendCode")}
               </Text>
             </TouchableOpacity>
           )}
@@ -288,7 +289,7 @@ const Verify = () => {
             disabled={otp.join("").length !== 6}
           >
             <Text className="text-white text-center font-semibold text-lg">
-              Verify Code
+              {t("verify.verifyButton")}
             </Text>
           </TouchableOpacity>
         </Animated.View>

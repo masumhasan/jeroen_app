@@ -9,6 +9,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert } from "react-native";
 import { authService } from "../../services/authService";
 import { resolveRecipeImageUrl } from "@/src/utils/imageUrl";
+import { t } from "../../i18n";
 
 const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -78,9 +79,9 @@ export default function Home() {
     try {
       const data = await authService.generateMealPlan();
       applyPlanData(data, true);
-      Alert.alert("Success", "New meal plan generated successfully!");
+      Alert.alert(t("home.alerts.successTitle"), t("home.alerts.newPlanGenerated"));
     } catch (error) {
-      Alert.alert("Error", "Failed to regenerate meal plan");
+      Alert.alert(t("home.alerts.errorTitle"), t("home.alerts.regenerateFailed"));
     } finally {
       setRegenerating(false);
     }
@@ -93,9 +94,9 @@ export default function Home() {
       const data = await authService.generateNextWeekMealPlan();
       applyPlanData(data, false);
       setSelectedDayIndex(firstNewDayIndex);
-      Alert.alert("Success", "Next week's meal plan is ready!");
+      Alert.alert(t("home.alerts.successTitle"), t("home.alerts.nextWeekReady"));
     } catch (error) {
-      Alert.alert("Error", "Failed to generate next week's meal plan");
+      Alert.alert(t("home.alerts.errorTitle"), t("home.alerts.nextWeekFailed"));
     } finally {
       setGeneratingNextWeek(false);
     }
@@ -114,7 +115,7 @@ export default function Home() {
     return (
       <View className="flex-1 bg-white items-center justify-center">
         <ActivityIndicator size="large" color="#7A8B6F" />
-        <Text className="mt-4 text-gray-500">Loading your meal plan...</Text>
+        <Text className="mt-4 text-gray-500">{t("home.loading")}</Text>
       </View>
     );
   }
@@ -129,7 +130,7 @@ export default function Home() {
           resizeMode="contain"
         />
         <Text className="text-xl font-semibold text-center ">
-          Weekly Meal Plan
+          {t("home.title")}
         </Text>
         <View style={{ width: 32 }} />
       </View>
@@ -146,8 +147,8 @@ export default function Home() {
 
         {/* Daily total */}
         <View className="bg-gray-100 rounded-xl p-4 flex-row justify-between mt-4">
-          <Text className="text-gray-500">Daily Target</Text>
-          <Text className="font-semibold text-gray-800">{targetCalories || 0} cal</Text>
+          <Text className="text-gray-500">{t("home.dailyTarget")}</Text>
+          <Text className="font-semibold text-gray-800">{targetCalories || 0} {t("home.cal")}</Text>
         </View>
 
         {/* Meals */}
@@ -169,7 +170,7 @@ export default function Home() {
             >
               <MealCard
                 recipeId={String(meal.recipe._id)}
-                title={meal.recipe.name || "Unknown Recipe"}
+                title={meal.recipe.name || t("home.unknownRecipe")}
                 calories={meal.recipe.nutrition?.kcal?.toString() || "0"}
                 protein={`${meal.recipe.nutrition?.eiwitten || 0}g`}
                 carbs={`${meal.recipe.nutrition?.khd || 0}g`}
@@ -189,7 +190,7 @@ export default function Home() {
         
         {meals.length === 0 && (
           <View className="items-center justify-center py-20">
-            <Text className="text-gray-400">No meals found for this day.</Text>
+            <Text className="text-gray-400">{t("home.noMeals")}</Text>
           </View>
         )}
 
@@ -203,7 +204,7 @@ export default function Home() {
           >
             <Ionicons name="share-outline" size={18} color="#555" />
             <Text className="text-gray-700 font-semibold text-sm ml-2 uppercase tracking-wider">
-              Share Your Daily Meal Plan
+              {t("home.shareDailyPlan")}
             </Text>
           </TouchableOpacity>
         )}
@@ -223,7 +224,7 @@ export default function Home() {
               <>
                 <Ionicons name="calendar-outline" size={20} color="#7A8B6F" />
                 <Text className="text-[#7A8B6F] font-semibold text-base ml-2">
-                  Generate Next Week's Meal Plan
+                  {t("home.generateNextWeek")}
                 </Text>
               </>
             )}

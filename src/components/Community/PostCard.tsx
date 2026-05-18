@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { communityService } from "@/src/services/communityService";
+import { t } from "../../i18n";
 
 const commentTimestamp = (dateValue: string | Date | undefined) => {
   if (!dateValue) return "";
@@ -56,9 +57,9 @@ function CommentsModal({
       <View className="flex-1 bg-black/50">
         <View className="flex-1 mt-20 bg-white rounded-t-3xl">
           <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-            <Text className="text-lg font-semibold">Comments</Text>
+            <Text className="text-lg font-semibold">{t("postCard.commentsTitle")}</Text>
             <TouchableOpacity onPress={onClose}>
-              <Text className="text-blue-500">Close</Text>
+              <Text className="text-blue-500">{t("postCard.close")}</Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -84,10 +85,10 @@ function CommentsModal({
                       {item.timestamp}
                     </Text>
                     <TouchableOpacity activeOpacity={0.7} className="mr-3">
-                      <Text className="text-[#8A8A8A] text-[11px] font-medium">Like</Text>
+                      <Text className="text-[#8A8A8A] text-[11px] font-medium">{t("postCard.likeAction")}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={0.7}>
-                      <Text className="text-[#8A8A8A] text-[11px] font-medium">Reply</Text>
+                      <Text className="text-[#8A8A8A] text-[11px] font-medium">{t("postCard.replyAction")}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -100,7 +101,7 @@ function CommentsModal({
                 </View>
               ) : (
                 <Text className="text-center text-gray-500 py-8">
-                  No comments yet. Be the first!
+                  {t("postCard.noComments")}
                 </Text>
               )
             }
@@ -108,7 +109,7 @@ function CommentsModal({
           <View className="p-4 border-t border-gray-200 flex-row">
             <TextInput
               className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2"
-              placeholder="Write a comment..."
+              placeholder={t("postCard.writeComment")}
               value={commentText}
               onChangeText={onChangeCommentText}
             />
@@ -116,7 +117,7 @@ function CommentsModal({
               onPress={onSubmitComment}
               className="bg-[#8A957F] px-4 py-2 rounded-full"
             >
-              <Text className="text-white font-semibold">Post</Text>
+              <Text className="text-white font-semibold">{t("postCard.post")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -162,7 +163,7 @@ export default function PostCard({
         const mapped: FeedComment[] = (data.comments || []).map((c: any) => ({
           id: String(c.id),
           text: String(c.content ?? ""),
-          user: c.user?.fullName || "User",
+          user: c.user?.fullName || t("postCard.defaultUser"),
           timestamp: commentTimestamp(c.createdAt),
         }));
         setComments(mapped);
@@ -192,7 +193,7 @@ export default function PostCard({
 
   const handleAddComment = async () => {
     if (!commentText.trim()) {
-      Alert.alert("Error", "Please write a comment");
+      Alert.alert(t("postCard.alerts.errorTitle"), t("postCard.alerts.emptyComment"));
       return;
     }
     const text = commentText.trim();
@@ -205,7 +206,7 @@ export default function PostCard({
           const row: FeedComment = {
             id: String(c.id),
             text: String(c.content ?? ""),
-            user: c.user?.fullName || "You",
+            user: c.user?.fullName || t("postCard.you"),
             timestamp: commentTimestamp(c.createdAt),
           };
           setComments((prev) => {
@@ -218,7 +219,7 @@ export default function PostCard({
             {
               id: Date.now().toString(),
               text,
-              user: "You",
+              user: t("postCard.you"),
               timestamp: commentTimestamp(new Date()),
             },
           ]);
@@ -230,14 +231,14 @@ export default function PostCard({
           {
             id: Date.now().toString(),
             text,
-            user: "You",
+            user: t("postCard.you"),
             timestamp: commentTimestamp(new Date()),
           },
         ]);
       }
       setCommentText("");
     } catch {
-      Alert.alert("Error", "Failed to add comment");
+      Alert.alert(t("postCard.alerts.errorTitle"), t("postCard.alerts.addFailed"));
     }
   };
 

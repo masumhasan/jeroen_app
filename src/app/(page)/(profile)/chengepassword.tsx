@@ -24,6 +24,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../../i18n";
 
 // Types
 interface PasswordFieldProps {
@@ -57,7 +58,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
   label,
   value,
   onChangeText,
-  placeholder = "Enter password",
+  placeholder = "",
   error,
   showStrength = false,
 }) => {
@@ -176,10 +177,10 @@ const PasswordStrengthIndicator: React.FC<{ password: string }> = ({
 
   const getStrengthText = () => {
     const metCount = Object.values(requirements).filter(Boolean).length;
-    if (metCount <= 2) return "Weak";
-    if (metCount <= 3) return "Fair";
-    if (metCount <= 4) return "Good";
-    return "Strong";
+    if (metCount <= 2) return t("changePassword.strength.weak");
+    if (metCount <= 3) return t("changePassword.strength.fair");
+    if (metCount <= 4) return t("changePassword.strength.good");
+    return t("changePassword.strength.strong");
   };
 
   const barStyle = useAnimatedStyle(() => ({
@@ -191,7 +192,7 @@ const PasswordStrengthIndicator: React.FC<{ password: string }> = ({
     <Animated.View entering={FadeInUp} className="mt-2">
       <View className="flex-row justify-between items-center mb-1">
         <Text className="text-[11px] text-[#666666]">
-          Password Strength: {getStrengthText()}
+          {t("changePassword.strengthLabel")}{getStrengthText()}
         </Text>
         <Text className="text-[11px] text-[#666666]">
           {Object.values(requirements).filter(Boolean).length}/5
@@ -204,20 +205,20 @@ const PasswordStrengthIndicator: React.FC<{ password: string }> = ({
 
       <View className="mt-2">
         <RequirementItem
-          label={`At least ${PASSWORD_REQUIREMENTS.minLength} characters`}
+          label={t("changePassword.requirements.minChars", { min: String(PASSWORD_REQUIREMENTS.minLength) })}
           met={requirements.minLength}
         />
         <RequirementItem
-          label="Uppercase letter (A-Z)"
+          label={t("changePassword.requirements.uppercase")}
           met={requirements.hasUpperCase}
         />
         <RequirementItem
-          label="Lowercase letter (a-z)"
+          label={t("changePassword.requirements.lowercase")}
           met={requirements.hasLowerCase}
         />
-        <RequirementItem label="Number (0-9)" met={requirements.hasNumber} />
+        <RequirementItem label={t("changePassword.requirements.number")} met={requirements.hasNumber} />
         <RequirementItem
-          label="Special character (!@#$%)"
+          label={t("changePassword.requirements.special")}
           met={requirements.hasSpecialChar}
         />
       </View>
@@ -278,41 +279,34 @@ const ChangePassword: React.FC = () => {
       confirmPassword: "",
     };
 
-    // Check if fields are empty
     if (!oldPassword) {
-      newErrors.oldPassword = "Old password is required";
+      newErrors.oldPassword = t("changePassword.errors.oldRequired");
     }
 
     if (!newPassword) {
-      newErrors.newPassword = "New password is required";
+      newErrors.newPassword = t("changePassword.errors.newRequired");
     } else {
-      // Check new password strength
       if (newPassword.length < PASSWORD_REQUIREMENTS.minLength) {
-        newErrors.newPassword = `Password must be at least ${PASSWORD_REQUIREMENTS.minLength} characters`;
+        newErrors.newPassword = t("changePassword.errors.tooShort", { min: String(PASSWORD_REQUIREMENTS.minLength) });
       } else if (!/[A-Z]/.test(newPassword)) {
-        newErrors.newPassword =
-          "Password must contain at least one uppercase letter";
+        newErrors.newPassword = t("changePassword.errors.noUppercase");
       } else if (!/[a-z]/.test(newPassword)) {
-        newErrors.newPassword =
-          "Password must contain at least one lowercase letter";
+        newErrors.newPassword = t("changePassword.errors.noLowercase");
       } else if (!/[0-9]/.test(newPassword)) {
-        newErrors.newPassword = "Password must contain at least one number";
+        newErrors.newPassword = t("changePassword.errors.noNumber");
       } else if (!/[!@#$%^&*]/.test(newPassword)) {
-        newErrors.newPassword =
-          "Password must contain at least one special character";
+        newErrors.newPassword = t("changePassword.errors.noSpecial");
       }
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
+      newErrors.confirmPassword = t("changePassword.errors.confirmRequired");
     } else if (newPassword !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = t("changePassword.errors.mismatch");
     }
 
-    // Check if new password is same as old
     if (oldPassword && newPassword && oldPassword === newPassword) {
-      newErrors.newPassword =
-        "New password must be different from old password";
+      newErrors.newPassword = t("changePassword.errors.sameAsOld");
     }
 
     setErrors(newErrors);
@@ -326,14 +320,11 @@ const ChangePassword: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Show success animation
       successScale.value = withSpring(1);
       setShowSuccess(true);
 
-      // Reset form after success
       setTimeout(() => {
         setShowSuccess(false);
         successScale.value = 0;
@@ -341,10 +332,10 @@ const ChangePassword: React.FC = () => {
         setNewPassword("");
         setConfirmPassword("");
 
-        Alert.alert("Success", "Password changed successfully");
+        Alert.alert(t("changePassword.alerts.successTitle"), t("changePassword.alerts.successMessage"));
       }, 1500);
     } catch (error) {
-      Alert.alert("Error", "Failed to change password. Please try again.");
+      Alert.alert(t("changePassword.alerts.errorTitle"), t("changePassword.alerts.changeFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -353,11 +344,11 @@ const ChangePassword: React.FC = () => {
   const handleGoBack = () => {
     if (oldPassword || newPassword || confirmPassword) {
       Alert.alert(
-        "Discard Changes",
-        "You have unsaved changes. Are you sure you want to go back?",
+        t("changePassword.discardTitle"),
+        t("changePassword.discardMessage"),
         [
-          { text: "Stay", style: "cancel" },
-          { text: "Leave", onPress: () => router.back() },
+          { text: t("changePassword.stay"), style: "cancel" },
+          { text: t("changePassword.leave"), onPress: () => router.back() },
         ],
       );
     } else {
@@ -442,7 +433,7 @@ const ChangePassword: React.FC = () => {
                 </AnimatedPressable>
 
                 <Text className="text-[20px] font-semibold text-[#111111]">
-                  Change Password
+                  {t("changePassword.title")}
                 </Text>
 
                 <View className="w-8" />
@@ -455,34 +446,33 @@ const ChangePassword: React.FC = () => {
               >
                 <AlertCircle size={20} color="#98A08C" />
                 <Text className="text-[12px] text-[#666666] ml-3 flex-1">
-                  Password must be at least 8 characters and include uppercase,
-                  lowercase, number, and special character.
+                  {t("changePassword.description")}
                 </Text>
               </Animated.View>
 
               {/* Password Fields */}
               <PasswordField
-                label="Old Password"
+                label={t("changePassword.oldPasswordLabel")}
                 value={oldPassword}
                 onChangeText={setOldPassword}
-                placeholder="Enter current password"
+                placeholder={t("changePassword.enterCurrentPassword")}
                 error={errors.oldPassword}
               />
 
               <PasswordField
-                label="New Password"
+                label={t("changePassword.newPasswordLabel")}
                 value={newPassword}
                 onChangeText={setNewPassword}
-                placeholder="Enter new password"
+                placeholder={t("changePassword.enterNewPassword")}
                 error={errors.newPassword}
                 showStrength={true}
               />
 
               <PasswordField
-                label="Confirm Password"
+                label={t("changePassword.confirmPasswordLabel")}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                placeholder="Confirm new password"
+                placeholder={t("changePassword.confirmNewPassword")}
                 error={errors.confirmPassword}
               />
 
@@ -503,7 +493,7 @@ const ChangePassword: React.FC = () => {
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
                   <Text className="text-white text-[16px] font-semibold">
-                    Update Password
+                    {t("changePassword.updateButton")}
                   </Text>
                 )}
               </AnimatedPressable>
@@ -518,10 +508,10 @@ const ChangePassword: React.FC = () => {
                     <Check size={40} color="#FFFFFF" />
                   </View>
                   <Text className="text-[18px] font-semibold text-[#111111] mt-4">
-                    Password Updated!
+                    {t("changePassword.successTitle")}
                   </Text>
                   <Text className="text-[14px] text-[#666666] mt-2">
-                    Your password has been changed successfully
+                    {t("changePassword.successMessage")}
                   </Text>
                 </Animated.View>
               )}

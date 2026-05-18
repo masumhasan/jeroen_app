@@ -2,6 +2,7 @@ import { resolveRecipeImageUrl } from "@/src/utils/imageUrl";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
+import { t } from "../../../i18n";
 import {
   ActivityIndicator,
   FlatList,
@@ -106,7 +107,7 @@ export default function MyFavourites() {
             <Ionicons name="chevron-back" size={20} color="#333" />
           </TouchableOpacity>
           <Text className="text-[18px] font-bold text-[#111]">
-            My Favourites
+            {t("myFavourites.title")}
           </Text>
         </View>
 
@@ -120,10 +121,10 @@ export default function MyFavourites() {
               <Ionicons name="heart-outline" size={32} color="#E53E3E" />
             </View>
             <Text className="text-[17px] font-semibold text-[#222] text-center">
-              No favourites yet
+              {t("myFavourites.empty")}
             </Text>
             <Text className="text-[14px] text-[#8E8E93] text-center mt-2">
-              Tap the heart icon on any recipe to save it here.
+              {t("myFavourites.emptyHint")}
             </Text>
           </View>
         ) : (

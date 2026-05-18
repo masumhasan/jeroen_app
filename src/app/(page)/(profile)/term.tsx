@@ -5,6 +5,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { contentService } from "../../../services/contentService";
 import RichContentViewer from "../../../components/profile/RichContentViewer";
+import { t } from "../../../i18n";
 
 const Term = () => {
   const [content, setContent] = useState("");
@@ -23,7 +24,7 @@ const Term = () => {
         }
       } catch {
         if (isMounted) {
-          setError("Unable to load Terms & Conditions content right now.");
+          setError(t("terms.loadError"));
         }
       } finally {
         if (isMounted) {
@@ -50,7 +51,7 @@ const Term = () => {
         </TouchableOpacity>
 
         <Text className="text-[20px] font-semibold text-[#222]">
-          Terms & Condition
+          {t("terms.title")}
         </Text>
       </View>
 

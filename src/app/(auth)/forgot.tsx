@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef } from "react";
+import { t } from "../../i18n";
 import {
   Animated,
   Easing,
@@ -71,11 +72,11 @@ const Forgot = () => {
         }}
       >
         <Text className="text-2xl font-semibold text-gray-800 mb-4">
-          Email Confirmation
+          {t("forgot.title")}
         </Text>
 
         <Text className="text-gray-400 mb-10">
-          Enter Your email for verification.
+          {t("forgot.subtitle")}
         </Text>
 
         <Animated.View
@@ -86,7 +87,7 @@ const Forgot = () => {
         >
           <Ionicons name="mail-outline" size={18} color="gray" />
           <TextInput
-            placeholder="name@example.com"
+            placeholder={t("forgot.emailPlaceholder")}
             className="ml-3 flex-1"
             placeholderTextColor="#9CA3AF"
           />
@@ -105,7 +106,7 @@ const Forgot = () => {
             onPress={() => router.replace("/varify")}
           >
             <Text className="text-white text-center font-semibold">
-              Send Verification Code
+              {t("forgot.sendButton")}
             </Text>
           </TouchableOpacity>
         </Animated.View>

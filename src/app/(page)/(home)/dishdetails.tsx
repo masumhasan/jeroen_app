@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { recipeService } from "../../../services/recipeService";
 import { authService } from "../../../services/authService";
+import { t } from "../../../i18n";
 
 const FALLBACK_RECIPE_IMAGE =
   "https://raw.githubusercontent.com/masumhasan/jeroen_app/main/lunch.jpg";
@@ -99,7 +100,7 @@ const DishDetails = () => {
   if (!recipe) {
     return (
       <View className="flex-1 bg-white items-center justify-center">
-        <Text>Recipe not found</Text>
+        <Text>{t("dishDetails.recipeNotFound")}</Text>
       </View>
     );
   }
@@ -153,7 +154,7 @@ const DishDetails = () => {
               <View className="flex-row items-center mt-2">
                 <View className="bg-[#FFF3E0] border border-[#FFE0B2] px-3 py-1 rounded-full">
                   <Text className="text-[12px] font-bold text-[#E65100]">
-                    Crowdsourced
+                    {t("dishDetails.crowdsourced")}
                   </Text>
                 </View>
               </View>
@@ -164,7 +165,7 @@ const DishDetails = () => {
                 <Feather name="clock" size={16} color="#777" />
                 <Text className="ml-2 text-[#777]">
                   {estimatedMinutes > 0
-                    ? `~${estimatedMinutes} min (est.)`
+                    ? t("dishDetails.estimatedTime", { minutes: String(estimatedMinutes) })
                     : "—"}
                 </Text>
               </View>
@@ -173,10 +174,10 @@ const DishDetails = () => {
                 <Feather name="users" size={16} color="#777" />
                 <Text className="ml-2 text-[#777]">
                   {recipe.personsServing != null
-                    ? `${recipe.personsServing} serving${
-                        recipe.personsServing === 1 ? "" : "s"
-                      }`
-                    : "1 serving"}
+                    ? recipe.personsServing === 1
+                      ? t("dishDetails.servings", { count: String(recipe.personsServing) })
+                      : t("dishDetails.servingsPlural", { count: String(recipe.personsServing) })
+                    : t("dishDetails.oneServing")}
                 </Text>
               </View>
             </View>
@@ -192,12 +193,12 @@ const DishDetails = () => {
             >
               <Feather name="play" size={18} color="white" />
               <Text className="text-white text-[16px] font-semibold ml-2">
-                Start Cooking Mode
+                {t("dishDetails.startCooking")}
               </Text>
             </TouchableOpacity>
 
             <Text className="text-[20px] font-bold text-[#222] mt-6">
-              Nutrition Breakdown
+              {t("dishDetails.nutritionBreakdown")}
             </Text>
 
             <CircleGraph nutrition={recipe.nutrition} />
@@ -206,7 +207,7 @@ const DishDetails = () => {
             recipe.cookingTip.trim().length > 0 ? (
               <View className="mt-7 bg-[#F7F8F5] border border-[#E6E9E2] rounded-2xl p-4">
                 <Text className="text-[18px] font-bold text-[#222] mb-2">
-                  Cooking Tip
+                  {t("dishDetails.cookingTip")}
                 </Text>
                 <Text className="text-[14px] leading-6 text-[#5E6656]">
                   {recipe.cookingTip.trim()}

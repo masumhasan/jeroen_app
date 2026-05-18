@@ -5,6 +5,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { contentService } from "../../../services/contentService";
 import RichContentViewer from "../../../components/profile/RichContentViewer";
+import { t } from "../../../i18n";
 
 const About = () => {
   const [content, setContent] = useState("");
@@ -23,7 +24,7 @@ const About = () => {
         }
       } catch {
         if (isMounted) {
-          setError("Unable to load About Us content right now.");
+          setError(t("about.loadError"));
         }
       } finally {
         if (isMounted) {
@@ -49,7 +50,7 @@ const About = () => {
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
 
-        <Text className="text-[20px] font-semibold text-[#222]">About Us</Text>
+        <Text className="text-[20px] font-semibold text-[#222]">{t("about.title")}</Text>
       </View>
 
       {/* Content Card */}

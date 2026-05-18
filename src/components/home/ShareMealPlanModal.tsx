@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { communityService } from "@/src/services/communityService";
+import { t } from "../../i18n";
 
 interface MealItem {
   mealType: string;
@@ -70,7 +71,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
 
   const handleShare = async () => {
     if (selectedTopics.length === 0) {
-      Alert.alert("Topic required", "Please select at least one topic.");
+      Alert.alert(t("shareMealPlan.alerts.topicRequired"), t("shareMealPlan.alerts.topicMessage"));
       return;
     }
     setIsSharing(true);
@@ -84,11 +85,11 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
           meals: dayData.meals,
         },
       });
-      Alert.alert("Shared!", "Your meal plan has been shared to the community.", [
-        { text: "OK", onPress: () => { onClose(); onShared?.(); } },
+      Alert.alert(t("shareMealPlan.alerts.sharedTitle"), t("shareMealPlan.alerts.sharedMessage"), [
+        { text: t("shareMealPlan.alerts.ok"), onPress: () => { onClose(); onShared?.(); } },
       ]);
     } catch {
-      Alert.alert("Error", "Failed to share meal plan. Please try again.");
+      Alert.alert(t("shareMealPlan.alerts.errorTitle"), t("shareMealPlan.alerts.shareFailed"));
     } finally {
       setIsSharing(false);
     }
@@ -103,7 +104,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#333" />
             </TouchableOpacity>
-            <Text className="text-lg font-bold text-gray-800">Share Meal Plan</Text>
+            <Text className="text-lg font-bold text-gray-800">{t("shareMealPlan.title")}</Text>
             <TouchableOpacity
               onPress={handleShare}
               disabled={isSharing}
@@ -112,7 +113,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
               {isSharing ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className="text-white font-semibold text-sm">Share</Text>
+                <Text className="text-white font-semibold text-sm">{t("shareMealPlan.shareButton")}</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -121,8 +122,8 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
             {/* Meal Plan Preview */}
             <View className="mt-4 rounded-2xl border border-gray-100 overflow-hidden">
               <View className="bg-[#89957F] px-4 py-3 flex-row justify-between items-center">
-                <Text className="text-white font-bold">{dayData.day} Meal Plan</Text>
-                <Text className="text-white/80 text-xs">Target: {dayData.targetCalories} kcal</Text>
+                <Text className="text-white font-bold">{t("shareMealPlan.dayMealPlan", { day: dayData.day })}</Text>
+                <Text className="text-white/80 text-xs">{t("shareMealPlan.target", { calories: String(dayData.targetCalories) })}</Text>
               </View>
               {dayData.meals.map((meal, idx) => (
                 <View
@@ -143,7 +144,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
               ))}
               <View className="px-4 py-3 bg-gray-50 flex-row justify-between items-center">
                 <View>
-                  <Text className="text-xs font-bold text-gray-700">Total</Text>
+                  <Text className="text-xs font-bold text-gray-700">{t("shareMealPlan.total")}</Text>
                   <Text className="text-[10px] text-gray-500">
                     P: {totalProtein}g  C: {totalCarbs}g  F: {totalFat}g
                   </Text>
@@ -153,9 +154,9 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
             </View>
 
             {/* Caption */}
-            <Text className="text-sm font-semibold text-gray-700 mt-5 mb-2">Caption</Text>
+            <Text className="text-sm font-semibold text-gray-700 mt-5 mb-2">{t("shareMealPlan.caption")}</Text>
             <TextInput
-              placeholder="Add a caption to your meal plan..."
+              placeholder={t("shareMealPlan.captionPlaceholder")}
               multiline
               value={caption}
               onChangeText={setCaption}
@@ -166,7 +167,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
             <Text className="text-right text-xs text-gray-400 mt-1">{caption.length}/500</Text>
 
             {/* Topic Selector */}
-            <Text className="text-sm font-semibold text-gray-700 mt-4 mb-2">Select Topic *</Text>
+            <Text className="text-sm font-semibold text-gray-700 mt-4 mb-2">{t("shareMealPlan.selectTopic")}</Text>
             {loadingTopics ? (
               <ActivityIndicator color="#89957F" className="py-4" />
             ) : (

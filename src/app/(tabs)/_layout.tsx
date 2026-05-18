@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
+import { t } from "../../i18n";
 
 export default function Layout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -72,28 +73,35 @@ export default function Layout() {
             );
           },
 
-          tabBarLabel: ({ focused, color }) => (
-            <Text
-              style={{
-                fontFamily: "Inter",
-                fontSize: 12,
-                marginTop: 4,
-                color: color,
-                fontWeight: focused ? "700" : "400",
-              }}
-            >
-              {route.name === "home"
-                ? "Meal Plans"
-                : route.name.charAt(0).toUpperCase() + route.name.slice(1)}
-            </Text>
-          ),
+          tabBarLabel: ({ focused, color }) => {
+            const labels: Record<string, string> = {
+              home: t("tabs.mealPlans"),
+              community: t("tabs.community"),
+              cookbook: t("tabs.cookbook"),
+              progress: t("tabs.progress"),
+              profile: t("tabs.profile"),
+            };
+            return (
+              <Text
+                style={{
+                  fontFamily: "Inter",
+                  fontSize: 12,
+                  marginTop: 4,
+                  color: color,
+                  fontWeight: focused ? "700" : "400",
+                }}
+              >
+                {labels[route.name] ?? route.name.charAt(0).toUpperCase() + route.name.slice(1)}
+              </Text>
+            );
+          },
         })}
       >
         <Tabs.Screen name="community" />
         <Tabs.Screen
           name="home"
           options={{
-            title: "Meal Plans",
+            title: t("tabs.mealPlans"),
           }}
         />
         <Tabs.Screen name="cookbook" />

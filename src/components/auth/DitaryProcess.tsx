@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import api from "../../services/api";
+import { t } from "../../i18n";
 
 // Animated TouchableOpacity
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -78,7 +79,7 @@ const SectionHeader = ({
     <Text className="text-gray-700 font-semibold text-base">{title}</Text>
     {optional && (
       <View className="bg-gray-100 px-2 py-0.5 rounded-full ml-2">
-        <Text className="text-gray-500 text-xs">Optional</Text>
+        <Text className="text-gray-500 text-xs">{t("dietary.optional")}</Text>
       </View>
     )}
   </View>
@@ -168,10 +169,10 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-2xl font-bold text-gray-800">
-                Dietary Preferences
+                {t("dietary.title")}
               </Text>
               <Text className="text-gray-500 text-sm mt-1">
-                Customize your meal plan
+                {t("dietary.subtitle")}
               </Text>
             </View>
             <TouchableOpacity
@@ -179,13 +180,13 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
               className="bg-gray-100 px-4 py-2 rounded-full"
               activeOpacity={0.7}
             >
-              <Text className="text-gray-600 font-medium">Clear All</Text>
+              <Text className="text-gray-600 font-medium">{t("dietary.clearAll")}</Text>
             </TouchableOpacity>
           </View>
         </View>
         {/* Dietary Preferences */}
         <View className="mt-6">
-          <SectionHeader title="Dietary Preferences" optional />
+          <SectionHeader title={t("dietary.preferences")} optional />
           {catalogLoading ? (
             <ActivityIndicator size="small" color="#89957F" style={{ marginTop: 12 }} />
           ) : (
@@ -204,13 +205,13 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
 
         {/* Allergies */}
         <View className="mt-6">
-          <SectionHeader title="Allergies" optional />
+          <SectionHeader title={t("dietary.allergies")} optional />
 
           {/* Search Bar */}
           <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-2 mb-3 border border-gray-100">
             <Ionicons name="search-outline" size={20} color="#9CA3AF" />
             <TextInput
-              placeholder="Search ingredients..."
+              placeholder={t("dietary.searchIngredients")}
               value={searchQuery}
               onChangeText={setSearchQuery}
               className="flex-1 ml-2 text-gray-700"
@@ -236,7 +237,7 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
             {filteredIngredients.length === 0 && (
               <View className="py-8 w-full">
                 <Text className="text-center text-gray-400">
-                  No ingredients found
+                  {t("dietary.noIngredients")}
                 </Text>
               </View>
             )}
@@ -245,18 +246,18 @@ const DitaryProcess: React.FC<Props> = ({ value, onChange }) => {
 
         {/* Target Weight */}
         <View className="mt-6 mb-8">
-          <SectionHeader title="Target Weight" optional={false} />
+          <SectionHeader title={t("dietary.targetWeight")} optional={false} />
           <View className="flex-row items-center bg-gray-50 rounded-xl border border-gray-100">
             <TextInput
               value={value.targetWeight}
               onChangeText={(text) => onChange({ ...value, targetWeight: text })}
               keyboardType="numeric"
               className="flex-1 px-4 py-3 text-gray-700"
-              placeholder="Enter your target weight"
+              placeholder={t("dietary.targetWeightPlaceholder")}
               placeholderTextColor="#9CA3AF"
             />
             <View className="px-4 py-3 bg-blue-50 rounded-r-xl">
-              <Text className="text-[#89957F] font-semibold">kg</Text>
+              <Text className="text-[#89957F] font-semibold">{t("dietary.kg")}</Text>
             </View>
           </View>
         </View>

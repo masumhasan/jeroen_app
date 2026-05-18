@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { communityService } from "@/src/services/communityService";
+import { t } from "../../i18n";
 
 const commentTimestamp = (dateValue: string | Date | undefined) => {
   if (!dateValue) return "";
@@ -54,9 +55,9 @@ function CommentsModal({
       <View className="flex-1 bg-black/50">
         <View className="flex-1 mt-20 bg-white rounded-t-3xl">
           <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-            <Text className="text-lg font-semibold">Comments</Text>
+            <Text className="text-lg font-semibold">{t("postCard.commentsTitle")}</Text>
             <TouchableOpacity onPress={onClose}>
-              <Text className="text-blue-500">Close</Text>
+              <Text className="text-blue-500">{t("postCard.close")}</Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -85,19 +86,19 @@ function CommentsModal({
                   <ActivityIndicator color="#8A957F" />
                 </View>
               ) : (
-                <Text className="text-center text-gray-500 py-8">No comments yet. Be the first!</Text>
+                <Text className="text-center text-gray-500 py-8">{t("postCard.noComments")}</Text>
               )
             }
           />
           <View className="p-4 border-t border-gray-200 flex-row">
             <TextInput
               className="flex-1 border border-gray-300 rounded-full px-4 py-2 mr-2"
-              placeholder="Write a comment..."
+              placeholder={t("postCard.writeComment")}
               value={commentText}
               onChangeText={onChangeCommentText}
             />
             <TouchableOpacity onPress={onSubmitComment} className="bg-[#8A957F] px-4 py-2 rounded-full">
-              <Text className="text-white font-semibold">Post</Text>
+              <Text className="text-white font-semibold">{t("postCard.post")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -138,7 +139,7 @@ export default function MealPlanPostCard({
         const mapped: FeedComment[] = (data.comments || []).map((c: any) => ({
           id: String(c.id),
           text: String(c.content ?? ""),
-          user: c.user?.fullName || "User",
+          user: c.user?.fullName || t("postCard.defaultUser"),
           timestamp: commentTimestamp(c.createdAt),
         }));
         setComments(mapped);
@@ -164,7 +165,7 @@ export default function MealPlanPostCard({
 
   const handleAddComment = async () => {
     if (!commentText.trim()) {
-      Alert.alert("Error", "Please write a comment");
+      Alert.alert(t("postCard.alerts.errorTitle"), t("postCard.alerts.emptyComment"));
       return;
     }
     const text = commentText.trim();
@@ -176,13 +177,13 @@ export default function MealPlanPostCard({
           const c = data.comment;
           setComments((prev) => [
             ...prev,
-            { id: String(c.id), text: String(c.content ?? ""), user: c.user?.fullName || "You", timestamp: commentTimestamp(c.createdAt) },
+            { id: String(c.id), text: String(c.content ?? ""), user: c.user?.fullName || t("postCard.you"), timestamp: commentTimestamp(c.createdAt) },
           ]);
         }
       }
       setCommentText("");
     } catch {
-      Alert.alert("Error", "Failed to add comment");
+      Alert.alert(t("postCard.alerts.errorTitle"), t("postCard.alerts.addFailed"));
     }
   };
 
@@ -234,7 +235,7 @@ export default function MealPlanPostCard({
               <View className="flex-row items-center">
                 <View className="w-2 h-2 rounded-full bg-[#89957F] mr-2" />
                 <Text className="text-xs font-semibold text-gray-700">
-                  {mealPlanData.day} Meal Plan
+                  {t("shareMealPlan.dayMealPlan", { day: mealPlanData.day })}
                 </Text>
               </View>
               <View className="flex-row items-center">
@@ -271,7 +272,7 @@ export default function MealPlanPostCard({
                   </View>
                 ))}
                 <View className="flex-row justify-between px-3 py-2 bg-gray-50">
-                  <Text className="text-xs font-bold text-gray-600">Total</Text>
+                  <Text className="text-xs font-bold text-gray-600">{t("shareMealPlan.total")}</Text>
                   <Text className="text-xs text-gray-500">
                     P:{mealPlanData.totalProtein}g  C:{mealPlanData.totalCarbs}g  F:{mealPlanData.totalFat}g  •  {mealPlanData.totalCalories} kcal
                   </Text>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import PieChart from "react-native-pie-chart";
+import { t } from "../../../../i18n";
 
 const widthAndHeight = 110;
 
@@ -31,9 +32,9 @@ export default function NutritionCard({ nutrition }: Props) {
   ];
 
   const data = [
-    { label: "Protein", value: protein, percent: proteinPct, color: "#7A866B" },
-    { label: "Carbs", value: carbs, percent: carbsPct, color: "#BEBDB7" },
-    { label: "Fat", value: fat, percent: fatPct, color: "#E9C5A8" },
+    { label: t("circleGraph.protein"), value: protein, percent: proteinPct, color: "#7A866B" },
+    { label: t("circleGraph.carbs"), value: carbs, percent: carbsPct, color: "#BEBDB7" },
+    { label: t("circleGraph.fat"), value: fat, percent: fatPct, color: "#E9C5A8" },
   ];
 
   return (
@@ -44,7 +45,7 @@ export default function NutritionCard({ nutrition }: Props) {
           <Text className="text-4xl font-bold text-[#7A866B]">
             {totalCalories}
           </Text>
-          <Text className="text-[#7A7A8C] mt-1">Total Calories</Text>
+          <Text className="text-[#7A7A8C] mt-1">{t("circleGraph.totalCalories")}</Text>
         </View>
 
         <PieChart

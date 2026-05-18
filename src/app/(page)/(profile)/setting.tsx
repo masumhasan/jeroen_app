@@ -12,41 +12,42 @@ import {
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../../i18n";
 
 const menuItems = [
   {
     id: 1,
-    title: "Profile Setting",
+    title: t("settings.profileSetting"),
     icon: User,
     onPress: () => router.push("/Profilesetting"),
   },
   {
     id: 2,
-    title: "Support",
+    title: t("settings.support"),
     icon: ShieldCheck,
     onPress: () => router.push("/adminsopport"),
   },
   {
     id: 3,
-    title: "Change password",
+    title: t("settings.changePassword"),
     icon: Lock,
     onPress: () => router.push("/chengepassword"),
   },
   {
     id: 4,
-    title: "About Us",
+    title: t("settings.aboutUs"),
     icon: CircleHelp,
     onPress: () => router.push("/about"),
   },
   {
     id: 5,
-    title: "Privacy Policy",
+    title: t("settings.privacyPolicy"),
     icon: FileText,
     onPress: () => router.push("/policy"),
   },
   {
     id: 6,
-    title: "Terms and Conditions",
+    title: t("settings.termsConditions"),
     icon: FileText,
     onPress: () => router.push("/term"),
   },
@@ -83,17 +84,17 @@ import { Alert } from "react-native";
 
 const setting = () => {
   const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure you want to log out?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("settings.logout"), t("settings.logoutConfirm"), [
+      { text: t("settings.cancel"), style: "cancel" },
       {
-        text: "Log Out",
+        text: t("settings.logOut"),
         style: "destructive",
         onPress: async () => {
           try {
             await authService.logout();
             router.replace("/signin");
           } catch (error) {
-            Alert.alert("Error", "Failed to log out");
+            Alert.alert(t("settings.alerts.errorTitle"), t("settings.alerts.logoutFailed"));
           }
         },
       },
@@ -111,7 +112,7 @@ const setting = () => {
             <FontAwesome6 name="arrow-left-long" size={20} color="#0F0B18" />
           </Pressable>
           <Text className="text-[20px] font-semibold text-[#111111]">
-            Setting
+            {t("settings.title")}
           </Text>
         </View>
  
@@ -132,7 +133,7 @@ const setting = () => {
         >
           <View className="flex-row items-center gap-2">
             <LogOut size={16} color="#FFFFFF" />
-            <Text className="text-white text-[13px] font-medium">Log Out</Text>
+            <Text className="text-white text-[13px] font-medium">{t("settings.logOut")}</Text>
           </View>
           <ChevronRight size={18} color="#FFFFFF" />
         </Pressable>
