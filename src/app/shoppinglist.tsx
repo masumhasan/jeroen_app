@@ -107,10 +107,10 @@ export default function ShoppingList() {
         ))}
 
         {shoppingList.length === 0 && (
-          <View className="items-center justify-center py-20">
+          <View className="flex-1 items-center justify-center py-20">
             <Ionicons name="cart-outline" size={64} color="#E5E7EB" />
-            <Text className="text-gray-400 mt-4">Your shopping list is empty</Text>
-            <Text className="text-gray-400">Generate a meal plan to see items here</Text>
+            <Text className="text-gray-400 mt-4">Je boodschappenlijst is leeg</Text>
+            <Text className="text-gray-400">Genereer een maaltijdplan om artikelen te zien</Text>
           </View>
         )}
         

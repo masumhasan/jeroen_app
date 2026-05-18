@@ -4,7 +4,7 @@ import LockedCard from "@/src/components/cookbook/LockedCard";
 import RecipeCard from "@/src/components/cookbook/RecipeCard";
 import TabSwitch from "@/src/components/cookbook/TabSwitch";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Text } from "react-native";
 import Animated, {
   FadeInDown,
   FadeInUp,
@@ -65,11 +65,17 @@ export default function CookbookHome() {
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
         ListEmptyComponent={
-          <View className="flex-1 items-center justify-center py-20">
-            <ActivityIndicator size="large" color="#7C8B74" />
-          </View>
+          tab === "myLibrary" ? (
+            <View className="flex-1 items-center justify-center py-20 px-10">
+              <Text className="text-gray-400 text-center font-medium">Je hebt nog geen boeken in je bibliotheek.</Text>
+            </View>
+          ) : (
+            <View className="flex-1 items-center justify-center py-20">
+              <ActivityIndicator size="large" color="#7C8B74" />
+            </View>
+          )
         }
       />
     </View>
