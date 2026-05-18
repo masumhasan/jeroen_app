@@ -212,7 +212,7 @@
   },
   "tabs": {
     "mealPlans": "Maaltijdplannen",
-    "community": "Community",
+    "community": "Gemeenschap",
     "cookbook": "Kookboek",
     "progress": "Voortgang",
     "profile": "Profiel"
@@ -236,13 +236,15 @@
     }
   },
   "community": {
-    "feed": "Feed",
+    "feed": "Overzicht",
     "topics": "Onderwerpen",
     "noPosts": "Nog geen berichten. Volg onderwerpen in het tabblad Onderwerpen om uw gepersonaliseerde feed te zien.",
     "justNow": "Zojuist",
     "minutesAgo": "m geleden",
     "hoursAgo": "u geleden",
-    "daysAgo": "d geleden"
+    "daysAgo": "d geleden",
+    "unknownUser": "Onbekende gebruiker",
+    "defaultTopic": "Onderwerp"
   },
   "progress": {
     "title": "Voortgangsoverzicht",
@@ -342,7 +344,8 @@
       "imageFailed": "Afbeelding selecteren mislukt",
       "topicRequired": "Selecteer minimaal één onderwerp",
       "contentRequired": "Schrijf iets in uw bericht",
-      "postCreated": "Uw bericht is succesvol aangemaakt!"
+      "postCreated": "Uw bericht is succesvol aangemaakt!",
+      "ok": "OK"
     }
   },
   "postDetails": {
@@ -356,6 +359,9 @@
     "writeComment": "Schrijf een reactie...",
     "noComments": "Nog geen reacties. Wees de eerste!",
     "commentsTitle": "Reacties",
+    "defaultUser": "Gebruiker",
+    "you": "U",
+    "defaultTopic": "Onderwerp",
     "alerts": {
       "errorTitle": "Fout",
       "emptyContent": "Berichtinhoud mag niet leeg zijn.",
@@ -637,7 +643,7 @@
       "topicRequired": "Onderwerp vereist",
       "topicMessage": "Selecteer minimaal één onderwerp.",
       "sharedTitle": "Gedeeld!",
-      "sharedMessage": "Uw maaltijdplan is gedeeld met de community.",
+      "sharedMessage": "Uw maaltijdplan is gedeeld met de gemeenschap.",
       "ok": "OK",
       "errorTitle": "Fout",
       "shareFailed": "Maaltijdplan delen mislukt. Probeer het opnieuw."
@@ -658,7 +664,7 @@
     "instructions": "Bereidingswijze"
   },
   "communityHeader": {
-    "title": "Community"
+    "title": "Gemeenschap"
   },
   "feedTabs": {
     "feed": "Feed",
@@ -777,5 +783,23 @@
     "snack2": "Tussendoortje-2",
     "dinner": "Diner",
     "snack3": "Tussendoortje-3"
+  },
+  "mealTypes": {
+    "breakfast": "Ontbijt",
+    "lunch": "Lunch",
+    "dinner": "Avondeten",
+    "snack1": "Tussendoortje 1",
+    "snack2": "Tussendoortje 2",
+    "snack3": "Tussendoortje 3",
+    "meal": "Maaltijd"
+  },
+  "dayNames": {
+    "monday": "Maandag",
+    "tuesday": "Dinsdag",
+    "wednesday": "Woensdag",
+    "thursday": "Donderdag",
+    "friday": "Vrijdag",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag"
   }
 }

@@ -17,7 +17,7 @@ import {
 import { authService } from "../../services/authService";
 import { recipeService } from "../../services/recipeService";
 import { resolveRecipeImageUrl } from "../../utils/imageUrl";
-import { t } from "../../i18n";
+import { t, translateMealType } from "../../i18n";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -246,7 +246,7 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
             >
               <View className="flex-row justify-between items-center mb-4 pt-2">
                 <View>
-                  <Text className="text-xl font-semibold">{t("swapMeal.title", { mealType })}</Text>
+                  <Text className="text-xl font-semibold">{t("swapMeal.title", { mealType: translateMealType(mealType) })}</Text>
                   <Text className="text-gray-500 text-sm">{t("swapMeal.subtitle")}</Text>
                 </View>
                 <TouchableOpacity onPress={closeModal}>

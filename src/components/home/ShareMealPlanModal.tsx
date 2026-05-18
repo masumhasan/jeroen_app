@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { communityService } from "@/src/services/communityService";
-import { t } from "../../i18n";
+import { t, translateMealType, translateDayName } from "../../i18n";
 
 interface MealItem {
   mealType: string;
@@ -122,7 +122,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
             {/* Meal Plan Preview */}
             <View className="mt-4 rounded-2xl border border-gray-100 overflow-hidden">
               <View className="bg-[#89957F] px-4 py-3 flex-row justify-between items-center">
-                <Text className="text-white font-bold">{t("shareMealPlan.dayMealPlan", { day: dayData.day })}</Text>
+                <Text className="text-white font-bold">{t("shareMealPlan.dayMealPlan", { day: translateDayName(dayData.day) })}</Text>
                 <Text className="text-white/80 text-xs">{t("shareMealPlan.target", { calories: String(dayData.targetCalories) })}</Text>
               </View>
               {dayData.meals.map((meal, idx) => (
@@ -132,7 +132,7 @@ export default function ShareMealPlanModal({ visible, onClose, dayData, onShared
                 >
                   <View className="flex-1">
                     <Text className="text-[10px] uppercase text-gray-400 font-semibold">
-                      {meal.mealType}
+                      {translateMealType(meal.mealType)}
                     </Text>
                     <Text className="text-sm font-semibold text-gray-800 mt-0.5">{meal.name}</Text>
                     <Text className="text-xs text-gray-500 mt-0.5">

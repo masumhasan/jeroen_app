@@ -30,3 +30,28 @@ export function t(
   }
   return value;
 }
+
+export function translateMealType(rawType: string): string {
+  const normalized = (rawType || "").toLowerCase().replace(/-/g, "").replace(/\s/g, "");
+  if (normalized.startsWith("breakfast")) return t("mealTypes.breakfast");
+  if (normalized.startsWith("lunch")) return t("mealTypes.lunch");
+  if (normalized.startsWith("dinner")) return t("mealTypes.dinner");
+  if (normalized.includes("snack1")) return t("mealTypes.snack1");
+  if (normalized.includes("snack2")) return t("mealTypes.snack2");
+  if (normalized.includes("snack3")) return t("mealTypes.snack3");
+  return t("mealTypes.meal");
+}
+
+export function translateDayName(rawDay: string): string {
+  const normalized = (rawDay || "").toLowerCase().trim();
+  const map: Record<string, NestedKeyOf<Translations>> = {
+    monday: "dayNames.monday",
+    tuesday: "dayNames.tuesday",
+    wednesday: "dayNames.wednesday",
+    thursday: "dayNames.thursday",
+    friday: "dayNames.friday",
+    saturday: "dayNames.saturday",
+    sunday: "dayNames.sunday",
+  };
+  return map[normalized] ? t(map[normalized]) : rawDay;
+}

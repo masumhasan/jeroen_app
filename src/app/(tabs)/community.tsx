@@ -59,8 +59,8 @@ export default function Community() {
     () =>
       posts.map((item) => ({
         id: item.id,
-        name: item.user?.fullName || "Unknown User",
-        role: item.topic?.name || "Topic",
+        name: item.user?.fullName || t("community.unknownUser"),
+        role: item.topic?.name || t("community.defaultTopic"),
         time: formatRelativeTime(item.createdAt),
         text: item.content,
         image: item.image ? resolveRecipeImageUrl(item.image, FALLBACK_POST_IMAGE) : null,

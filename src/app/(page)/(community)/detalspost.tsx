@@ -21,7 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { communityService } from "../../../services/communityService";
 import { resolveRecipeImageUrl } from "../../../utils/imageUrl";
-import { t } from "../../../i18n";
+import { t, translateMealType } from "../../../i18n";
 
 // Types
 interface Comment {
@@ -76,7 +76,7 @@ const PostDetailsScreen = () => {
         setComments(
           (data.comments || []).map((c: any) => ({
             id: c.id,
-            name: c.user?.fullName || "User",
+            name: c.user?.fullName || t("postDetails.defaultUser"),
             content: c.content,
             timestamp: new Date(c.createdAt).toLocaleString(),
           }))
@@ -156,7 +156,7 @@ const PostDetailsScreen = () => {
     void communityService.addComment(post.id, commentText.trim()).then((data) => {
       const newComment: Comment = {
         id: data.comment.id,
-        name: data.comment?.user?.fullName || "You",
+        name: data.comment?.user?.fullName || t("postDetails.you"),
         content: data.comment.content,
         timestamp: new Date(data.comment.createdAt).toLocaleString(),
       };
@@ -282,7 +282,7 @@ const PostDetailsScreen = () => {
               <View className="ml-3 flex-1">
                 <View className="flex-row items-center justify-between">
                   <Text className="text-[16px] font-semibold text-[#1A1E2B]">
-                    {post?.user?.fullName || "User"}
+                    {post?.user?.fullName || t("postDetails.defaultUser")}
                   </Text>
                   {/* <TouchableOpacity activeOpacity={0.7}>
                     <Ionicons
@@ -294,7 +294,7 @@ const PostDetailsScreen = () => {
                 </View>
                 <View className="flex-row items-center mt-1">
                   <View className="bg-[#E8F3ED] px-2 py-1 rounded-full">
-                    <Text className="text-[10px] font-medium text-[#4A7C59]">{post?.topic?.name || "Topic"}</Text>
+                    <Text className="text-[10px] font-medium text-[#4A7C59]">{post?.topic?.name || t("postDetails.defaultTopic")}</Text>
                   </View>
                   <Text className="text-[11px] text-[#8A8A8A] ml-2">{post?.createdAt ? new Date(post.createdAt).toLocaleString() : ""}</Text>
                 </View>
@@ -357,7 +357,7 @@ const PostDetailsScreen = () => {
                     className="flex-row items-center justify-between px-4 py-3 border-b border-gray-50"
                   >
                     <View className="flex-1">
-                      <Text className="text-[10px] uppercase text-gray-400 font-semibold">{meal.mealType}</Text>
+                      <Text className="text-[10px] uppercase text-gray-400 font-semibold">{translateMealType(meal.mealType)}</Text>
                       <Text className="text-sm font-semibold text-gray-800 mt-0.5">{meal.name}</Text>
                       <Text className="text-xs text-gray-500 mt-0.5">
                         P: {meal.protein}g  C: {meal.carbs}g  F: {meal.fat}g
@@ -367,7 +367,7 @@ const PostDetailsScreen = () => {
                   </View>
                 ))}
                 <View className="flex-row justify-between items-center px-4 py-3 bg-gray-50">
-                  <Text className="text-xs font-bold text-gray-700">Total</Text>
+                  <Text className="text-xs font-bold text-gray-700">{t("shareMealPlan.total")}</Text>
                   <Text className="text-sm font-bold text-[#89957F]">{post.mealPlanData.totalCalories} kcal</Text>
                 </View>
               </View>

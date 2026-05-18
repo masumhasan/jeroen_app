@@ -93,26 +93,26 @@ const ACTIVITY_OPTIONS = [
 ];
 
 const GOAL_OPTIONS = [
-  { id: "weightLoss", title: t("signupOnboarding.goals.weightLoss"), emoji: "⚖️", color: "#89957F" },
-  { id: "weightGain", title: t("signupOnboarding.goals.weightGain"), emoji: "📈", color: "#89957F" },
-  { id: "muscleGain", title: t("signupOnboarding.goals.muscleGain"), emoji: "💪", color: "#89957F" },
-  { id: "maintenance", title: t("signupOnboarding.goals.maintenance"), emoji: "🎯", color: "#89957F" },
+  { id: "weightLoss", title: t("signupOnboarding.goals.weightLoss"), value: "Weight Loss", emoji: "⚖️", color: "#89957F" },
+  { id: "weightGain", title: t("signupOnboarding.goals.weightGain"), value: "Weight Gain", emoji: "📈", color: "#89957F" },
+  { id: "muscleGain", title: t("signupOnboarding.goals.muscleGain"), value: "Muscle Gain", emoji: "💪", color: "#89957F" },
+  { id: "maintenance", title: t("signupOnboarding.goals.maintenance"), value: "Maintenance", emoji: "🎯", color: "#89957F" },
 ];
 
 const GENDER_OPTIONS = [
-  { id: "male", label: t("signupOnboarding.genders.male"), icon: "male" as const },
-  { id: "female", label: t("signupOnboarding.genders.female"), icon: "female" as const },
-  { id: "other", label: t("signupOnboarding.genders.other"), icon: "person" as const },
+  { id: "male", label: t("signupOnboarding.genders.male"), value: "Male", icon: "male" as const },
+  { id: "female", label: t("signupOnboarding.genders.female"), value: "Female", icon: "female" as const },
+  { id: "other", label: t("signupOnboarding.genders.other"), value: "Other", icon: "person" as const },
 ];
 
 const WEEK_DAYS = [
-  t("signupOnboarding.days.monday"),
-  t("signupOnboarding.days.tuesday"),
-  t("signupOnboarding.days.wednesday"),
-  t("signupOnboarding.days.thursday"),
-  t("signupOnboarding.days.friday"),
-  t("signupOnboarding.days.saturday"),
-  t("signupOnboarding.days.sunday"),
+  { label: t("signupOnboarding.days.monday"), value: "Monday" },
+  { label: t("signupOnboarding.days.tuesday"), value: "Tuesday" },
+  { label: t("signupOnboarding.days.wednesday"), value: "Wednesday" },
+  { label: t("signupOnboarding.days.thursday"), value: "Thursday" },
+  { label: t("signupOnboarding.days.friday"), value: "Friday" },
+  { label: t("signupOnboarding.days.saturday"), value: "Saturday" },
+  { label: t("signupOnboarding.days.sunday"), value: "Sunday" },
 ];
 
 const STEPS = [
@@ -448,17 +448,17 @@ const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 const WeekDayPicker: React.FC<{
   selected: string;
-  onSelect: (day: string) => void;
+  onSelect: (value: string) => void;
 }> = ({ selected, onSelect }) => {
   const flatListRef = useRef<any>(null);
   const [ready, setReady] = useState(false);
 
-  const initialIndex = WEEK_DAYS.indexOf(selected);
+  const initialIndex = WEEK_DAYS.findIndex(d => d.value === selected);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       flatListRef.current?.scrollToOffset({
-        offset: initialIndex * ITEM_HEIGHT,
+        offset: (initialIndex >= 0 ? initialIndex : 0) * ITEM_HEIGHT,
         animated: false,
       });
       setReady(true);
@@ -470,11 +470,11 @@ const WeekDayPicker: React.FC<{
     const y = e.nativeEvent.contentOffset.y;
     const idx = Math.round(y / ITEM_HEIGHT);
     const clamped = Math.max(0, Math.min(idx, WEEK_DAYS.length - 1));
-    onSelect(WEEK_DAYS[clamped]);
+    onSelect(WEEK_DAYS[clamped].value);
   };
 
-  const renderItem = ({ item, index }: { item: string; index: number }) => {
-    const isSelected = item === selected;
+  const renderItem = ({ item, index }: { item: { label: string; value: string }; index: number }) => {
+    const isSelected = item.value === selected;
     return (
       <View style={{ height: ITEM_HEIGHT, justifyContent: "center", alignItems: "center" }}>
         <Text
@@ -484,7 +484,7 @@ const WeekDayPicker: React.FC<{
             color: isSelected ? TEXT_DARK : "#C0C0C0",
           }}
         >
-          {item}
+          {item.label}
         </Text>
       </View>
     );
@@ -511,7 +511,7 @@ const WeekDayPicker: React.FC<{
       <FlatList
         ref={flatListRef}
         data={WEEK_DAYS}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.value}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         snapToInterval={ITEM_HEIGHT}
@@ -733,8 +733,8 @@ const Signuponpoarding = () => {
                   key={gender.id}
                   label={gender.label}
                   icon={gender.icon}
-                  active={userData.gender === gender.label}
-                  onPress={() => updateUserData("gender", gender.label)}
+                  active={userData.gender === gender.value}
+                  onPress={() => updateUserData("gender", gender.value)}
                 />
               ))}
             </View>
@@ -859,8 +859,8 @@ const Signuponpoarding = () => {
                   title={goal.title}
                   emoji={goal.emoji}
                   color={goal.color}
-                  active={userData.goal === goal.title}
-                  onPress={() => updateUserData("goal", goal.title)}
+                  active={userData.goal === goal.value}
+                  onPress={() => updateUserData("goal", goal.value)}
                   delay={index * 100}
                 />
               ))}

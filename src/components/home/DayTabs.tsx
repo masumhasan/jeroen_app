@@ -114,8 +114,8 @@ export default function DayTabs({
       date.setDate(startDate.getDate() + i);
       items.push({
         id: i,
-        day: date.toLocaleDateString("en-US", { weekday: "short" }),
-        date: date.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+        day: date.toLocaleDateString("nl-NL", { weekday: "short" }),
+        date: date.toLocaleDateString("nl-NL", { day: "numeric", month: "short" }),
         isToday: today.toDateString() === date.toDateString(),
       });
     }

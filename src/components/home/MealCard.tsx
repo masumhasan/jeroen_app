@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import Swap_Lunch from "../modals/Swap_Lunch";
-import { t } from "../../i18n";
+import { t, translateMealType } from "../../i18n";
 
 interface Props {
   recipeId: string;
@@ -45,7 +45,7 @@ export default function MealCard({
       <View className="p-4">
         <View className="flex-row justify-between items-center">
           <View className="flex-row items-center gap-2">
-            <Text className="text-xs text-gray-400">{type}</Text>
+            <Text className="text-xs text-gray-400">{translateMealType(type)}</Text>
             {isCrowdsourced && (
               <View className="bg-[#FFF3E0] border border-[#FFE0B2] px-2 py-0.5 rounded-full">
                 <Text className="text-[10px] font-bold text-[#E65100]">{t("mealCard.crowdsourced")}</Text>

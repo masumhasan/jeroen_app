@@ -242,7 +242,9 @@
     "justNow": "Just now",
     "minutesAgo": "m ago",
     "hoursAgo": "h ago",
-    "daysAgo": "d ago"
+    "daysAgo": "d ago",
+    "unknownUser": "Unknown User",
+    "defaultTopic": "Topic"
   },
   "progress": {
     "title": "Progress Tracking",
@@ -338,7 +340,8 @@
       "imageFailed": "Failed to select image",
       "topicRequired": "Please select at least one topic",
       "contentRequired": "Please write something in your post",
-      "postCreated": "Your post has been created successfully!"
+      "postCreated": "Your post has been created successfully!",
+      "ok": "OK"
     }
   },
   "postDetails": {
@@ -348,7 +351,10 @@
     "delete": "Delete",
     "writeComment": "Write a comment...",
     "noComments": "No comments yet. Be the first!",
-    "commentsTitle": "Comments"
+    "commentsTitle": "Comments",
+    "defaultUser": "User",
+    "you": "You",
+    "defaultTopic": "Topic"
   },
   "profileSettings": {
     "title": "Edit Profile",
@@ -669,5 +675,23 @@
     "snack2": "Snack-2",
     "dinner": "Dinner",
     "snack3": "Snack-3"
+  },
+  "mealTypes": {
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack1": "Snack 1",
+    "snack2": "Snack 2",
+    "snack3": "Snack 3",
+    "meal": "Meal"
+  },
+  "dayNames": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
   }
 }

@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import { communityService } from "@/src/services/communityService";
-import { t } from "../../i18n";
+import { t, translateMealType, translateDayName } from "../../i18n";
 
 const commentTimestamp = (dateValue: string | Date | undefined) => {
   if (!dateValue) return "";
@@ -235,7 +235,7 @@ export default function MealPlanPostCard({
               <View className="flex-row items-center">
                 <View className="w-2 h-2 rounded-full bg-[#89957F] mr-2" />
                 <Text className="text-xs font-semibold text-gray-700">
-                  {t("shareMealPlan.dayMealPlan", { day: mealPlanData.day })}
+                  {t("shareMealPlan.dayMealPlan", { day: translateDayName(mealPlanData.day) })}
                 </Text>
               </View>
               <View className="flex-row items-center">
@@ -259,7 +259,7 @@ export default function MealPlanPostCard({
                   >
                     <View className="flex-1">
                       <Text className="text-[10px] uppercase text-gray-400 font-semibold">
-                        {meal.mealType}
+                        {translateMealType(meal.mealType)}
                       </Text>
                       <Text className="text-xs font-medium text-gray-800">{meal.name}</Text>
                     </View>

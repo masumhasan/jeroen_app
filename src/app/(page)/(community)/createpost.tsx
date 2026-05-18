@@ -106,7 +106,7 @@ const CreatePost = () => {
 
       Alert.alert(t("createPost.alerts.successTitle"), t("createPost.alerts.postCreated"), [
         {
-          text: "OK",
+          text: t("createPost.alerts.ok"),
           onPress: () => router.back(),
         },
       ]);
