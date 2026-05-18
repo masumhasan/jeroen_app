@@ -76,9 +76,11 @@ export default function LockedCard({ item }: Props) {
           </View>
 
           <View className="p-3">
-            <Text className="font-semibold text-gray-900 text-sm" numberOfLines={2}>
-              {item.title}
-            </Text>
+            <View style={{ height: 40, justifyContent: 'center' }}>
+              <Text className="font-semibold text-gray-900 text-sm" numberOfLines={2}>
+                {item.title}
+              </Text>
+            </View>
 
             {/* <Text className="text-gray-500 text-xs">
               {t("lockedCard.recipes", { count: String(item.recipes) })}
