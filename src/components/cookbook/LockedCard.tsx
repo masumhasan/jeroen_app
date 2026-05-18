@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View, Linking } from "react-native";
 import { t } from "../../i18n";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -18,6 +18,7 @@ export interface Recipe {
   image: any;
   locked: boolean;
   price?: string;
+  buyUrl?: string;
 }
 
 type Props = { item: Recipe };
@@ -87,11 +88,11 @@ export default function LockedCard({ item }: Props) {
             </Text> */}
 
             <TouchableOpacity
-              onPress={() => {}}
-              className="bg-[#7C8B74] mt-3 py-2 rounded-full items-center"
-              activeOpacity={1}
+              onPress={() => item.buyUrl && Linking.openURL(item.buyUrl)}
+              className="bg-white border border-[#7C8B74] mt-3 py-2 rounded-full items-center"
+              activeOpacity={0.7}
             >
-              <Text className="text-white font-medium text-xs">{t("lockedCard.buy", { price: item.price ?? "" })}</Text>
+              <Text className="text-[#7C8B74] font-medium text-xs">Koop nu</Text>
             </TouchableOpacity>
           </View>
         </View>

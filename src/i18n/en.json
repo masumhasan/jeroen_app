@@ -598,7 +598,8 @@
   },
   "recipeCard": {
     "recipes": "{count} recipes",
-    "viewRecipes": "View Recipes"
+    "viewRecipes": "View Recipes",
+    "inMyLibrary": "In My Library"
   },
   "tabSwitch": {
     "allBooks": "All Books",

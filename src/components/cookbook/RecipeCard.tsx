@@ -77,7 +77,7 @@ export default function RecipeCard({ item }: Props) {
               className="bg-[#7C8B74] mt-3 py-2 px-3 rounded-full flex-row items-center justify-center z-50"
               activeOpacity={1}
             >
-              <Text className="text-white mr-1 font-medium text-xs">{t("recipeCard.viewRecipes")}</Text>
+              <Text className="text-white mr-1 font-medium text-xs">{t("recipeCard.inMyLibrary")}</Text>
               <Ionicons name="chevron-forward" size={12} color="white" />
             </TouchableOpacity>
           </View>

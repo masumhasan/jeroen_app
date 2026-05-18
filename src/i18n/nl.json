@@ -705,7 +705,8 @@
   },
   "recipeCard": {
     "recipes": "{count} recepten",
-    "viewRecipes": "Recepten bekijken"
+    "viewRecipes": "Recepten bekijken",
+    "inMyLibrary": "In Mijn Bibliotheek"
   },
   "tabSwitch": {
     "allBooks": "Alle boeken",

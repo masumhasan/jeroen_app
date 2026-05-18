@@ -38,6 +38,7 @@ export const recipes = [
     image: require("../images/book_covers/book6cover.png"),
     locked: true,
     price: "€16.99",
+    buyUrl: "https://lisakookt.nl/products/lisa-bakt-koolhydraatarm",
   },
   {
     id: 6,
@@ -46,6 +47,7 @@ export const recipes = [
     image: require("../images/book_covers/book7cover.png"),
     locked: true,
     price: "€13.99",
+    buyUrl: "https://lisakookt.nl/products/lisa-kookt-wereldgerechten",
   },
 ];
 
