@@ -45,6 +45,30 @@ export const authService = {
     return response.data.data.user;
   },
 
+  async uploadAvatar(asset: { uri: string; mimeType?: string | null; fileName?: string | null }): Promise<string> {
+    const mimeType = asset.mimeType || 'image/jpeg';
+    const ext = mimeType.split('/')[1]?.replace('jpeg', 'jpg') ?? 'jpg';
+    const filename = `avatar-${Date.now()}.${ext}`;
+
+    const formData = new FormData();
+    formData.append('avatar', { uri: asset.uri, name: filename, type: mimeType } as any);
+
+    // Must override the axios default Content-Type: application/json.
+    // React Native's native XHR layer appends the multipart boundary automatically
+    // when it detects FormData, even when Content-Type is pre-set to multipart/form-data.
+    // transformRequest bypasses axios's own FormData handling so XHR gets the raw object.
+    const response = await api.patch('/auth/me/avatar', formData, {
+      transformRequest: (data) => data,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    const avatarPath: string = response.data.data.avatarPath;
+    if (response.data.data?.user) {
+      await SecureStore.setItemAsync('userData', JSON.stringify(response.data.data.user));
+    }
+    return avatarPath;
+  },
+
   async updateProfile(updateData: any) {
     const response = await api.patch('/auth/me', updateData);
     if (response.data.data.user) {

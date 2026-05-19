@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import React from "react";
 import { t } from "../../i18n";
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 import { authService } from "../../services/authService";
 import { useFocusEffect } from "@react-navigation/native";
+import { resolveAvatarUrl } from "../../utils/imageUrl";
 
 import { AppImages } from "../../../assets/appimage/appimages";
 
@@ -24,6 +26,7 @@ const profile = () => {
   const [showWeightModal, setShowWeightModal] = React.useState(false);
   const [weightInput, setWeightInput] = React.useState("");
   const [savingWeight, setSavingWeight] = React.useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = React.useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -73,6 +76,42 @@ const profile = () => {
     }
   };
 
+  const handleAvatarPress = async () => {
+    try {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert(t("profileSettings.alerts.permissionTitle"), t("profileSettings.alerts.permissionMessage"));
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'images' as any,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+      if (!result.canceled && result.assets[0]) {
+        setUploadingAvatar(true);
+        try {
+          const asset = result.assets[0];
+          const avatarPath = await authService.uploadAvatar({
+            uri: asset.uri,
+            mimeType: asset.mimeType,
+            fileName: asset.fileName,
+          });
+          setUserData((prev: any) => ({ ...prev, avatar: avatarPath }));
+        } catch (err: any) {
+          console.error('[profile] avatar upload failed:', err?.message ?? err);
+          Alert.alert(t("profileSettings.alerts.errorTitle"), t("profileSettings.alerts.pictureFailed"));
+        } finally {
+          setUploadingAvatar(false);
+        }
+      }
+    } catch (err: any) {
+      console.error('[profile] image picker error:', err?.message ?? err);
+      Alert.alert(t("profileSettings.alerts.errorTitle"), t("profileSettings.alerts.pictureFailed"));
+    }
+  };
+
   const profileData = [
     { label: t("profile.gender"), value: userData?.gender || t("profile.notSet") },
     { label: t("profile.height"), value: userData?.height ? `${userData.height} ${t("profile.cm")}` : t("profile.notSet") },
@@ -107,14 +146,28 @@ const profile = () => {
         <View className="items-center mb-4">
           <View className="relative">
             <Image
-              source={userData?.avatar ? { uri: userData.avatar } : AppImages.userAvatar}
+              source={
+                resolveAvatarUrl(userData?.avatar)
+                  ? { uri: resolveAvatarUrl(userData?.avatar)! }
+                  : AppImages.userAvatar
+              }
               className="w-[96px] h-[96px] rounded-full"
               resizeMode="cover"
             />
 
+            {uploadingAvatar && (
+              <View className="absolute inset-0 rounded-full bg-black/40 items-center justify-center">
+                <ActivityIndicator color="#FFFFFF" />
+              </View>
+            )}
+
             <View className="absolute inset-0 rounded-full border-[3px] border-[#89957F]" />
 
-            <TouchableOpacity className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#89957F] items-center justify-center border-2 border-white">
+            <TouchableOpacity
+              onPress={handleAvatarPress}
+              disabled={uploadingAvatar}
+              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#89957F] items-center justify-center border-2 border-white"
+            >
               <Ionicons name="camera-outline" size={16} color="#FFFFFF" />
             </TouchableOpacity>
           </View>

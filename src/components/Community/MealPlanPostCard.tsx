@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { Heart, MessageCircle, ChevronDown, ChevronUp } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
+import { AppImages } from "../../../assets/appimage/appimages";
 import {
   ActivityIndicator,
   Alert,
@@ -68,7 +69,7 @@ function CommentsModal({
             renderItem={({ item }) => (
               <View className="flex-row mb-5">
                 <Image
-                  source={{ uri: "https://i.pravatar.cc/100?img=" + (item.id.charCodeAt(0) % 70) }}
+                  source={item.userAvatar ? { uri: item.userAvatar } : AppImages.userAvatar}
                   className="w-9 h-9 rounded-full"
                 />
                 <View className="ml-3 flex-1">
@@ -197,7 +198,7 @@ export default function MealPlanPostCard({
         {/* User info */}
         <View className="flex-row items-center p-3">
           <Image
-            source={{ uri: post.userAvatar || "https://i.pravatar.cc/100" }}
+            source={post.userAvatar ? { uri: post.userAvatar } : AppImages.userAvatar}
             className="w-9 h-9 rounded-full mr-2"
           />
           <View>

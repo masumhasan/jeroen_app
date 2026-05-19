@@ -26,6 +26,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { authService } from "../../../services/authService";
 import { AppImages } from "../../../../assets/appimage/appimages";
+import { resolveAvatarUrl } from "../../../utils/imageUrl";
 import { t } from "../../../i18n";
 
 // Types
@@ -148,7 +149,7 @@ const ProfileSetting: React.FC = () => {
           firstName: user.firstName || "",
           lastName: user.lastName || "",
           mobileNumber: user.phoneNumber || "",
-          avatar: user.avatar || DEFAULT_AVATAR,
+          avatar: resolveAvatarUrl(user.avatar) || DEFAULT_AVATAR,
           email: user.email || "",
           dateOfBirth: user.dateOfBirth || "",
         };
@@ -249,7 +250,7 @@ const ProfileSetting: React.FC = () => {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: 'images' as any,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
@@ -257,18 +258,25 @@ const ProfileSetting: React.FC = () => {
 
       if (!result.canceled && result.assets[0]) {
         setIsLoading(true);
-
-        // Simulate upload
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        setProfileData((prev) => ({
-          ...prev,
-          avatar: result.assets[0].uri,
-        }));
-
-        setIsLoading(false);
+        try {
+          const asset = result.assets[0];
+          const avatarPath = await authService.uploadAvatar({
+            uri: asset.uri,
+            mimeType: asset.mimeType,
+            fileName: asset.fileName,
+          });
+          const fullUrl = resolveAvatarUrl(avatarPath) || asset.uri;
+          setProfileData((prev) => ({ ...prev, avatar: fullUrl }));
+          setOriginalData((prev) => ({ ...prev, avatar: fullUrl }));
+        } catch (err: any) {
+          console.error('[Profilesetting] avatar upload failed:', err?.message ?? err);
+          Alert.alert(t("profileSettings.alerts.errorTitle"), t("profileSettings.alerts.pictureFailed"));
+        } finally {
+          setIsLoading(false);
+        }
       }
-    } catch (error) {
+    } catch (err: any) {
+      console.error('[Profilesetting] image picker error:', err?.message ?? err);
       Alert.alert(t("profileSettings.alerts.errorTitle"), t("profileSettings.alerts.pictureFailed"));
       setIsLoading(false);
     }

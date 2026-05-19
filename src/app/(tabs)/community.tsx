@@ -7,7 +7,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { communityService } from "../../services/communityService";
-import { resolveRecipeImageUrl } from "../../utils/imageUrl";
+import { resolveRecipeImageUrl, resolveAvatarUrl } from "../../utils/imageUrl";
 import { t } from "../../i18n";
 
 const FALLBACK_POST_IMAGE =
@@ -64,6 +64,7 @@ export default function Community() {
         time: formatRelativeTime(item.createdAt),
         text: item.content,
         image: item.image ? resolveRecipeImageUrl(item.image, FALLBACK_POST_IMAGE) : null,
+        userAvatar: resolveAvatarUrl(item.userAvatar || item.user?.avatar),
         likeCount: item.likeCount || 0,
         commentCount: item.commentCount || 0,
         likedByMe: !!item.likedByMe,

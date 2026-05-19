@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { Heart, MessageCircle } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
+import { AppImages } from "../../../assets/appimage/appimages";
 import {
   ActivityIndicator,
   Alert,
@@ -251,7 +252,7 @@ export default function PostCard({
       >
         <View className="flex-row items-center p-3">
           <Image
-            source={{ uri: post.userAvatar || "https://i.pravatar.cc/100" }}
+            source={post.userAvatar ? { uri: post.userAvatar } : AppImages.userAvatar}
             className="w-9 h-9 rounded-full mr-2"
           />
 
