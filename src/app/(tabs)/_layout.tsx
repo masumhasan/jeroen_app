@@ -85,11 +85,12 @@ export default function Layout() {
               <Text
                 style={{
                   fontFamily: "Inter",
-                  fontSize: 12,
-                  marginTop: 4,
+                  fontSize: 10,
+                  marginTop: 2,
                   color: color,
                   fontWeight: focused ? "700" : "400",
                 }}
+                numberOfLines={1}
               >
                 {labels[route.name] ?? route.name.charAt(0).toUpperCase() + route.name.slice(1)}
               </Text>

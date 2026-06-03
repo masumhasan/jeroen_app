@@ -4,7 +4,7 @@ import LockedCard from "@/src/components/cookbook/LockedCard";
 import RecipeCard from "@/src/components/cookbook/RecipeCard";
 import TabSwitch from "@/src/components/cookbook/TabSwitch";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, View, Text } from "react-native";
+import { ActivityIndicator, View, Text, TouchableOpacity } from "react-native";
 import Animated, {
   FadeInDown,
   FadeInUp,
@@ -18,11 +18,13 @@ interface RecipeItem {
 export default function CookbookHome() {
   const [tab, setTab] = useState("all");
   const [refreshing, setRefreshing] = useState(false);
+  const [hasClaimed, setHasClaimed] = useState(false);
 
   const filteredRecipes = useMemo(() => {
     if (tab === "all") return recipes;
+    if (!hasClaimed) return [];
     return recipes.filter((recipe) => !recipe.locked);
-  }, [tab]);
+  }, [tab, hasClaimed]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -67,9 +69,16 @@ export default function CookbookHome() {
         onRefresh={onRefresh}
         contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
         ListEmptyComponent={
-          tab === "myLibrary" ? (
+          tab === "library" ? (
             <View className="flex-1 items-center justify-center py-20 px-10">
-              <Text className="text-gray-400 text-center font-medium">Je hebt nog geen boeken in je bibliotheek.</Text>
+              <TouchableOpacity
+                className="bg-[#7C8B74] py-4 px-8 rounded-xl shadow-lg"
+                onPress={() => setHasClaimed(true)}
+              >
+                <Text className="text-white text-center text-lg font-bold">
+                  Claim Mijn Boeken
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View className="flex-1 items-center justify-center py-20">
