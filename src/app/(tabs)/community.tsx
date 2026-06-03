@@ -3,9 +3,10 @@ import MealPlanPostCard from "@/src/components/Community/MealPlanPostCard";
 import PostCard from "@/src/components/Community/PostCard";
 import SearchBar from "@/src/components/Community/SearchBar";
 import TopicsCommunity from "@/src/components/Community/TopicsCommunity";
+import CommunitySkeleton from "@/src/components/Skeletons/CommunitySkeleton";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { communityService } from "../../services/communityService";
 import { resolveRecipeImageUrl, resolveAvatarUrl } from "../../utils/imageUrl";
 import { t } from "../../i18n";
@@ -138,9 +139,7 @@ export default function Community() {
       </View>
 
       {loading ? (
-        <View className="py-10 items-center">
-          <ActivityIndicator color="#89957F" />
-        </View>
+        <CommunitySkeleton type={active as "feed" | "topics"} />
       ) : active === "feed" ? (
         <FlatList
           data={mappedPosts}

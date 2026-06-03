@@ -3,9 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { authService } from "../../services/authService";
-import { Alert } from "react-native";
-import { t } from "../../i18n";
-import {
+import { Alert ,
   ActivityIndicator,
   Image,
   KeyboardAvoidingView,
@@ -16,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { t } from "../../i18n";
 import Animated, {
   FadeInDown,
   FadeInUp,

@@ -10,9 +10,11 @@ import {
   User,
 } from "lucide-react-native";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View , Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../../i18n";
+
+import { authService } from "../../../services/authService";
 
 const menuItems = [
   {
@@ -78,9 +80,6 @@ const SettingRow = ({
     </Pressable>
   );
 };
-
-import { authService } from "../../../services/authService";
-import { Alert } from "react-native";
 
 const setting = () => {
   const handleLogout = async () => {

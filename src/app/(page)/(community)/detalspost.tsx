@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
-import { router } from "expo-router";
+import { useLocalSearchParams , router } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
