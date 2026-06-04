@@ -198,7 +198,7 @@
     "caloriePlaceholder": "e.g. 2000",
     "cancel": "Cancel",
     "save": "Save",
-    "macrosNote": "Macros are limited so calories from protein (4/g), carbs (4/g), and fat (9/g) do not exceed your daily target.",
+    "macrosNote": "Macro values show gram contribution (4/g for protein/carbs, 9/g for fat) based on your targets.",
     "saveTargets": "Save targets",
     "continueButton": "Continue to Weekly Plan",
     "errors": {

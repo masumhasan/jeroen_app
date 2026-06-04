@@ -21,10 +21,6 @@ import { authService } from "../../services/authService";
 import {
   clampMacrosToCalories,
   macroCaloriesFromGrams,
-  macroPercentOfCalories,
-  maxCarbsGrams,
-  maxFatGrams,
-  maxProteinGrams,
 } from "@/src/utils/nutritionTargets";
 
 type EditableTargets = {
@@ -280,38 +276,6 @@ const FinalPage = () => {
     editableData.fat,
   );
 
-  const maxP = maxProteinGrams(
-    editableData.calories,
-    editableData.carbs,
-    editableData.fat,
-  );
-  const maxC = maxCarbsGrams(
-    editableData.calories,
-    editableData.protein,
-    editableData.fat,
-  );
-  const maxF = maxFatGrams(
-    editableData.calories,
-    editableData.protein,
-    editableData.carbs,
-  );
-
-  const pctP = macroPercentOfCalories(
-    editableData.protein,
-    4,
-    coveredCalories || 1,
-  );
-  const pctC = macroPercentOfCalories(
-    editableData.carbs,
-    4,
-    coveredCalories || 1,
-  );
-  const pctF = macroPercentOfCalories(
-    editableData.fat,
-    9,
-    coveredCalories || 1,
-  );
-
   if (loading) {
     return (
       <View className="flex-1 bg-white items-center justify-center">
@@ -415,7 +379,6 @@ const FinalPage = () => {
                 <Text className="font-bold">{editableData.protein}g</Text>
               </View>
               <Text className="mt-2 text-gray-700 font-medium">{t("finalPage.protein")}</Text>
-              <Text className="text-gray-400 text-xs">{pctP}%</Text>
             </Animated.View>
 
             <Animated.View
@@ -428,7 +391,6 @@ const FinalPage = () => {
                 <Text className="font-bold">{editableData.carbs}g</Text>
               </View>
               <Text className="mt-2 text-gray-700 font-medium">{t("finalPage.carbs")}</Text>
-              <Text className="text-gray-400 text-xs">{pctC}%</Text>
             </Animated.View>
 
             <Animated.View
@@ -441,7 +403,6 @@ const FinalPage = () => {
                 <Text className="font-bold">{editableData.fat}g</Text>
               </View>
               <Text className="mt-2 text-gray-700 font-medium">{t("finalPage.fat")}</Text>
-              <Text className="text-gray-400 text-xs">{pctF}%</Text>
             </Animated.View>
           </View>
 
@@ -492,14 +453,14 @@ const FinalPage = () => {
           <View className="mt-6">
             <View className="flex-row justify-between items-center mb-1">
               <Text className="text-gray-500">{t("finalPage.protein")}</Text>
-              <Text className="text-gray-500 text-sm">{pctP}%</Text>
+              <Text className="text-gray-500 text-sm">{editableData.protein}g</Text>
             </View>
             <Slider
               style={{ width: "100%", height: 40 }}
               minimumValue={0}
-              maximumValue={Math.max(0, maxP)}
+              maximumValue={500}
               step={1}
-              value={Math.min(editableData.protein, maxP)}
+              value={editableData.protein}
               minimumTrackTintColor="#B8A99A"
               maximumTrackTintColor="#E5E7EB"
               thumbTintColor="#FFFFFF"
@@ -507,21 +468,21 @@ const FinalPage = () => {
                 const next = Math.round(v);
                 setEditableData((prev) => ({
                   ...prev,
-                  protein: Math.min(next, maxProteinGrams(prev.calories, prev.carbs, prev.fat)),
+                  protein: next,
                 }));
               }}
             />
 
             <View className="flex-row justify-between items-center mt-2 mb-1">
               <Text className="text-gray-500">{t("finalPage.carbs")}</Text>
-              <Text className="text-gray-500 text-sm">{pctC}%</Text>
+              <Text className="text-gray-500 text-sm">{editableData.carbs}g</Text>
             </View>
             <Slider
               style={{ width: "100%", height: 40 }}
               minimumValue={0}
-              maximumValue={Math.max(0, maxC)}
+              maximumValue={500}
               step={1}
-              value={Math.min(editableData.carbs, maxC)}
+              value={editableData.carbs}
               minimumTrackTintColor="#D6C970"
               maximumTrackTintColor="#E5E7EB"
               thumbTintColor="#FFFFFF"
@@ -529,21 +490,21 @@ const FinalPage = () => {
                 const next = Math.round(v);
                 setEditableData((prev) => ({
                   ...prev,
-                  carbs: Math.min(next, maxCarbsGrams(prev.calories, prev.protein, prev.fat)),
+                  carbs: next,
                 }));
               }}
             />
 
             <View className="flex-row justify-between items-center mt-2 mb-1">
               <Text className="text-gray-500">{t("finalPage.fat")}</Text>
-              <Text className="text-gray-500 text-sm">{pctF}%</Text>
+              <Text className="text-gray-500 text-sm">{editableData.fat}g</Text>
             </View>
             <Slider
               style={{ width: "100%", height: 40 }}
               minimumValue={0}
-              maximumValue={Math.max(0, maxF)}
+              maximumValue={200}
               step={1}
-              value={Math.min(editableData.fat, maxF)}
+              value={editableData.fat}
               minimumTrackTintColor="#88937B"
               maximumTrackTintColor="#E5E7EB"
               thumbTintColor="#FFFFFF"
@@ -551,7 +512,7 @@ const FinalPage = () => {
                 const next = Math.round(v);
                 setEditableData((prev) => ({
                   ...prev,
-                  fat: Math.min(next, maxFatGrams(prev.calories, prev.protein, prev.carbs)),
+                  fat: next,
                 }));
               }}
             />
