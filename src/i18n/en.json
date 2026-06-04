@@ -489,7 +489,12 @@
   "myRecipes": {
     "title": "My Recipes",
     "empty": "You haven't submitted any recipes yet.",
-    "addFirst": "Add Your First Recipe"
+    "addFirst": "Add Your First Recipe",
+    "feedbackNotifications": "Recipe feedback notifications",
+    "feedbackTitle": "Message from the admin",
+    "newCount": "{count} new",
+    "feedbackUnread": "Unread",
+    "feedbackRead": "Viewed"
   },
   "policy": {
     "title": "Privacy Policy",

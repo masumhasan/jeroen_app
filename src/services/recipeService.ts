@@ -30,7 +30,12 @@ export const recipeService = {
 
   async getMyUserRecipes() {
     const response = await api.get('/user-recipes/my');
-    return response.data.recipes;
+    return response.data;
+  },
+
+  async markMyUserRecipeFeedbackRead() {
+    const response = await api.patch('/user-recipes/my/feedback/read');
+    return response.data;
   },
 
   async getUserRecipe(id: string) {

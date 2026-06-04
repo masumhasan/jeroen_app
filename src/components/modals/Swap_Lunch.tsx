@@ -125,8 +125,8 @@ const Swap_Lunch: React.FC<SwapLunchProps> = ({
   const fetchUserRecipes = async () => {
     setLoadingUserRecipes(true);
     try {
-      const recipes = await recipeService.getMyUserRecipes();
-      setUserRecipes(recipes || []);
+      const data = await recipeService.getMyUserRecipes();
+      setUserRecipes(data.recipes || []);
     } catch {
       setUserRecipes([]);
     } finally {

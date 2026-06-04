@@ -4,10 +4,11 @@ import { StatusBar } from "react-native";
 
 const _layout = () => {
   return (
-    <Stack>
+    <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <Stack.Screen
-        name="createloginaccount"
+      <Stack>
+        <Stack.Screen
+          name="createloginaccount"
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -23,6 +24,7 @@ const _layout = () => {
       <Stack.Screen name="signuponpoarding" options={{ headerShown: false }} />
       <Stack.Screen name="finalpage" options={{ headerShown: false }} />
     </Stack>
+    </>
   );
 };
 

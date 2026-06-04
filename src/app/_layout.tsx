@@ -16,8 +16,8 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <Stack>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(page)" options={{ headerShown: false }} />

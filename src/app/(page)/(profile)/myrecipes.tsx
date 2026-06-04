@@ -1,6 +1,6 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { t } from "../../../i18n";
 import {
   ActivityIndicator,
@@ -26,13 +26,17 @@ const FALLBACK_IMAGE =
 
 const MyRecipes = () => {
   const [recipes, setRecipes] = useState<any[]>([]);
+  const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [markingRead, setMarkingRead] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
 
   const fetchMyRecipes = async () => {
     try {
       setLoading(true);
       const data = await recipeService.getMyUserRecipes();
-      setRecipes(data);
+      setRecipes(data.recipes || []);
+      setUnreadFeedbackCount(Number(data.unreadFeedbackCount || 0));
     } catch (error) {
       console.error("Failed to load recipes:", error);
     } finally {
@@ -64,6 +68,37 @@ const MyRecipes = () => {
     ]);
   };
 
+  const handleFeedbackNotifications = async () => {
+    if (unreadFeedbackCount > 0) {
+      try {
+        setMarkingRead(true);
+        await recipeService.markMyUserRecipeFeedbackRead();
+        setRecipes((prev) =>
+          prev.map((recipe) =>
+            recipe.status === "declined" && recipe.rejectionFeedback
+              ? {
+                  ...recipe,
+                  rejectionFeedbackReadAt:
+                    recipe.rejectionFeedbackReadAt ?? new Date().toISOString(),
+                }
+              : recipe
+          )
+        );
+        setUnreadFeedbackCount(0);
+      } catch (error) {
+        console.error("Failed to mark recipe feedback as read:", error);
+      } finally {
+        setMarkingRead(false);
+      }
+    }
+
+    scrollRef.current?.scrollToEnd({ animated: true });
+  };
+
+  const feedbackEntries = recipes.filter(
+    (recipe) => recipe.status === "declined" && recipe.rejectionFeedback
+  );
+
   const resolveImage = (img?: string) => {
     if (!img) return FALLBACK_IMAGE;
     if (img.startsWith("http")) return img;
@@ -72,11 +107,29 @@ const MyRecipes = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
-      <View className="flex-row items-center px-5 py-4 border-b border-gray-100">
+      <View className="flex-row items-center justify-between px-5 py-4 border-b border-gray-100">
         <TouchableOpacity onPress={() => router.back()} className="mr-3">
           <Ionicons name="arrow-back" size={22} color="#111" />
         </TouchableOpacity>
-        <Text className="text-[18px] font-bold text-[#111]">{t("myRecipes.title")}</Text>
+        <Text className="flex-1 text-center text-[18px] font-bold text-[#111]">
+          {t("myRecipes.title")}
+        </Text>
+        <TouchableOpacity
+          onPress={handleFeedbackNotifications}
+          disabled={markingRead}
+          className="relative w-10 h-10 items-center justify-center"
+          accessibilityRole="button"
+          accessibilityLabel={t("myRecipes.feedbackNotifications")}
+        >
+          <Ionicons name="notifications-outline" size={22} color="#89957F" />
+          {unreadFeedbackCount > 0 && (
+            <View className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full items-center justify-center bg-[#E53E3E]">
+              <Text className="text-[10px] font-bold text-white">
+                {unreadFeedbackCount > 9 ? "9+" : unreadFeedbackCount}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -98,6 +151,7 @@ const MyRecipes = () => {
         </View>
       ) : (
         <ScrollView
+          ref={scrollRef}
           className="flex-1 px-5"
           contentContainerStyle={{ paddingVertical: 16 }}
           showsVerticalScrollIndicator={false}
@@ -147,6 +201,50 @@ const MyRecipes = () => {
               </View>
             );
           })}
+          {feedbackEntries.length > 0 && (
+            <View className="mt-6 mb-4 rounded-3xl border border-red-100 bg-red-50/80 p-4">
+              <View className="flex-row items-center justify-between mb-3">
+                <View className="flex-row items-center gap-2">
+                  <Ionicons name="warning-outline" size={18} color="#C62828" />
+                  <Text className="text-[15px] font-bold text-[#C62828]">
+                    {t("myRecipes.feedbackTitle")}
+                  </Text>
+                </View>
+                {unreadFeedbackCount > 0 && (
+                  <View className="px-2.5 py-1 rounded-full bg-[#C62828]">
+                    <Text className="text-[10px] font-bold text-white uppercase">
+                      {t("myRecipes.newCount", { count: String(unreadFeedbackCount) })}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              <View className="gap-3">
+                {feedbackEntries.map((recipe) => (
+                  <View key={`${recipe._id}-feedback`} className="rounded-2xl bg-white p-4 border border-red-100">
+                    <View className="flex-row items-start justify-between gap-3 mb-2">
+                      <View className="flex-1">
+                        <Text className="text-[14px] font-semibold text-[#111]" numberOfLines={1}>
+                          {recipe.name}
+                        </Text>
+                        <Text className="text-[11px] text-[#8E8E93] mt-0.5">
+                          {Array.isArray(recipe.category) ? recipe.category.join(", ") : recipe.category}
+                        </Text>
+                      </View>
+                      <View className="px-2.5 py-1 rounded-full bg-[#FFF1F0] border border-[#F8C9C7]">
+                        <Text className="text-[10px] font-bold text-[#C62828] uppercase">
+                          {recipe.rejectionFeedbackReadAt ? t("myRecipes.feedbackRead") : t("myRecipes.feedbackUnread")}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text className="text-[13px] leading-5 text-[#444]">
+                      {recipe.rejectionFeedback}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </ScrollView>
       )}
     </SafeAreaView>

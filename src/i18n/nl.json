@@ -591,7 +591,12 @@
   "myRecipes": {
     "title": "Mijn recepten",
     "empty": "U heeft nog geen recepten ingediend.",
-    "addFirst": "Uw eerste recept toevoegen"
+    "addFirst": "Uw eerste recept toevoegen",
+    "feedbackNotifications": "Receptfeedback meldingen",
+    "feedbackTitle": "Bericht van de beheerder",
+    "newCount": "{count} nieuw",
+    "feedbackUnread": "Ongelezen",
+    "feedbackRead": "Bekeken"
   },
   "policy": {
     "title": "Privacybeleid",
