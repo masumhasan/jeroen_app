@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Image, Text, TouchableOpacity, View, Linking } from "react-native";
-import { t } from "../../i18n";
+import { router } from "expo-router";
+import { Image, Linking, Text, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -19,6 +19,7 @@ export interface Recipe {
   locked: boolean;
   price?: string;
   buyUrl?: string;
+  bookSku: string;
 }
 
 type Props = { item: Recipe };
@@ -48,23 +49,25 @@ export default function LockedCard({ item }: Props) {
     transform: [{ rotate: `${lockRotation.value}rad` }],
   }));
 
+  const handleRequestAccess = () => {
+    router.push({
+      pathname: "/(page)/(cookbook)/requestaccess",
+      params: { bookSku: item.bookSku, bookTitle: item.title },
+    });
+  };
+
   return (
     <GestureDetector gesture={tapGesture}>
       <Animated.View style={[animatedStyle]} className="flex-1">
         <View className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
           <View style={{ aspectRatio: 700 / 1080 }}>
-            <Image 
-              source={typeof item.image === 'string' ? { uri: item.image } : item.image} 
-              className="w-full h-full" 
+            <Image
+              source={typeof item.image === "string" ? { uri: item.image } : item.image}
+              className="w-full h-full"
               resizeMode="cover"
             />
 
-            {/* Expo Blur Overlay */}
-            <BlurView
-              intensity={80}
-              tint="extraLight"
-              className="absolute inset-0"
-            />
+            <BlurView intensity={80} tint="extraLight" className="absolute inset-0" />
 
             <Animated.View
               style={lockStyle}
@@ -77,15 +80,11 @@ export default function LockedCard({ item }: Props) {
           </View>
 
           <View className="p-3">
-            <View style={{ height: 40, justifyContent: 'center' }}>
+            <View style={{ height: 40, justifyContent: "center" }}>
               <Text className="font-semibold text-gray-900 text-sm" numberOfLines={2}>
                 {item.title}
               </Text>
             </View>
-
-            {/* <Text className="text-gray-500 text-xs">
-              {t("lockedCard.recipes", { count: String(item.recipes) })}
-            </Text> */}
 
             <TouchableOpacity
               onPress={() => item.buyUrl && Linking.openURL(item.buyUrl)}
@@ -93,6 +92,14 @@ export default function LockedCard({ item }: Props) {
               activeOpacity={0.7}
             >
               <Text className="text-[#7C8B74] font-medium text-xs">Koop nu</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleRequestAccess}
+              className="bg-[#F0F4EE] mt-2 py-2 rounded-full items-center"
+              activeOpacity={0.7}
+            >
+              <Text className="text-[#7C8B74] font-medium text-xs">Request Access</Text>
             </TouchableOpacity>
           </View>
         </View>

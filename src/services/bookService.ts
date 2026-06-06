@@ -19,6 +19,24 @@ export const bookService = {
     return [];
   },
 
+  async submitAccessRequest(payload: {
+    bookSku: string;
+    bookTitle: string;
+    requestEmail: string;
+    note: string;
+  }): Promise<void> {
+    await api.post('/book-access-requests', payload);
+  },
+
+  async getMyAccessRequests(): Promise<any[]> {
+    const response = await api.get('/book-access-requests/my');
+    return response.data.data;
+  },
+
+  async dismissAccessRequest(id: string): Promise<void> {
+    await api.patch(`/book-access-requests/${id}/dismiss`);
+  },
+
   /**
    * Calls the backend which queries Shopify by the signed-in user's email.
    * Saves the returned SKUs to the backend DB and updates the local SecureStore cache.

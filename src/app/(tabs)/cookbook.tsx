@@ -4,8 +4,16 @@ import LockedCard from "@/src/components/cookbook/LockedCard";
 import RecipeCard from "@/src/components/cookbook/RecipeCard";
 import TabSwitch from "@/src/components/cookbook/TabSwitch";
 import { bookService } from "@/src/services/bookService";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, { FadeInDown, FadeInUp, Layout } from "react-native-reanimated";
 
 interface RecipeItem {
@@ -19,18 +27,40 @@ interface RecipeItem {
   buyUrl?: string;
 }
 
+interface RejectionNotice {
+  _id: string;
+  bookTitle: string;
+  adminNote: string;
+}
+
 export default function CookbookHome() {
   const [tab, setTab] = useState("library");
   const [refreshing, setRefreshing] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [purchasedSkus, setPurchasedSkus] = useState<string[]>([]);
+  const [rejectionNotices, setRejectionNotices] = useState<RejectionNotice[]>([]);
 
-  // Load cached purchased SKUs on mount
-  useEffect(() => {
-    bookService.getPurchasedSkus().then(setPurchasedSkus);
+  const loadData = useCallback(async () => {
+    const [skus, requests] = await Promise.all([
+      bookService.getPurchasedSkus(),
+      bookService.getMyAccessRequests().catch(() => []),
+    ]);
+    setPurchasedSkus(skus);
+
+    // Show only rejected, undismissed requests that have an adminNote
+    const notices = (requests as any[]).filter(
+      (r) => r.status === "rejected" && r.adminNote && !r.dismissedAt,
+    );
+    setRejectionNotices(notices);
   }, []);
 
-  // Compute locked status dynamically based on what the user has purchased
+  useFocusEffect(useCallback(() => { loadData(); }, [loadData]));
+
+  const handleDismiss = useCallback(async (id: string) => {
+    await bookService.dismissAccessRequest(id).catch(() => {});
+    setRejectionNotices((prev) => prev.filter((n) => n._id !== id));
+  }, []);
+
   const booksWithLockStatus = useMemo<RecipeItem[]>(() => {
     return recipes.map((book) => ({
       ...book,
@@ -64,13 +94,11 @@ export default function CookbookHome() {
     }
   }, []);
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    bookService.getPurchasedSkus().then((skus) => {
-      setPurchasedSkus(skus);
-      setRefreshing(false);
-    });
-  }, []);
+    await loadData();
+    setRefreshing(false);
+  }, [loadData]);
 
   const renderItem = useCallback(
     ({ item, index }: { item: RecipeItem; index: number }) => (
@@ -107,7 +135,7 @@ export default function CookbookHome() {
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
-        contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
+        contentContainerStyle={{ paddingBottom: rejectionNotices.length > 0 ? 160 : 20, flexGrow: 1 }}
         ListEmptyComponent={
           tab === "library" ? (
             <View className="flex-1 items-center justify-center py-20 px-10">
@@ -136,6 +164,40 @@ export default function CookbookHome() {
           )
         }
       />
+
+      {/* Rejection notices banner */}
+      {rejectionNotices.length > 0 && (
+        <View className="absolute bottom-0 left-0 right-0 px-4 pb-4 gap-2">
+          {rejectionNotices.map((notice) => (
+            <View
+              key={notice._id}
+              className="bg-[#FFF8F0] border border-[#F5D89C] rounded-2xl p-4 flex-row items-start shadow-sm"
+            >
+              <Ionicons
+                name="information-circle"
+                size={20}
+                color="#D97706"
+                style={{ marginTop: 1, marginRight: 10 }}
+              />
+              <View className="flex-1">
+                <Text className="text-[13px] font-bold text-[#92400E] mb-1">
+                  Toegang geweigerd – {notice.bookTitle}
+                </Text>
+                <Text className="text-[12px] text-[#78350F] leading-5">
+                  {notice.adminNote}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => handleDismiss(notice._id)}
+                className="ml-2 p-1"
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Ionicons name="close" size={18} color="#92400E" />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
