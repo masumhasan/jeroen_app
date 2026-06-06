@@ -6,6 +6,7 @@ export const recipes = [
     image: require("../images/book_covers/book1cover.png"),
     locked: false,
     price: "€14.99",
+    bookSku: "LK-LISAKOOKTK-DEF",
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ export const recipes = [
     image: require("../images/book_covers/book2cover.png"),
     locked: false,
     price: "€12.99",
+    bookSku: "LK-LISAKOOKTK2-DEF",
   },
   {
     id: 3,
@@ -22,6 +24,7 @@ export const recipes = [
     image: require("../images/book_covers/book4cover.png"),
     locked: false,
     price: "€15.99",
+    bookSku: "LK-KOOLHYDRAA-DEF",
   },
   {
     id: 4,
@@ -30,6 +33,7 @@ export const recipes = [
     image: require("../images/book_covers/book5cover.png"),
     locked: false,
     price: "€11.99",
+    bookSku: "LK-FEESTDAGEN-DEF",
   },
   {
     id: 5,
@@ -38,6 +42,7 @@ export const recipes = [
     image: require("../images/book_covers/book6cover.png"),
     locked: true,
     price: "€16.99",
+    bookSku: "LK-LISABAKTKH-DEF",
     buyUrl: "https://lisakookt.nl/products/lisa-bakt-koolhydraatarm",
   },
   {
@@ -47,7 +52,7 @@ export const recipes = [
     image: require("../images/book_covers/book7cover.png"),
     locked: true,
     price: "€13.99",
+    bookSku: "LK-LISAKOOKTW-DEF",
     buyUrl: "https://lisakookt.nl/products/lisa-kookt-wereldgerechten",
   },
 ];
-
