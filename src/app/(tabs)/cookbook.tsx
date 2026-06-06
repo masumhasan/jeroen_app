@@ -4,6 +4,7 @@ import LockedCard from "@/src/components/cookbook/LockedCard";
 import RecipeCard from "@/src/components/cookbook/RecipeCard";
 import TabSwitch from "@/src/components/cookbook/TabSwitch";
 import { bookService } from "@/src/services/bookService";
+import { authService } from "@/src/services/authService";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useMemo, useState } from "react";
@@ -41,10 +42,28 @@ export default function CookbookHome() {
   const [rejectionNotices, setRejectionNotices] = useState<RejectionNotice[]>([]);
 
   const loadData = useCallback(async () => {
-    const [skus, requests] = await Promise.all([
-      bookService.getPurchasedSkus(),
+    const [user, requests] = await Promise.all([
+      authService.getMe().catch(() => null),
       bookService.getMyAccessRequests().catch(() => []),
     ]);
+
+    // Use live server value so admin revocations are reflected immediately
+    const skus: string[] = user?.purchasedBooks ?? await bookService.getPurchasedSkus();
+
+    // Keep SecureStore in sync with the fresh server value
+    if (user?.purchasedBooks) {
+      import("expo-secure-store").then(async (SecureStore) => {
+        const raw = await SecureStore.getItemAsync("userData");
+        if (raw) {
+          const cached = JSON.parse(raw);
+          await SecureStore.setItemAsync(
+            "userData",
+            JSON.stringify({ ...cached, purchasedBooks: user.purchasedBooks }),
+          );
+        }
+      });
+    }
+
     setPurchasedSkus(skus);
 
     // Show only rejected, undismissed requests that have an adminNote
