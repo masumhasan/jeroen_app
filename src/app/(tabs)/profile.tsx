@@ -126,13 +126,6 @@ const profile = () => {
         {/* Header */}
         <View className="relative items-center justify-center mb-6">
           <Text className="text-[18px] font-bold text-[#111111]">{t("profile.title")}</Text>
-
-          <TouchableOpacity
-            onPress={() => router.push("/setting")}
-            className="absolute right-0 top-0"
-          >
-            <Feather name="settings" size={22} color="#111111" />
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -301,6 +294,20 @@ const profile = () => {
               <Ionicons name="restaurant-outline" size={18} color="#89957F" />
               <Text className="text-[15px] text-[#8E8E93] ml-2">
                 {t("profile.myRecipes")}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push("/setting")}
+            className="bg-[#F5F5F5] rounded-[16px] px-4 py-5 flex-row items-center justify-between"
+          >
+            <View className="flex-row items-center">
+              <Feather name="settings" size={18} color="#89957F" />
+              <Text className="text-[15px] text-[#8E8E93] ml-2">
+                {t("settings.title")}
               </Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#8E8E93" />
