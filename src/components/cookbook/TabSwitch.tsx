@@ -35,18 +35,6 @@ export default function TabSwitch({ tab, setTab }: Props) {
 
   return (
     <View className="flex-row px-5 mb-4 gap-3">
-      <Animated.View style={[{ flex: 1, borderRadius: 999 }, allTabStyle]}>
-        <TouchableOpacity
-          onPress={() => setTab("all")}
-          className="py-3 items-center"
-          activeOpacity={0.7}
-        >
-          <Animated.Text style={[allTextStyle, { fontWeight: "500" }]}>
-            {t("tabSwitch.allBooks")}
-          </Animated.Text>
-        </TouchableOpacity>
-      </Animated.View>
-
       <Animated.View style={[{ flex: 1, borderRadius: 999 }, libraryTabStyle]}>
         <TouchableOpacity
           onPress={() => setTab("library")}
@@ -55,6 +43,18 @@ export default function TabSwitch({ tab, setTab }: Props) {
         >
           <Animated.Text style={[libraryTextStyle, { fontWeight: "500" }]}>
             {t("tabSwitch.myLibrary")}
+          </Animated.Text>
+        </TouchableOpacity>
+      </Animated.View>
+
+      <Animated.View style={[{ flex: 1, borderRadius: 999 }, allTabStyle]}>
+        <TouchableOpacity
+          onPress={() => setTab("all")}
+          className="py-3 items-center"
+          activeOpacity={0.7}
+        >
+          <Animated.Text style={[allTextStyle, { fontWeight: "500" }]}>
+            {t("tabSwitch.allBooks")}
           </Animated.Text>
         </TouchableOpacity>
       </Animated.View>

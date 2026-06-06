@@ -20,7 +20,7 @@ interface RecipeItem {
 }
 
 export default function CookbookHome() {
-  const [tab, setTab] = useState("all");
+  const [tab, setTab] = useState("library");
   const [refreshing, setRefreshing] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [purchasedSkus, setPurchasedSkus] = useState<string[]>([]);
