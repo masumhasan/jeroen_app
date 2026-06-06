@@ -9,8 +9,7 @@ import {
 import * as Font from "expo-font";
 import { Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StatusBar, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { t } from "../../i18n";
 
@@ -28,7 +27,7 @@ export default function Layout() {
   }, []);
 
   if (!fontsLoaded) {
-    return <Text />;
+    return null;
   }
 
   const icons: any = {
@@ -40,10 +39,8 @@ export default function Layout() {
   };
 
   return (
-    <SafeAreaView edges={["top"]} className="flex-1 bg-[#FFFFFF]">
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <Tabs
-        initialRouteName="community"
+    <Tabs
+      initialRouteName="community"
         screenOptions={({ route }) => ({
           headerShown: false,
 
@@ -109,6 +106,5 @@ export default function Layout() {
         <Tabs.Screen name="progress" />
         <Tabs.Screen name="profile" />
       </Tabs>
-    </SafeAreaView>
   );
 }

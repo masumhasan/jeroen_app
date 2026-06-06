@@ -38,6 +38,11 @@ export const recipeService = {
     return response.data;
   },
 
+  async dismissUserRecipeFeedback(recipeId: string) {
+    const response = await api.patch(`/user-recipes/my/feedback/${recipeId}/dismiss`);
+    return response.data;
+  },
+
   async getUserRecipe(id: string) {
     const response = await api.get(`/user-recipes/${id}`);
     return response.data;

@@ -75,7 +75,9 @@ const MyRecipes = () => {
         await recipeService.markMyUserRecipeFeedbackRead();
         setRecipes((prev) =>
           prev.map((recipe) =>
-            recipe.status === "declined" && recipe.rejectionFeedback
+            recipe.status === "declined" &&
+            recipe.rejectionFeedback &&
+            !recipe.rejectionFeedbackDismissedAt
               ? {
                   ...recipe,
                   rejectionFeedbackReadAt:
@@ -95,8 +97,30 @@ const MyRecipes = () => {
     scrollRef.current?.scrollToEnd({ animated: true });
   };
 
+  const handleDismissFeedback = async (id: string) => {
+    try {
+      await recipeService.dismissUserRecipeFeedback(id);
+      
+      const recipeToDismiss = recipes.find(r => r._id === id);
+      if (recipeToDismiss && !recipeToDismiss.rejectionFeedbackReadAt) {
+        setUnreadFeedbackCount(prev => Math.max(0, prev - 1));
+      }
+
+      setRecipes((prev) =>
+        prev.map((r) =>
+          r._id === id ? { ...r, rejectionFeedbackDismissedAt: new Date().toISOString() } : r
+        )
+      );
+    } catch {
+      Alert.alert("Error", "Failed to dismiss feedback.");
+    }
+  };
+
   const feedbackEntries = recipes.filter(
-    (recipe) => recipe.status === "declined" && recipe.rejectionFeedback
+    (recipe) =>
+      recipe.status === "declined" &&
+      recipe.rejectionFeedback &&
+      !recipe.rejectionFeedbackDismissedAt
   );
 
   const resolveImage = (img?: string) => {
@@ -231,10 +255,18 @@ const MyRecipes = () => {
                           {Array.isArray(recipe.category) ? recipe.category.join(", ") : recipe.category}
                         </Text>
                       </View>
-                      <View className="px-2.5 py-1 rounded-full bg-[#FFF1F0] border border-[#F8C9C7]">
-                        <Text className="text-[10px] font-bold text-[#C62828] uppercase">
-                          {recipe.rejectionFeedbackReadAt ? t("myRecipes.feedbackRead") : t("myRecipes.feedbackUnread")}
-                        </Text>
+                      <View className="flex-row items-center gap-2">
+                        <View className="px-2.5 py-1 rounded-full bg-[#FFF1F0] border border-[#F8C9C7]">
+                          <Text className="text-[10px] font-bold text-[#C62828] uppercase">
+                            {recipe.rejectionFeedbackReadAt ? t("myRecipes.feedbackRead") : t("myRecipes.feedbackUnread")}
+                          </Text>
+                        </View>
+                        <TouchableOpacity 
+                          onPress={() => handleDismissFeedback(recipe._id)}
+                          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                        >
+                          <Ionicons name="close-circle" size={20} color="#C62828" />
+                        </TouchableOpacity>
                       </View>
                     </View>
                     <Text className="text-[13px] leading-5 text-[#444]">
