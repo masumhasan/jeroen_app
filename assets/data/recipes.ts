@@ -15,7 +15,7 @@ export const recipes = [
     image: require("../images/book_covers/book2cover.png"),
     locked: false,
     price: "€12.99",
-    bookSku: "LK-LISAKOOKTK2-DEF",
+    bookSku: "LK-LISAKOOKTK-DEF-1287",
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ export const recipes = [
     image: require("../images/book_covers/book6cover.png"),
     locked: true,
     price: "€16.99",
-    bookSku: "LK-LISABAKTKH-DEF",
+    bookSku: "LK-LISABAKTKO-DEF",
     buyUrl: "https://lisakookt.nl/products/lisa-bakt-koolhydraatarm",
   },
   {
