@@ -10,6 +10,7 @@ const _layout = () => {
       }}
     >
       <Stack.Screen name="mediterranean" options={{ headerShown: false }} />
+      <Stack.Screen name="bookrecipes" options={{ headerShown: false }} />
     </Stack>
   );
 };

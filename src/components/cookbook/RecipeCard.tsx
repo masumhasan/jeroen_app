@@ -17,6 +17,8 @@ export interface Recipe {
   image: any;
   locked: boolean;
   price?: string;
+  bookSku: string;
+  buyUrl?: string;
 }
 
 type Props = {
@@ -34,6 +36,7 @@ export default function RecipeCard({ item }: Props) {
     })
     .onFinalize(() => {
       scale.value = withSpring(1);
+      opacity.value = withTiming(0);
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -43,6 +46,13 @@ export default function RecipeCard({ item }: Props) {
   const overlayStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
+
+  const handleOpen = () => {
+    router.push({
+      pathname: "/(page)/(cookbook)/bookrecipes",
+      params: { bookSku: item.bookSku, bookTitle: item.title },
+    });
+  };
 
   return (
     <GestureDetector gesture={tapGesture}>
@@ -55,29 +65,27 @@ export default function RecipeCard({ item }: Props) {
 
           <View style={{ aspectRatio: 700 / 1080 }}>
             <Image
-              source={typeof item.image === 'string' ? { uri: item.image } : item.image}
+              source={typeof item.image === "string" ? { uri: item.image } : item.image}
               className="w-full h-full"
               resizeMode="cover"
             />
           </View>
 
           <View className="p-3">
-            <View style={{ height: 40, justifyContent: 'center' }}>
+            <View style={{ height: 40, justifyContent: "center" }}>
               <Text className="font-semibold text-gray-900 text-sm" numberOfLines={2}>
                 {item.title}
               </Text>
             </View>
 
-            {/* <Text className="text-gray-500 text-xs">
-              {t("recipeCard.recipes", { count: String(item.recipes) })}
-            </Text> */}
-
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={handleOpen}
               className="bg-[#7C8B74] mt-3 py-2 px-3 rounded-full flex-row items-center justify-center z-50"
-              activeOpacity={1}
+              activeOpacity={0.8}
             >
-              <Text className="text-white mr-1 font-medium text-xs">{t("recipeCard.inMyLibrary")}</Text>
+              <Text className="text-white mr-1 font-medium text-xs">
+                {t("recipeCard.inMyLibrary")}
+              </Text>
               <Ionicons name="chevron-forward" size={12} color="white" />
             </TouchableOpacity>
           </View>

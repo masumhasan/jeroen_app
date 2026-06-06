@@ -21,6 +21,11 @@ export const recipeService = {
     return response.data.recipes;
   },
 
+  async getRecipesByBookSku(bookSku: string) {
+    const response = await api.get('/recipes', { params: { bookSku, limit: 500 } });
+    return response.data.recipes as any[];
+  },
+
   async submitUserRecipe(formData: FormData) {
     const response = await api.post('/user-recipes', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
