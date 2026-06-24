@@ -12,6 +12,7 @@ const _layout = () => {
       <Stack.Screen name="createaccountonboading" />
       <Stack.Screen name="signin" />
       <Stack.Screen name="signup" />
+      <Stack.Screen name="verifyotp" />
       <Stack.Screen name="varify" />
       <Stack.Screen name="resetpassword" />
       <Stack.Screen name="forgot" />

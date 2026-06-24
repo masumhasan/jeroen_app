@@ -17,6 +17,16 @@ export const authService = {
     return response.data;
   },
 
+  async sendOtp(email: string) {
+    const response = await api.post("/auth/signup/send-otp", { email });
+    return response.data;
+  },
+
+  async verifyOtp(email: string, otp: string) {
+    const response = await api.post("/auth/signup/verify-otp", { email, otp });
+    return response.data;
+  },
+
   async signup(userData: any) {
     const response = await api.post('/auth/signup', userData);
     if (response.data.data.token) {

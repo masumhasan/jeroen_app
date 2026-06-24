@@ -107,6 +107,9 @@ const Signup = () => {
         phoneNumber: formData.phone.trim(),
       });
 
+      // Send OTP to the user's email before proceeding
+      await authService.sendOtp(formData.email.trim().toLowerCase());
+
       Animated.sequence([
         Animated.timing(buttonScale, {
           toValue: 0.95,
@@ -123,7 +126,7 @@ const Signup = () => {
       Keyboard.dismiss();
 
       router.push({
-        pathname: "/signuponpoarding",
+        pathname: "/verifyotp",
         params: {
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
