@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { communityService } from "@/src/services/communityService";
+import { resolveAvatarUrl } from "../../utils/imageUrl";
 import { t } from "../../i18n";
 
 const commentTimestamp = (dateValue: string | Date | undefined) => {
@@ -29,6 +30,7 @@ type FeedComment = {
   id: string;
   text: string;
   user: string;
+  avatar?: string | null;
   /** Same format as post details (`toLocaleString`). */
   timestamp: string;
 };
@@ -71,9 +73,7 @@ function CommentsModal({
             renderItem={({ item }) => (
               <View className="flex-row mb-5">
                 <Image
-                  source={{
-                    uri: "https://i.pravatar.cc/100?img=" + (item.id.charCodeAt(0) % 70),
-                  }}
+                  source={resolveAvatarUrl(item.avatar) ? { uri: resolveAvatarUrl(item.avatar)! } : AppImages.userAvatar}
                   className="w-9 h-9 rounded-full"
                 />
                 <View className="ml-3 flex-1">
@@ -165,6 +165,7 @@ export default function PostCard({
           id: String(c.id),
           text: String(c.content ?? ""),
           user: c.user?.fullName || t("postCard.defaultUser"),
+          avatar: c.user?.avatar || null,
           timestamp: commentTimestamp(c.createdAt),
         }));
         setComments(mapped);
@@ -208,6 +209,7 @@ export default function PostCard({
             id: String(c.id),
             text: String(c.content ?? ""),
             user: c.user?.fullName || t("postCard.you"),
+            avatar: c.user?.avatar || null,
             timestamp: commentTimestamp(c.createdAt),
           };
           setComments((prev) => {

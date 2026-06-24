@@ -19,13 +19,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { communityService } from "../../../services/communityService";
-import { resolveRecipeImageUrl } from "../../../utils/imageUrl";
+import { resolveRecipeImageUrl, resolveAvatarUrl } from "../../../utils/imageUrl";
+import { AppImages } from "../../../../assets/appimage/appimages";
 import { t, translateMealType } from "../../../i18n";
 
 // Types
 interface Comment {
   id: string;
   name: string;
+  avatar?: string | null;
   content: string;
   timestamp: string;
 }
@@ -48,6 +50,7 @@ const PostDetailsScreen = () => {
   const [editContent, setEditContent] = useState("");
   const [updatingPost, setUpdatingPost] = useState(false);
   const [imageViewerVisible, setImageViewerVisible] = useState(false);
+  const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
 
   // Animations
   React.useEffect(() => {
@@ -67,7 +70,15 @@ const PostDetailsScreen = () => {
       if (!postId) return;
       try {
         setLoading(true);
-        const data = await communityService.getPostDetails(String(postId));
+        const [data, SecureStore] = await Promise.all([
+          communityService.getPostDetails(String(postId)),
+          import("expo-secure-store"),
+        ]);
+        const raw = await SecureStore.getItemAsync("userData");
+        if (raw) {
+          const cached = JSON.parse(raw);
+          setCurrentUserAvatar(resolveAvatarUrl(cached.avatar));
+        }
         setPost(data.post);
         setEditContent(String(data.post?.content || ""));
         setIsLiked(Boolean(data.post?.likedByMe));
@@ -76,6 +87,7 @@ const PostDetailsScreen = () => {
           (data.comments || []).map((c: any) => ({
             id: c.id,
             name: c.user?.fullName || t("postDetails.defaultUser"),
+            avatar: c.user?.avatar || null,
             content: c.content,
             timestamp: new Date(c.createdAt).toLocaleString(),
           }))
@@ -156,6 +168,7 @@ const PostDetailsScreen = () => {
       const newComment: Comment = {
         id: data.comment.id,
         name: data.comment?.user?.fullName || t("postDetails.you"),
+        avatar: data.comment?.user?.avatar || null,
         content: data.comment.content,
         timestamp: new Date(data.comment.createdAt).toLocaleString(),
       };
@@ -173,7 +186,10 @@ const PostDetailsScreen = () => {
         transform: [{ translateY: slideAnim }],
       }}
     >
-      <Image source={{ uri: "https://i.pravatar.cc/100" }} className="w-9 h-9 rounded-full" />
+      <Image
+        source={resolveAvatarUrl(item.avatar) ? { uri: resolveAvatarUrl(item.avatar)! } : AppImages.userAvatar}
+        className="w-9 h-9 rounded-full"
+      />
 
       <View className="ml-3 flex-1">
         <View className="bg-[#F8F9FA] p-3 rounded-2xl">
@@ -272,9 +288,7 @@ const PostDetailsScreen = () => {
             {/* User Info */}
             <View className="flex-row items-center">
               <Image
-                source={{
-                  uri: "https://randomuser.me/api/portraits/women/44.jpg",
-                }}
+                source={resolveAvatarUrl(post?.user?.avatar) ? { uri: resolveAvatarUrl(post?.user?.avatar)! } : AppImages.userAvatar}
                 className="w-12 h-12 rounded-full border-2 border-[#4A7C59]"
               />
 
@@ -440,9 +454,7 @@ const PostDetailsScreen = () => {
           }}
         >
           <Image
-            source={{
-              uri: "https://randomuser.me/api/portraits/women/68.jpg",
-            }}
+            source={currentUserAvatar ? { uri: currentUserAvatar } : AppImages.userAvatar}
             className="w-8 h-8 rounded-full mr-2"
           />
 
