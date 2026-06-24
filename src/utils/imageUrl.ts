@@ -1,4 +1,4 @@
-export const API_HOST = "http://10.10.28.96:5000";
+export const API_HOST = "http://13.61.82.71:5000";
 
 /**
  * Resolves a recipe image from the API (absolute URL, relative /uploads/..., or missing).

@@ -1,4 +1,4 @@
-import api from './api';
+import api, { baseURL } from './api';
 import * as SecureStore from 'expo-secure-store';
 
 interface MealPlanResponse {
@@ -63,14 +63,20 @@ export const authService = {
     const formData = new FormData();
     formData.append('avatar', { uri: asset.uri, name: filename, type: mimeType } as any);
 
-    // Must override the axios default Content-Type: application/json.
-    // React Native's native XHR layer appends the multipart boundary automatically
-    // when it detects FormData, even when Content-Type is pre-set to multipart/form-data.
-    // transformRequest bypasses axios's own FormData handling so XHR gets the raw object.
-    const response = await api.patch('/auth/me/avatar', formData, {
-      transformRequest: (data) => data,
-      headers: { 'Content-Type': 'multipart/form-data' },
+    // Use fetch() directly so React Native sets Content-Type with the correct
+    // multipart boundary automatically — axios's header merging strips the boundary.
+    const token = await SecureStore.getItemAsync('userToken');
+    const fetchResponse = await fetch(`${baseURL}/auth/me/avatar`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
     });
+    if (!fetchResponse.ok) {
+      const err = await fetchResponse.json().catch(() => ({}));
+      throw Object.assign(new Error(err?.message || 'Upload failed'), { response: { data: err } });
+    }
+    const json = await fetchResponse.json();
+    const response = { data: json };
 
     const avatarPath: string = response.data.data.avatarPath;
     if (response.data.data?.user) {
