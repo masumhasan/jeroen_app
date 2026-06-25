@@ -27,6 +27,21 @@ export const authService = {
     return response.data;
   },
 
+  async sendForgotOtp(email: string) {
+    const response = await api.post("/auth/forgot-password", { email });
+    return response.data;
+  },
+
+  async verifyForgotOtp(email: string, otp: string): Promise<{ resetToken: string }> {
+    const response = await api.post("/auth/verify-otp", { email, otp });
+    return response.data.data;
+  },
+
+  async resetPassword(email: string, resetToken: string, newPassword: string) {
+    const response = await api.post("/auth/reset-password", { email, resetToken, newPassword });
+    return response.data;
+  },
+
   async signup(userData: any) {
     const response = await api.post('/auth/signup', userData);
     if (response.data.data.token) {

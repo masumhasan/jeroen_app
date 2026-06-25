@@ -1,35 +1,38 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { t } from "../../i18n";
 import {
+  Alert,
   Animated,
   Easing,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
+import { authService } from "../../services/authService";
 
 const Verify = () => {
+  const { email } = useLocalSearchParams<{ email: string }>();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [timer, setTimer] = useState(54);
+  const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
-  const inputRefs = useRef([]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const inputRefs = useRef<any[]>([]);
 
-  // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const buttonScaleAnim = useRef(new Animated.Value(1)).current;
   const timerAnim = useRef(new Animated.Value(1)).current;
 
-  // Individual input animations
   const inputAnims = useRef(
     [...Array(6)].map(() => new Animated.Value(1)),
   ).current;
 
   useEffect(() => {
-    // Entrance animation
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -51,20 +54,17 @@ const Verify = () => {
       }),
     ]).start();
 
-    // Auto focus first input
     setTimeout(() => {
       inputRefs.current[0]?.focus();
     }, 400);
   }, []);
 
-  // Timer effect
   useEffect(() => {
-    let interval = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
     if (timer > 0 && !canResend) {
       interval = setInterval(() => {
         setTimer((prev) => prev - 1);
 
-        // Animate timer on each second
         Animated.sequence([
           Animated.timing(timerAnim, {
             toValue: 1.2,
@@ -81,15 +81,14 @@ const Verify = () => {
     } else if (timer === 0) {
       setCanResend(true);
     }
-    return () => clearInterval(interval);
+    return () => { if (interval) clearInterval(interval); };
   }, [timer, canResend]);
 
-  const handleOtpChange = (text, index) => {
+  const handleOtpChange = (text: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
 
-    // Animate current input
     Animated.sequence([
       Animated.timing(inputAnims[index], {
         toValue: 0.95,
@@ -104,56 +103,42 @@ const Verify = () => {
       }),
     ]).start();
 
-    // Auto-focus next input
     if (text && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleKeyPress = (e, index) => {
-    // Handle backspace to go to previous input
+  const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  const handlePaste = (text) => {
-    // Handle paste of 6-digit code
-    const pastedCode = text.slice(0, 6).split("");
-    if (pastedCode.length === 6) {
-      setOtp(pastedCode);
-      inputRefs.current[5]?.focus();
-    }
-  };
-
-  const handleResend = () => {
-    if (canResend) {
-      setTimer(54);
+  const handleResend = async () => {
+    if (!canResend || isResending) return;
+    setIsResending(true);
+    try {
+      await authService.sendForgotOtp(email || "");
+      setTimer(60);
       setCanResend(false);
       setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0]?.focus();
-
-      // Animate resend button
-      Animated.sequence([
-        Animated.timing(buttonScaleAnim, {
-          toValue: 0.95,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.spring(buttonScaleAnim, {
-          toValue: 1,
-          friction: 3,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]).start();
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || "Opnieuw verzenden mislukt.";
+      Alert.alert("Fout", msg);
+    } finally {
+      setIsResending(false);
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const code = otp.join("");
-    if (code.length === 6) {
-      // Animate verification
+    if (code.length !== 6) return;
+
+    setIsVerifying(true);
+    try {
+      const result = await authService.verifyForgotOtp(email || "", code);
+
       Animated.sequence([
         Animated.parallel(
           inputAnims.map((anim) =>
@@ -175,10 +160,19 @@ const Verify = () => {
           ),
         ),
       ]).start();
-      router.replace("/resetpassword");
 
-      // Handle verification logic here
-      console.log("Verifying code:", code);
+      router.replace({
+        pathname: "/resetpassword",
+        params: { email: email || "", resetToken: result.resetToken },
+      });
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Verificatie mislukt. Probeer het opnieuw.";
+      Alert.alert("Fout", msg);
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -200,7 +194,7 @@ const Verify = () => {
     }).start();
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
@@ -236,7 +230,6 @@ const Verify = () => {
                 value={digit}
                 onChangeText={(text) => handleOtpChange(text, index)}
                 onKeyPress={(e) => handleKeyPress(e, index)}
-                onPaste={(e) => handlePaste(e.nativeEvent.text)}
                 maxLength={1}
                 keyboardType="number-pad"
                 className={`w-14 h-14 border-2 rounded-xl text-center text-xl font-semibold
@@ -266,10 +259,14 @@ const Verify = () => {
               </Text>
             </Text>
           ) : (
-            <TouchableOpacity onPress={handleResend}>
-              <Text className="text-[#7C866E] text-base font-semibold">
-                {t("verify.resendCode")}
-              </Text>
+            <TouchableOpacity onPress={handleResend} disabled={isResending}>
+              {isResending ? (
+                <ActivityIndicator color="#7C866E" />
+              ) : (
+                <Text className="text-[#7C866E] text-base font-semibold">
+                  {t("verify.resendCode")}
+                </Text>
+              )}
             </TouchableOpacity>
           )}
         </Animated.View>
@@ -286,19 +283,20 @@ const Verify = () => {
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             onPress={handleVerify}
-            disabled={otp.join("").length !== 6}
+            disabled={otp.join("").length !== 6 || isVerifying}
           >
-            <Text className="text-white text-center font-semibold text-lg">
-              {t("verify.verifyButton")}
-            </Text>
+            {isVerifying ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text className="text-white text-center font-semibold text-lg">
+                {t("verify.verifyButton")}
+              </Text>
+            )}
           </TouchableOpacity>
         </Animated.View>
-
-        {/* Help Text */}
       </Animated.View>
     </View>
   );
 };
 
 export default Verify;
-11;

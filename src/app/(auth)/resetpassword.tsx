@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft, Check, Eye, EyeOff, Lock, X } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { t } from "../../i18n";
@@ -25,6 +25,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { authService } from "../../services/authService";
 
 // Types
 interface PasswordFieldProps {
@@ -237,6 +238,8 @@ const RequirementItem: React.FC<{ label: string; met: boolean }> = ({
 
 // Main Component
 const Resetpassword: React.FC = () => {
+  const { email, resetToken } = useLocalSearchParams<{ email: string; resetToken: string }>();
+
   // State
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -290,29 +293,35 @@ const Resetpassword: React.FC = () => {
   const handleSave = async () => {
     if (!validatePasswords()) return;
 
+    if (!email || !resetToken) {
+      Alert.alert("Fout", "Ongeldige sessie. Ga terug en probeer opnieuw.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await authService.resetPassword(email, resetToken, newPassword);
 
-      // Show success animation
       successScale.value = withSequence(withSpring(1.2), withSpring(1));
       setShowSuccess(true);
 
-      // Reset form after success
       setTimeout(() => {
         setShowSuccess(false);
         successScale.value = 0;
         setNewPassword("");
         setConfirmPassword("");
 
-        Alert.alert("Success", "Password changed successfully", [
-          { text: "OK", onPress: () => router.back() },
+        Alert.alert(t("resetPassword.successTitle"), t("resetPassword.successMessage"), [
+          { text: "OK", onPress: () => router.replace("/signin") },
         ]);
       }, 1500);
-    } catch (error) {
-      Alert.alert("Error", "Failed to change password. Please try again.");
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Wachtwoord wijzigen mislukt. Probeer het opnieuw.";
+      Alert.alert("Fout", msg);
     } finally {
       setIsLoading(false);
     }
