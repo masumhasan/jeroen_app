@@ -10,11 +10,13 @@ import * as Font from "expo-font";
 import { Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgXml } from "react-native-svg";
 import { t } from "../../i18n";
 
 export default function Layout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     async function loadFonts() {
@@ -48,8 +50,9 @@ export default function Layout() {
           tabBarInactiveTintColor: "#C9CAC5",
 
           tabBarStyle: {
-            height: 70,
+            height: 70 + insets.bottom,
             paddingTop: 8,
+            paddingBottom: insets.bottom,
             backgroundColor: "#FFFFFF",
             borderTopWidth: 1,
             borderTopColor: "#FFFFFF",

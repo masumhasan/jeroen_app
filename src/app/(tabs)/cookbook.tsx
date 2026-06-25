@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeInDown, FadeInUp, Layout } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface RecipeItem {
   id: number;
@@ -134,7 +135,7 @@ export default function CookbookHome() {
   );
 
   return (
-    <View className="flex-1 bg-[#FFFFFF]">
+    <SafeAreaView edges={["top"]} className="flex-1 bg-[#FFFFFF]">
       <Animated.View entering={FadeInDown.duration(600)}>
         <Header />
         <TabSwitch tab={tab} setTab={setTab} />
@@ -217,6 +218,6 @@ export default function CookbookHome() {
           ))}
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

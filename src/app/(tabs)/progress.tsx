@@ -9,6 +9,7 @@ import { t } from "../../i18n";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
   Extrapolate,
   FadeInDown,
@@ -184,7 +185,7 @@ const Progress = () => {
   );
 
   return (
-    <View className="flex-1 bg-[#FFFFFF]">
+    <SafeAreaView edges={["top"]} className="flex-1 bg-[#FFFFFF]">
       <LinearGradient
         colors={["#FFFFFF", "#F8F9FA"]}
         className="absolute inset-0"
@@ -279,7 +280,7 @@ const Progress = () => {
         </Animated.View>
       </AnimatedScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

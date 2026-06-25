@@ -7,6 +7,7 @@ import CommunitySkeleton from "@/src/components/Skeletons/CommunitySkeleton";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { communityService } from "../../services/communityService";
 import { resolveRecipeImageUrl, resolveAvatarUrl } from "../../utils/imageUrl";
 import { t } from "../../i18n";
@@ -105,7 +106,7 @@ export default function Community() {
   };
 
   return (
-    <View className="flex-1 bg-[#FFFFFF] ">
+    <SafeAreaView edges={["top"]} className="flex-1 bg-[#FFFFFF]">
       <CommunityHeader />
 
       <SearchBar value={search} onChangeText={setSearch} />
@@ -172,6 +173,6 @@ export default function Community() {
       ) : (
         <TopicsCommunity topics={topics} onToggleFollow={handleToggleTopicFollow} />
       )}
-    </View>
+    </SafeAreaView>
   );
 }

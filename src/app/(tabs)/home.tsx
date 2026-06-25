@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { authService } from "../../services/authService";
 import { resolveRecipeImageUrl } from "@/src/utils/imageUrl";
 import { t } from "../../i18n";
@@ -113,15 +114,15 @@ export default function Home() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-white items-center justify-center">
+      <SafeAreaView edges={["top"]} className="flex-1 bg-white items-center justify-center">
         <ActivityIndicator size="large" color="#7A8B6F" />
         <Text className="mt-4 text-gray-500">{t("home.loading")}</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View className="flex-1 bg-[#FFFFFF]">
+    <SafeAreaView edges={["top"]} className="flex-1 bg-[#FFFFFF]">
       {/* Title */}
       <View className="flex-row items-center justify-between px-[5%] py-4">
         <Image
@@ -258,6 +259,6 @@ export default function Home() {
             })),
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }

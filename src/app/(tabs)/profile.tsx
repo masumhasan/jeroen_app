@@ -19,6 +19,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { resolveAvatarUrl } from "../../utils/imageUrl";
 
 import { AppImages } from "../../../assets/appimage/appimages";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const profile = () => {
   const [userData, setUserData] = React.useState<any>(null);
@@ -121,7 +122,7 @@ const profile = () => {
   ];
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView edges={["top"]} className="flex-1 bg-white">
       <View className="px-[5%] pt-0">
         {/* Header */}
         <View className="relative items-center justify-center mb-6">
@@ -373,7 +374,7 @@ const profile = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
