@@ -45,3 +45,13 @@ npx expo start
 - **App Structure**: Located in the `/app` directory using file-based routing.
 - **Global Components**: Found in `/src/components`.
 - **Hooks & Utilities**: Specialized logic in `/src/hooks`.
+
+
+
+cd C:\20300\github\lisa\jeroen_app\android
+./gradlew --stop
+./gradlew assembleRelease -x lintVitalAnalyzeRelease
+Then install:
+
+
+adb install -r app\build\outputs\apk\release\app-release.apk
