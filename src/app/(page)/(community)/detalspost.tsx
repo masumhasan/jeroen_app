@@ -199,16 +199,10 @@ const PostDetailsScreen = () => {
           <Text className="text-[#4A5568] mt-1 leading-5">{item.content}</Text>
         </View>
 
-        <View className="flex-row mt-2 items-center flex-wrap">
-          <Text className="text-[#8A8A8A] text-[11px] font-medium mr-3">
+        <View className="flex-row mt-2 items-center">
+          <Text className="text-[#8A8A8A] text-[11px] font-medium">
             {item.timestamp}
           </Text>
-          <TouchableOpacity activeOpacity={0.7} className="mr-3">
-            <Text className="text-[#8A8A8A] text-[11px] font-medium">{t("postDetails.like")}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text className="text-[#8A8A8A] text-[11px] font-medium">{t("postDetails.reply")}</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Animated.View>
